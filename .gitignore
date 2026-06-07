@@ -11,3 +11,6 @@ desktop.ini
 # Datos / temporales
 *.log
 *.tmp
+
+# Claude Code (config local)
+.claude/
