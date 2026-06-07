@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legal — automatizaesto · Privacidad, Términos y Cookies</title>
+<meta name="description" content="Política de Privacidad, Términos y Condiciones y Política de Cookies de automatizaesto." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0a0a0b" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://automatizaesto.com/legal.html" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%230a0a0b'>&#955;</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --bg-soft: #111114;
+    --bg-card: #15151a;
+    --border: #26262d;
+    --border-hot: #3a3a45;
+    --ink: #f2f0ea;
+    --ink-dim: #8a8a94;
+    --ink-mute: #58585f;
+    --accent: #7c5cff;
+    --grid: rgba(255,255,255,0.035);
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter Tight', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse at top, black 10%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at top, black 10%, transparent 75%);
+  }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  html { scrollbar-color: var(--border-hot) var(--bg-soft); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: var(--bg-soft); }
+  ::-webkit-scrollbar-thumb { background: var(--border-hot); border-radius: 10px; border: 3px solid var(--bg-soft); }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
+
+  /* top bar */
+  nav {
+    position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+    z-index: 100; width: calc(100% - 40px); max-width: 820px;
+    background: rgba(15,15,18,0.72);
+    backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 10px 12px 10px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
+  .logo-mark {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #a78bfa);
+    display: grid; place-items: center; color: #0a0a0b;
+    font-family: var(--mono); font-weight: 700; font-size: 14px;
+    box-shadow: 0 0 0 1px rgba(124,92,255,0.3), 0 0 20px rgba(124,92,255,0.22);
+  }
+  .logo em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; color: var(--ink-dim);
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 9px 16px; transition: all 0.25s ease;
+  }
+  .back-link:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+  /* header */
+  header.legal-hero { padding: 150px 0 40px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  }
+  .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  header.legal-hero h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(34px, 6vw, 56px); line-height: 1.04; letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  header.legal-hero h1 em { font-style: italic; color: var(--accent); }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); letter-spacing: 0.04em; }
+
+  /* table of contents */
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin: 30px 0 10px; padding-bottom: 36px; border-bottom: 1px solid var(--border);
+  }
+  .toc a {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em;
+    color: var(--ink-dim); background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 100px; padding: 9px 16px;
+    transition: all 0.25s ease;
+  }
+  .toc a:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+
+  /* prose */
+  .doc { padding: 50px 0; border-bottom: 1px solid var(--border); }
+  .doc:last-of-type { border-bottom: none; }
+  .doc h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(26px, 4vw, 36px);
+    letter-spacing: -0.02em; margin-bottom: 8px; scroll-margin-top: 110px;
+  }
+  .doc h2 .n { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; margin-right: 12px; vertical-align: middle; }
+  .doc h3 {
+    font-family: var(--sans); font-weight: 600; font-size: 17px;
+    color: var(--ink); margin: 30px 0 10px;
+  }
+  .doc p, .doc li { color: var(--ink-dim); font-size: 15.5px; line-height: 1.75; }
+  .doc p { margin-bottom: 14px; }
+  .doc ul { margin: 0 0 16px; padding-left: 22px; }
+  .doc li { margin-bottom: 8px; }
+  .doc li::marker { color: var(--accent); }
+  .doc strong { color: var(--ink); font-weight: 600; }
+  .doc a.inline { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .lead { font-size: 16.5px !important; color: var(--ink-dim); margin-bottom: 26px; }
+  .note {
+    background: var(--bg-card); border: 1px solid var(--border); border-left: 2px solid var(--accent);
+    border-radius: 12px; padding: 16px 20px; margin: 22px 0;
+  }
+  .note p { margin: 0; font-size: 14.5px; }
+
+  /* footer */
+  footer { border-top: 1px solid var(--border); padding: 36px 0; position: relative; z-index: 2; }
+  .foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em;
+  }
+  .foot a { color: var(--ink-dim); transition: color 0.2s ease; }
+  .foot a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .back-link span { display: none; }
+    header.legal-hero { padding: 130px 0 30px; }
+  }
+</style>
+</head>
+<body>
+
+<nav aria-label="Navegación legal">
+  <a href="index.html#hero" class="logo" aria-label="automatizaesto — inicio">
+    <span class="logo-mark" aria-hidden="true">λ</span>
+    automatiza<em>esto</em>
+  </a>
+  <a href="index.html" class="back-link">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+    <span>Volver al inicio</span>
+  </a>
+</nav>
+
+<header class="legal-hero">
+  <div class="container">
+    <span class="eyebrow">Información legal</span>
+    <h1>Privacidad, términos y <em>cookies</em>.</h1>
+    <p class="updated">Última actualización: junio de 2026</p>
+
+    <nav class="toc" aria-label="Índice de documentos">
+      <a href="#privacidad">Política de Privacidad</a>
+      <a href="#terminos">Términos y Condiciones</a>
+      <a href="#cookies">Política de Cookies</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <!-- ===== PRIVACIDAD ===== -->
+  <section class="doc" id="privacidad">
+    <h2><span class="n">01</span>Política de Privacidad</h2>
+    <p class="lead">En <strong>automatizaesto</strong> respetamos tu privacidad. Esta política explica qué datos personales recopilamos, con qué finalidad, cuál es su base legal y cómo puedes ejercer tus derechos.</p>
+
+    <h3>1. Responsable del tratamiento</h3>
+    <p>El responsable del tratamiento de tus datos es <strong>automatizaesto</strong>, a cargo de <strong>Victor Cardeña</strong> (Fundador).</p>
+    <ul>
+      <li>Correo de contacto: <a class="inline" href="mailto:vcardena@automatizaesto.com">vcardena@automatizaesto.com</a></li>
+      <li>Domicilio fiscal: <strong>Calle 1 N.° 147, Urbanización Parques de Villasol</strong></li>
+      <li>RUC: <strong>en trámite</strong> — se actualizará en cuanto sea asignado.</li>
+    </ul>
+
+    <h3>2. Datos que recopilamos</h3>
+    <p>Tratamos únicamente los datos que nos facilitas de forma voluntaria y los que se generan al navegar:</p>
+    <ul>
+      <li><strong>Datos de contacto del formulario:</strong> nombre, empresa, correo electrónico, teléfono/WhatsApp, servicio de interés, rango de presupuesto y el mensaje que nos envías.</li>
+      <li><strong>Datos de navegación:</strong> dirección IP, tipo de dispositivo y navegador, y datos de uso recogidos mediante cookies o herramientas de analítica (ver la <a class="inline" href="#cookies">Política de Cookies</a>).</li>
+    </ul>
+
+    <h3>3. Finalidad del tratamiento</h3>
+    <ul>
+      <li>Responder a tus solicitudes y consultas, y coordinar demostraciones o reuniones.</li>
+      <li>Elaborar y enviarte propuestas de servicios de automatización e inteligencia artificial.</li>
+      <li>Enviarte comunicaciones relacionadas con el servicio solicitado, siempre que lo autorices.</li>
+      <li>Mantener, proteger y mejorar el funcionamiento del sitio web.</li>
+    </ul>
+
+    <h3>4. Base legal</h3>
+    <p>La base legal es tu <strong>consentimiento</strong>, otorgado al completar y enviar el formulario, y el interés legítimo en atender tu solicitud y operar el sitio. Puedes retirar tu consentimiento en cualquier momento.</p>
+
+    <h3>5. Conservación de los datos</h3>
+    <p>Conservamos tus datos durante el tiempo necesario para atender tu solicitud y, en su caso, mientras dure la relación comercial. Después se conservarán bloqueados durante los plazos legales aplicables y, posteriormente, se eliminarán.</p>
+
+    <h3>6. Destinatarios y encargados</h3>
+    <p>No vendemos ni cedemos tus datos a terceros. Para prestar el servicio trabajamos con proveedores que actúan como encargados del tratamiento, entre ellos:</p>
+    <ul>
+      <li><strong>Netlify</strong> — alojamiento del sitio y gestión del formulario de contacto.</li>
+      <li><strong>Proveedores de analítica e infraestructura de IA</strong> utilizados para operar y mejorar nuestros servicios.</li>
+    </ul>
+    <p>Algunos de estos proveedores pueden alojar la información fuera de tu país; en esos casos se aplican las garantías adecuadas para la transferencia internacional de datos.</p>
+
+    <h3>7. Tus derechos</h3>
+    <p>Conforme a la normativa aplicable de protección de datos personales —en Perú, la <strong>Ley N.° 29733</strong> y su reglamento— puedes ejercer tus derechos de <strong>acceso, rectificación, cancelación y oposición (ARCO)</strong>, así como la limitación o portabilidad cuando corresponda.</p>
+    <p>Para ejercerlos, escríbenos a <a class="inline" href="mailto:vcardena@automatizaesto.com">vcardena@automatizaesto.com</a> indicando tu solicitud. Atenderemos tu petición en los plazos legales. También puedes presentar un reclamo ante la autoridad de protección de datos competente.</p>
+
+    <h3>8. Seguridad</h3>
+    <p>Aplicamos medidas técnicas y organizativas razonables para proteger tus datos frente a accesos no autorizados, pérdida o alteración. Ningún sistema es 100&nbsp;% infalible, pero trabajamos para minimizar los riesgos.</p>
+
+    <h3>9. Cambios en esta política</h3>
+    <p>Podemos actualizar esta política para reflejar cambios legales o de nuestros servicios. Publicaremos siempre la versión vigente en esta página con su fecha de actualización.</p>
+  </section>
+
+  <!-- ===== TÉRMINOS ===== -->
+  <section class="doc" id="terminos">
+    <h2><span class="n">02</span>Términos y Condiciones</h2>
+    <p class="lead">Estos términos regulan el acceso y uso del sitio web de <strong>automatizaesto</strong>. Al navegar por el sitio aceptas estas condiciones.</p>
+
+    <h3>1. Objeto</h3>
+    <p>Este sitio tiene carácter <strong>informativo</strong> y presenta los servicios de automatización e inteligencia artificial de automatizaesto, así como sus productos propios (por ejemplo, <strong>AgroField</strong>).</p>
+
+    <h3>2. Uso del sitio</h3>
+    <p>Te comprometes a utilizar el sitio de forma lícita y a no realizar acciones que puedan dañarlo, sobrecargarlo o impedir su normal funcionamiento, ni intentar acceder de forma no autorizada a sus sistemas.</p>
+
+    <h3>3. Propiedad intelectual</h3>
+    <p>La marca <strong>automatizaesto</strong>, sus logotipos, textos, diseños, código y demás contenidos son propiedad de automatizaesto o de sus titulares y están protegidos por la normativa de propiedad intelectual. No se permite su reproducción o uso sin autorización previa por escrito.</p>
+
+    <h3>4. Servicios y contratación</h3>
+    <p>La información del sitio <strong>no constituye una oferta vinculante</strong>. Cualquier servicio se formaliza mediante una propuesta y un acuerdo independiente entre las partes, donde se detallan el alcance, los plazos, los precios y las condiciones específicas.</p>
+
+    <h3>5. Limitación de responsabilidad</h3>
+    <p>El sitio se ofrece "tal cual". En la medida permitida por la ley, automatizaesto no será responsable de daños indirectos derivados del uso del sitio ni de interrupciones, errores o falta de disponibilidad puntual del mismo.</p>
+
+    <h3>6. Enlaces a terceros</h3>
+    <p>El sitio puede incluir enlaces a páginas de terceros. No nos hacemos responsables del contenido ni de las políticas de dichos sitios, que cuentan con sus propias condiciones.</p>
+
+    <h3>7. Disponibilidad</h3>
+    <p>Procuramos mantener el sitio disponible de forma continua, pero podemos suspenderlo temporalmente por mantenimiento, actualizaciones o causas de fuerza mayor.</p>
+
+    <h3>8. Legislación y jurisdicción</h3>
+    <p>Estos términos se rigen por la legislación de la <strong>República del Perú</strong>. Cualquier controversia se someterá a los tribunales competentes, salvo que la ley disponga lo contrario.</p>
+
+    <h3>9. Modificaciones</h3>
+    <p>Podemos modificar estos términos en cualquier momento. La versión vigente será siempre la publicada en esta página.</p>
+  </section>
+
+  <!-- ===== COOKIES ===== -->
+  <section class="doc" id="cookies">
+    <h2><span class="n">03</span>Política de Cookies</h2>
+    <p class="lead">Esta política explica qué son las cookies, cuáles utilizamos en este sitio y cómo puedes gestionarlas.</p>
+
+    <h3>1. ¿Qué son las cookies?</h3>
+    <p>Las cookies son pequeños archivos que se almacenan en tu dispositivo cuando visitas un sitio web. Permiten que el sitio funcione correctamente, recordar preferencias y obtener información estadística sobre su uso.</p>
+
+    <h3>2. Cookies que utilizamos</h3>
+    <ul>
+      <li><strong>Técnicas o esenciales:</strong> necesarias para el funcionamiento básico del sitio y el envío del formulario de contacto.</li>
+      <li><strong>Analíticas:</strong> nos ayudan a entender cómo se usa el sitio para mejorarlo. Son anónimas o seudonimizadas.</li>
+      <li><strong>De terceros:</strong> al cargar tipografías (Google Fonts) o herramientas externas, dichos proveedores pueden establecer sus propias cookies, sujetas a sus respectivas políticas.</li>
+    </ul>
+
+    <h3>3. Gestión de cookies</h3>
+    <p>Puedes aceptar, bloquear o eliminar las cookies desde la configuración de tu navegador. Ten en cuenta que desactivar algunas cookies puede afectar al funcionamiento del sitio. Aquí tienes las guías de los navegadores más comunes:</p>
+    <ul>
+      <li><a class="inline" href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
+      <li><a class="inline" href="https://support.mozilla.org/es/kb/Borrar%20cookies" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+      <li><a class="inline" href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Safari</a></li>
+      <li><a class="inline" href="https://support.microsoft.com/es-es/microsoft-edge" target="_blank" rel="noopener">Microsoft Edge</a></li>
+    </ul>
+
+    <h3>4. Consentimiento</h3>
+    <p>Al continuar navegando por el sitio sin desactivar las cookies, consientes su uso conforme a esta política. Puedes retirar tu consentimiento en cualquier momento gestionando las cookies desde tu navegador.</p>
+
+    <div class="note">
+      <p>¿Dudas sobre privacidad, términos o cookies? Escríbenos a <a class="inline" href="mailto:vcardena@automatizaesto.com">vcardena@automatizaesto.com</a> y te ayudamos.</p>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <span>© <span id="year">2026</span> automatizaesto.com · Todos los derechos reservados</span>
+      <span><a href="index.html#contacto">Contacto</a> &nbsp;·&nbsp; <a href="index.html">Inicio</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

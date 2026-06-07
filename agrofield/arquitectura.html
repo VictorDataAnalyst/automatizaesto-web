@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroField · Modelo de Datos — Del Excel a la Nube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B09;--ink:#F4FBF6;--muted:#9DB3A6;--line:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.045);--lime:#7DF38A;--emer:#27C26B;--deep:#0F8A4D;--teal:#2DD4BF;
+  --amber:#FBBF24;--red:#FCA5A5;
+  --grad:linear-gradient(135deg,#27C26B,#0F8A4D);
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora span{position:absolute;border-radius:50%;filter:blur(100px);opacity:.4;mix-blend-mode:screen;animation:drift 24s ease-in-out infinite}
+.a1{width:480px;height:480px;background:#27C26B;top:-140px;left:-80px}
+.a2{width:420px;height:420px;background:#2DD4BF;bottom:-160px;right:-100px;animation-delay:-9s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,40px) scale(1.1)}}
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 28px}
+
+/* header */
+.top{padding:64px 0 30px;text-align:center}
+.brand{display:inline-flex;align-items:center;gap:11px;margin-bottom:26px}
+.brand .logo{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-size:20px;box-shadow:0 0 50px rgba(39,194,107,.5)}
+.brand b{font-family:'Sora';font-weight:700;font-size:19px}
+.brand small{display:block;font-size:10px;color:var(--muted);font-weight:500}
+.eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--emer);margin-bottom:16px}
+.top h1{font-size:clamp(30px,4.6vw,50px);font-weight:800;line-height:1.08;margin-bottom:16px}
+.top h1 .g{background:linear-gradient(120deg,#7DF38A,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top p{color:var(--muted);font-size:17px;max-width:640px;margin:0 auto}
+
+/* toggle */
+.toggle{display:flex;gap:8px;justify-content:center;margin:36px 0 10px;flex-wrap:wrap}
+.tg{padding:11px 22px;border-radius:100px;border:1px solid var(--line);background:var(--glass);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
+.tg.on{background:var(--grad);color:#04160c;border-color:transparent;box-shadow:0 8px 26px rgba(39,194,107,.35)}
+
+/* section */
+.model{padding:34px 0 20px;display:none}
+.model.on{display:block;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.mhead{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;letter-spacing:.06em}
+.chip-now{background:rgba(251,191,36,.14);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
+.chip-next{background:rgba(39,194,107,.16);color:var(--lime);border:1px solid rgba(39,194,107,.3)}
+.mhead h2{font-size:26px;font-weight:700}
+.msub{color:var(--muted);font-size:15px;margin-bottom:30px;max-width:720px}
+
+/* flow diagram */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.node{flex:1;min-width:150px;max-width:210px;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px 16px;text-align:center;backdrop-filter:blur(10px);position:relative}
+.node .nic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin:0 auto 12px;background:rgba(255,255,255,.05)}
+.node .ntitle{font-family:'Sora';font-weight:700;font-size:14px;margin-bottom:5px}
+.node .ndesc{font-size:11px;color:var(--muted);line-height:1.45}
+.node .nlabel{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px}
+.node.hot{border-color:rgba(39,194,107,.4);background:linear-gradient(160deg,rgba(39,194,107,.1),rgba(255,255,255,.03))}
+.node.warn{border-color:rgba(251,191,36,.35)}
+.arr{display:flex;align-items:center;justify-content:center;padding:0 6px;color:var(--emer);font-size:22px;flex-shrink:0;position:relative}
+.arr .flowline{position:absolute;top:50%;left:-2px;right:-2px;height:2px;background:linear-gradient(90deg,transparent,var(--emer),transparent);background-size:200% 100%;animation:flw 2.6s linear infinite;opacity:.5}
+@keyframes flw{0%{background-position:100% 0}100%{background-position:-100% 0}}
+@media(max-width:760px){.flow{flex-direction:column}.arr{transform:rotate(90deg);padding:8px 0}.node{max-width:none}}
+
+/* note under flow */
+.flownote{text-align:center;font-size:12.5px;color:var(--muted);margin:6px auto 34px;max-width:680px}
+.flownote b{color:var(--ink)}
+
+/* pros cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:34px}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pcc{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:22px;backdrop-filter:blur(10px)}
+.pcc h4{font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.pcc ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.pcc li{display:flex;gap:9px;font-size:13.5px;color:var(--muted);align-items:flex-start}
+.pcc li .mk{flex-shrink:0;margin-top:1px;font-weight:700}
+.good .mk{color:var(--lime)}
+.bad .mk{color:var(--red)}
+
+/* data structure visual */
+.dvis{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:26px;margin-bottom:14px;backdrop-filter:blur(10px)}
+.dvis .dtitle{font-family:'Sora';font-weight:700;font-size:15px;margin-bottom:18px;display:flex;align-items:center;gap:9px}
+
+/* excel sheets visual */
+.sheets{display:flex;flex-wrap:wrap;gap:9px}
+.sheet{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.sheet .si{width:8px;height:8px;border-radius:2px;background:var(--amber)}
+.excelgrid{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:11px}
+.excelgrid .er{display:grid;grid-template-columns:80px 1fr 1fr 90px;border-bottom:1px solid var(--line)}
+.excelgrid .er:last-child{border-bottom:none}
+.excelgrid .er.head{background:rgba(251,191,36,.1);color:var(--amber);font-weight:700}
+.excelgrid .ec{padding:8px 12px;border-right:1px solid var(--line);color:var(--muted)}
+.excelgrid .ec:last-child{border-right:none}
+.excelgrid .warn-cell{color:var(--red)}
+
+/* SQL tables (ER) */
+.ergrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:820px){.ergrid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ergrid{grid-template-columns:1fr}}
+.ertable{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ertable.key{border-color:rgba(39,194,107,.4)}
+.ertable .eth{background:rgba(39,194,107,.14);color:var(--lime);padding:10px 14px;font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+.ertable.key .eth{background:rgba(39,194,107,.22)}
+.ertable .etr{display:flex;justify-content:space-between;padding:7px 14px;font-family:var(--mono);font-size:10.5px;border-top:1px solid var(--line);color:var(--muted)}
+.ertable .etr .pk{color:var(--lime);font-weight:700}
+.ertable .etr .fk{color:var(--teal)}
+.ertable .etr .ty{color:rgba(157,179,166,.5)}
+.erlegend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.erlegend span{display:flex;align-items:center;gap:6px}
+.erlegend .d{width:9px;height:9px;border-radius:2px}
+
+/* code block */
+.code{background:#0a120d;border:1px solid var(--line);border-radius:14px;padding:18px 20px;font-family:var(--mono);font-size:12px;line-height:1.7;overflow-x:auto;margin-top:14px;color:#cfe9d8}
+.code .kw{color:#7DF38A}.code .ty{color:#5EEAD4}.code .cm{color:rgba(157,179,166,.55)}.code .st{color:#FBBF24}
+
+/* comparison table */
+.cmp{padding:40px 0}
+.cmptable{width:100%;border-collapse:separate;border-spacing:0;background:var(--glass);border:1px solid var(--line);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px)}
+.cmptable th,.cmptable td{padding:14px 18px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line)}
+.cmptable th{font-family:'Sora';font-weight:700;font-size:13px}
+.cmptable thead th:nth-child(2){color:var(--amber)}
+.cmptable thead th:nth-child(3){color:var(--lime)}
+.cmptable td:first-child{color:var(--muted);font-weight:600}
+.cmptable tr:last-child td{border-bottom:none}
+.cmptable td:nth-child(2){color:#d8c89a}
+.cmptable td:nth-child(3){color:#bfe9cf}
+
+/* migration */
+.mig{padding:30px 0 50px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+@media(max-width:820px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.steps{grid-template-columns:1fr}}
+.step{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:20px;backdrop-filter:blur(10px);position:relative}
+.step .sn{font-family:var(--mono);font-size:12px;color:var(--emer);font-weight:700;margin-bottom:10px}
+.step h4{font-size:15px;margin-bottom:7px}
+.step p{font-size:12.5px;color:var(--muted)}
+
+.secthead{text-align:center;max-width:620px;margin:0 auto 8px}
+.secthead h2{font-size:clamp(24px,3.4vw,36px);font-weight:800;margin-bottom:12px}
+.secthead h2 .g{background:linear-gradient(120deg,#7DF38A,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.secthead p{color:var(--muted);font-size:15.5px}
+
+footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;color:var(--muted);font-size:12.5px;margin-top:30px}
+footer .by{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:600;margin-top:8px}
+footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#d4ff3f,#9eff3f);color:#0a0a0b;display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:12px}
+.reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.back-fixed{position:fixed;top:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:9px 14px;border:1px solid var(--line);border-radius:11px;background:rgba(7,11,9,.6);backdrop-filter:blur(14px);transition:color .2s,border-color .2s}
+.back-fixed em{font-style:italic;color:var(--ink)}
+.back-fixed:hover{color:var(--ink);border-color:rgba(255,255,255,.18)}
+.back-fixed svg{transition:transform .2s}
+.back-fixed:hover svg{transform:translateX(-2px)}
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-fixed" aria-label="Volver a automatizaesto">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" aria-hidden="true"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+  automatiza<em>esto</em>
+</a>
+<div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <span class="logo">🌿</span>
+      <span><b>AgroField</b><small>Field Intelligence Platform</small></span>
+    </div>
+    <div class="eyebrow">Arquitectura de datos</div>
+    <h1>Cómo se gestionan los datos:<br><span class="g">del Excel a la nube</span></h1>
+    <p>AgroField <b>ya migró</b> de un Excel en OneDrive a una base de datos real en la nube (Supabase). Aquí el modelo actual implementado, comparado con el modelo anterior del MVP.</p>
+
+    <div class="toggle">
+      <button class="tg on" onclick="show('next',this)">☁️ Modelo actual · Supabase</button>
+      <button class="tg" onclick="show('now',this)">📁 Modelo anterior · OneDrive + Excel</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODELO ANTERIOR ═══════════ -->
+  <section class="model" id="m-now">
+    <div class="mhead">
+      <span class="chip chip-now">MODELO ANTERIOR · MVP</span>
+      <h2>OneDrive + Excel</h2>
+    </div>
+    <p class="msub">La app móvil leía y escribía directamente sobre un archivo de Excel en OneDrive (API de Microsoft Graph). Fue el modelo del MVP inicial —ya reemplazado por Supabase.</p>
+
+    <!-- flow -->
+    <div class="flow">
+      <div class="node hot">
+        <div class="nlabel">Captura</div>
+        <div class="nic">📱</div>
+        <div class="ntitle">App móvil</div>
+        <div class="ndesc">El técnico registra visitas, conteos y calidad en campo</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node">
+        <div class="nlabel">Autenticación</div>
+        <div class="nic">🔐</div>
+        <div class="ntitle">Login Microsoft</div>
+        <div class="ndesc">MSAL · token OAuth de la cuenta corporativa</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node">
+        <div class="nlabel">Transporte</div>
+        <div class="nic">🔌</div>
+        <div class="ntitle">Microsoft Graph API</div>
+        <div class="ndesc">Lee/escribe celdas del libro de Excel</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node warn">
+        <div class="nlabel">Almacén</div>
+        <div class="nic">📊</div>
+        <div class="ntitle">Excel en OneDrive</div>
+        <div class="ndesc">BD_AgroField.xlsx · 8 hojas como "tablas"</div>
+      </div>
+    </div>
+    <p class="flownote">Cada hoja del Excel actúa como una tabla, pero <b>sin relaciones reales entre ellas</b>: el vínculo productor↔visita es solo texto copiado.</p>
+
+    <!-- estructura excel -->
+    <div class="dvis">
+      <div class="dtitle">📁 Estructura actual del archivo <span style="font-family:var(--mono);color:var(--amber);font-size:12px">BD_AgroField_OneDrive.xlsx</span></div>
+      <div class="sheets">
+        <div class="sheet"><span class="si"></span>PRODUCTORES</div>
+        <div class="sheet"><span class="si"></span>VISITAS_ASISTENCIA</div>
+        <div class="sheet"><span class="si"></span>CONTEO_FRUTOS</div>
+        <div class="sheet"><span class="si"></span>LIBRO_CAMPO</div>
+        <div class="sheet"><span class="si"></span>CONTROL_CALIDAD</div>
+        <div class="sheet"><span class="si"></span>TECNICOS</div>
+        <div class="sheet"><span class="si"></span>LISTAS</div>
+        <div class="sheet"><span class="si"></span>DASHBOARD_GERENCIAL</div>
+      </div>
+
+      <div class="excelgrid">
+        <div class="er head"><div class="ec">ID_Visita</div><div class="ec">Nombre_Productor</div><div class="ec">Cultivo</div><div class="ec">Estado</div></div>
+        <div class="er"><div class="ec">VIS-001</div><div class="ec">Carlos Mendoza</div><div class="ec">Palto</div><div class="ec">Completada</div></div>
+        <div class="er"><div class="ec">VIS-002</div><div class="ec">Rosa Simbana</div><div class="ec warn-cell">Arandano</div><div class="ec">Completada</div></div>
+        <div class="er"><div class="ec">VIS-003</div><div class="ec warn-cell">carlos mendoza</div><div class="ec warn-cell">Palta </div><div class="ec">En Proceso</div></div>
+      </div>
+      <p class="flownote" style="margin:14px 0 0;text-align:left">⚠️ <b>Problema típico:</b> el nombre y el cultivo se escriben como texto libre → "carlos mendoza" vs "Carlos Mendoza", "Palto" vs "Palta " (con espacio). Datos duplicados e inconsistentes que rompen los reportes.</p>
+    </div>
+
+    <div class="pc">
+      <div class="pcc good">
+        <h4>✅ Ventajas</h4>
+        <ul>
+          <li><span class="mk">+</span>Costo casi cero (ya tienen Microsoft 365)</li>
+          <li><span class="mk">+</span>Rápido de montar — ideal para validar el MVP</li>
+          <li><span class="mk">+</span>El cliente puede abrir y ver los datos en Excel</li>
+          <li><span class="mk">+</span>Sin servidores que administrar</li>
+        </ul>
+      </div>
+      <div class="pcc bad">
+        <h4>⚠️ Limitaciones</h4>
+        <ul>
+          <li><span class="mk">−</span>Sin integridad: datos duplicados e inconsistentes</li>
+          <li><span class="mk">−</span>No hay relaciones reales entre hojas</li>
+          <li><span class="mk">−</span>Lento y frágil con miles de registros</li>
+          <li><span class="mk">−</span>Conflictos si dos técnicos escriben a la vez</li>
+          <li><span class="mk">−</span>Sin modo offline robusto ni control de permisos fino</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ MODELO ACTUAL ═══════════ -->
+  <section class="model on" id="m-next">
+    <div class="mhead">
+      <span class="chip chip-next">✓ EN PRODUCCIÓN HOY</span>
+      <h2>Supabase · PostgreSQL + Storage</h2>
+    </div>
+    <p class="msub">La app está conectada a una base de datos relacional en la nube (Supabase). Captura offline en una base local SQLite y sincroniza sola al reconectar; las fotos van a Storage. Validado en dispositivo real.</p>
+
+    <div class="flow">
+      <div class="node hot">
+        <div class="nlabel">Captura</div>
+        <div class="nic">📱</div>
+        <div class="ntitle">App móvil</div>
+        <div class="ndesc">Con base local SQLite para trabajar sin señal</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node">
+        <div class="nlabel">Sincronización</div>
+        <div class="nic">🔄</div>
+        <div class="ntitle">Cola de sync</div>
+        <div class="ndesc">Sube los registros al recuperar conexión</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node">
+        <div class="nlabel">Servicio</div>
+        <div class="nic">⚙️</div>
+        <div class="ntitle">Supabase API + RLS</div>
+        <div class="ndesc">REST automática con seguridad por filas (RLS)</div>
+      </div>
+      <div class="arr"><span class="flowline"></span>→</div>
+      <div class="node hot">
+        <div class="nlabel">Almacén</div>
+        <div class="nic">🗄️</div>
+        <div class="ntitle">Postgres + Storage</div>
+        <div class="ndesc">Tablas relacionadas + fotos en la nube (Storage)</div>
+      </div>
+    </div>
+    <p class="flownote">Se puede exportar a Excel/PDF cuando se necesite — <b>el cliente no pierde el reporte en Excel</b>, solo deja de ser la base de datos.</p>
+
+    <!-- ER model -->
+    <div class="dvis">
+      <div class="dtitle">🗄️ Modelo entidad-relación propuesto</div>
+      <div class="ergrid">
+        <div class="ertable key">
+          <div class="eth">🌱 cultivos</div>
+          <div class="etr"><span class="pk">codigo 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span>nombre</span><span class="ty">unique</span></div>
+          <div class="etr"><span>icono</span><span class="ty">text</span></div>
+          <div class="etr"><span>activo</span><span class="ty">bool</span></div>
+        </div>
+        <div class="ertable key">
+          <div class="eth">👤 productores</div>
+          <div class="etr"><span class="pk">id_productor 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span>nombre</span><span class="ty">text</span></div>
+          <div class="etr"><span class="fk">cod_cultivo ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span>hectareas</span><span class="ty">num</span></div>
+        </div>
+        <div class="ertable key">
+          <div class="eth">🧑‍🌾 tecnicos</div>
+          <div class="etr"><span class="pk">id_tecnico 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span>nombre</span><span class="ty">text</span></div>
+          <div class="etr"><span>rol</span><span class="ty">enum</span></div>
+        </div>
+        <div class="ertable">
+          <div class="eth">📋 visitas</div>
+          <div class="etr"><span class="pk">id_visita 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span class="fk">id_productor ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span class="fk">cod_cultivo ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span class="fk">id_tecnico ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span>gps, fecha…</span><span class="ty">…</span></div>
+        </div>
+        <div class="ertable">
+          <div class="eth">🌳 conteo_frutos</div>
+          <div class="etr"><span class="pk">id_conteo 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span class="fk">id_visita ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span>buenos, total…</span><span class="ty">int</span></div>
+        </div>
+        <div class="ertable">
+          <div class="eth">🔬 control_calidad</div>
+          <div class="etr"><span class="pk">id_calidad 🔑</span><span class="ty">PK</span></div>
+          <div class="etr"><span class="fk">id_visita ↗</span><span class="ty">FK</span></div>
+          <div class="etr"><span>brix, calibre…</span><span class="ty">num</span></div>
+        </div>
+      </div>
+      <div class="erlegend">
+        <span><span class="d" style="background:var(--lime)"></span>🔑 PK — identificador único</span>
+        <span><span class="d" style="background:var(--teal)"></span>↗ FK — relación a otra tabla</span>
+      </div>
+
+      <div class="code">
+<span class="cm">-- El catálogo que gestiona el administrador (tu pedido del código de cultivo)</span>
+<span class="kw">CREATE TABLE</span> cultivos (
+  codigo      <span class="ty">VARCHAR(10)</span> <span class="kw">PRIMARY KEY</span>,        <span class="cm">-- CUL-001</span>
+  nombre      <span class="ty">VARCHAR(60)</span> <span class="kw">NOT NULL UNIQUE</span>,
+  activo      <span class="ty">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="st">true</span>
+);
+
+<span class="kw">CREATE TABLE</span> visitas (
+  id_visita    <span class="ty">VARCHAR(20)</span> <span class="kw">PRIMARY KEY</span>,
+  id_productor <span class="ty">VARCHAR(20)</span> <span class="kw">REFERENCES</span> productores(id_productor),
+  cod_cultivo  <span class="ty">VARCHAR(10)</span> <span class="kw">REFERENCES</span> cultivos(codigo)   <span class="cm">-- ← relación, no texto</span>
+);</div>
+      <p class="flownote" style="margin:14px 0 0;text-align:left">✅ Si el admin renombra "Palto" → "Palta Hass", cambia en <b>un solo lugar</b> y se refleja en todas las visitas. Imposible registrar un cultivo que no existe en el catálogo.</p>
+    </div>
+
+    <div class="pc">
+      <div class="pcc good">
+        <h4>✅ Ventajas</h4>
+        <ul>
+          <li><span class="mk">+</span>Integridad referencial: cero datos huérfanos o duplicados</li>
+          <li><span class="mk">+</span>El admin gestiona catálogos (cultivos, técnicos) por código</li>
+          <li><span class="mk">+</span>Modo offline real + sincronización confiable</li>
+          <li><span class="mk">+</span>Roles y permisos (campo / supervisor / admin)</li>
+          <li><span class="mk">+</span>Escala a millones de registros sin perder velocidad</li>
+          <li><span class="mk">+</span>Reportes y exportación a Excel/PDF cuando se requiera</li>
+        </ul>
+      </div>
+      <div class="pcc bad">
+        <h4>⚠️ A considerar</h4>
+        <ul>
+          <li><span class="mk">−</span>Costo mensual de hosting (bajo: ~USD 0–25/mes inicial)</li>
+          <li><span class="mk">−</span>Migración de los datos existentes del Excel (one-time)</li>
+          <li><span class="mk">−</span>El cliente ya no edita la "BD" directo en Excel</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ COMPARATIVA ═══════════ -->
+  <section class="cmp reveal">
+    <div class="secthead">
+      <h2>Comparación <span class="g">lado a lado</span></h2>
+      <p>Los dos modelos, frente a frente, en los criterios que importan.</p>
+    </div>
+    <table class="cmptable" style="margin-top:30px">
+      <thead><tr><th>Criterio</th><th>📁 OneDrive + Excel (antes)</th><th>☁️ Supabase (ahora)</th></tr></thead>
+      <tbody>
+        <tr><td>Integridad de datos</td><td>Texto libre, propenso a errores</td><td>Garantizada por claves foráneas</td></tr>
+        <tr><td>Relaciones entre datos</td><td>Inexistentes (texto copiado)</td><td>Reales y validadas</td></tr>
+        <tr><td>Catálogo de cultivos</td><td>Lista de texto en hoja LISTAS</td><td>Tabla con código (PK) editable por admin</td></tr>
+        <tr><td>Modo offline</td><td>Limitado / frágil</td><td>Nativo con cola de sincronización</td></tr>
+        <tr><td>Usuarios simultáneos</td><td>Conflictos de escritura</td><td>Concurrencia segura</td></tr>
+        <tr><td>Roles y permisos</td><td>No</td><td>Sí (campo / supervisor / admin)</td></tr>
+        <tr><td>Volumen de datos</td><td>Cientos de filas</td><td>Millones de registros</td></tr>
+        <tr><td>Costo</td><td>Incluido en Microsoft 365</td><td>~USD 0–25/mes al inicio</td></tr>
+        <tr><td>Ideal para</td><td>MVP y validación</td><td>Producto comercial y escala</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════ MIGRACIÓN ═══════════ -->
+  <section class="mig reveal">
+    <div class="secthead">
+      <h2>Migración <span class="g">ejecutada</span></h2>
+      <p>Así se llevó AgroField del Excel a Supabase, sin interrumpir la operación.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="sn">✓ PASO 01</div><h4>Diseño del modelo</h4><p>Se definieron tablas, relaciones y catálogos a partir del Excel original.</p></div>
+      <div class="step"><div class="sn">✓ PASO 02</div><h4>Backend en Supabase</h4><p>Postgres + Storage en la nube, con seguridad por filas (RLS).</p></div>
+      <div class="step"><div class="sn">✓ PASO 03</div><h4>App offline + sync</h4><p>Base local SQLite y cola de sincronización —validado en dispositivo.</p></div>
+      <div class="step"><div class="sn">PASO 04 · próximo</div><h4>Reportes (Fase 3)</h4><p>Dashboards y exportación a Excel/PDF para gerencia.</p></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  AgroField · Modelo de datos — documento para cliente · 2026
+  <br>
+  <span class="by"><span class="l">λ</span>Creado por automatizaesto</span>
+</footer>
+
+<script>
+function show(which,btn){
+  document.getElementById('m-now').classList.toggle('on',which==='now');
+  document.getElementById('m-next').classList.toggle('on',which==='next');
+  document.querySelectorAll('.tg').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

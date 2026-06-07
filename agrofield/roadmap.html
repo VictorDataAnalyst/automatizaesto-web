@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroField · Roadmap del Producto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B09;--ink:#F4FBF6;--muted:#9DB3A6;--line:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.045);--lime:#7DF38A;--emer:#27C26B;--deep:#0F8A4D;--teal:#2DD4BF;
+  --amber:#FBBF24;--blue:#60A5FA;--purple:#C4B5FD;
+  --grad:linear-gradient(135deg,#27C26B,#0F8A4D);--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora span{position:absolute;border-radius:50%;filter:blur(110px);opacity:.38;mix-blend-mode:screen;animation:drift 26s ease-in-out infinite}
+.a1{width:500px;height:500px;background:#27C26B;top:-160px;left:-90px}
+.a2{width:440px;height:440px;background:#2DD4BF;top:40%;right:-120px;animation-delay:-8s}
+.a3{width:420px;height:420px;background:#0F8A4D;bottom:-160px;left:30%;animation-delay:-15s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,40px) scale(1.12)}}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 28px}
+
+.top{padding:64px 0 26px;text-align:center}
+.brand{display:inline-flex;align-items:center;gap:11px;margin-bottom:26px}
+.brand .logo{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-size:20px;box-shadow:0 0 50px rgba(39,194,107,.5)}
+.brand b{font-family:'Sora';font-weight:700;font-size:19px}
+.brand small{display:block;font-size:10px;color:var(--muted);font-weight:500}
+.eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--emer);margin-bottom:16px}
+.top h1{font-size:clamp(30px,4.6vw,52px);font-weight:800;line-height:1.08;margin-bottom:16px}
+.top h1 .g{background:linear-gradient(120deg,#7DF38A,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top p{color:var(--muted);font-size:17px;max-width:620px;margin:0 auto}
+
+/* progress bar overview */
+.overview{display:flex;gap:10px;margin:40px 0 14px;flex-wrap:wrap}
+.ov{flex:1;min-width:130px;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:16px;backdrop-filter:blur(10px);text-align:center}
+.ov .ovn{font-family:'Sora';font-weight:800;font-size:24px}
+.ov .ovl{font-size:11px;color:var(--muted);margin-top:3px}
+.progress{height:10px;border-radius:100px;background:rgba(255,255,255,.06);overflow:hidden;margin:8px 0 50px;border:1px solid var(--line)}
+.progress .fill{height:100%;width:48%;background:var(--grad);border-radius:100px;box-shadow:0 0 20px rgba(39,194,107,.5);position:relative}
+.progress .fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);background-size:200% 100%;animation:sh 2.2s linear infinite}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* timeline */
+.timeline{position:relative;padding-left:8px}
+.timeline::before{content:'';position:absolute;left:23px;top:18px;bottom:30px;width:2px;background:linear-gradient(180deg,var(--emer),var(--teal),rgba(255,255,255,.1))}
+.phase{position:relative;padding-left:64px;margin-bottom:28px}
+.dot{position:absolute;left:8px;top:6px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:15px;z-index:2;border:2px solid var(--bg)}
+.dot.done{background:var(--grad);box-shadow:0 0 0 4px rgba(39,194,107,.18)}
+.dot.now{background:rgba(251,191,36,.2);border-color:var(--amber);box-shadow:0 0 0 4px rgba(251,191,36,.14)}
+.dot.next{background:rgba(255,255,255,.06)}
+.pcard{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:24px;backdrop-filter:blur(10px);transition:border-color .25s}
+.pcard:hover{border-color:rgba(39,194,107,.3)}
+.pcard.cur{border-color:rgba(251,191,36,.35);background:linear-gradient(160deg,rgba(251,191,36,.06),rgba(255,255,255,.03))}
+.phead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.phead .pt{font-size:20px;font-weight:700}
+.phase-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tag{font-family:var(--mono);font-size:10px;font-weight:700;padding:4px 11px;border-radius:100px;letter-spacing:.05em}
+.tag-done{background:rgba(39,194,107,.16);color:var(--lime);border:1px solid rgba(39,194,107,.3)}
+.tag-now{background:rgba(251,191,36,.15);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
+.tag-next{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--line)}
+.when{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.pdesc{color:var(--muted);font-size:14px;margin-bottom:16px}
+.items{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:620px){.items{grid-template-columns:1fr}}
+.item{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--ink);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.item .ck{flex-shrink:0;font-size:13px;margin-top:1px}
+.item.ok .ck{color:var(--lime)}
+.item.wip .ck{color:var(--amber)}
+.item.pend .ck{color:var(--muted)}
+.item.pend{color:var(--muted)}
+
+/* deliverable footer per phase */
+.deliver{margin-top:14px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.deliver b{color:var(--lime)}
+
+/* legend */
+.legend{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin:30px 0 8px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend .d{width:11px;height:11px;border-radius:50%}
+
+footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px}
+footer .by{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:600;margin-top:8px}
+footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#d4ff3f,#9eff3f);color:#0a0a0b;display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:12px}
+.reveal{opacity:0;transform:translateY(22px);transition:all .7s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.back-fixed{position:fixed;top:18px;left:18px;z-index:60;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:9px 14px;border:1px solid var(--line);border-radius:11px;background:rgba(7,11,9,.6);backdrop-filter:blur(14px);transition:color .2s,border-color .2s}
+.back-fixed em{font-style:italic;color:var(--ink)}
+.back-fixed:hover{color:var(--ink);border-color:rgba(255,255,255,.18)}
+.back-fixed svg{transition:transform .2s}
+.back-fixed:hover svg{transform:translateX(-2px)}
+</style>
+</head>
+<body>
+<a href="../index.html" class="back-fixed" aria-label="Volver a automatizaesto">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" aria-hidden="true"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+  automatiza<em>esto</em>
+</a>
+<div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><span class="logo">🌿</span><span><b>AgroField</b><small>Field Intelligence Platform</small></span></div>
+    <div class="eyebrow">Roadmap del producto</div>
+    <h1>De MVP funcional a <span class="g">producto líder</span></h1>
+    <p>El plan por fases para evolucionar AgroField, desde lo que ya funciona hoy hasta una plataforma agritech de escala comercial.</p>
+
+    <div class="overview">
+      <div class="ov"><div class="ovn" style="color:var(--lime)">2</div><div class="ovl">Fases completadas</div></div>
+      <div class="ov"><div class="ovn" style="color:var(--amber)">1</div><div class="ovl">Fase en curso</div></div>
+      <div class="ov"><div class="ovn" style="color:var(--muted)">2</div><div class="ovl">Fases planeadas</div></div>
+      <div class="ov"><div class="ovn" style="color:var(--teal)">~48%</div><div class="ovl">Avance global</div></div>
+    </div>
+    <div class="progress"><div class="fill"></div></div>
+  </div>
+
+  <div class="legend reveal">
+    <span><span class="d" style="background:var(--emer)"></span>Completado</span>
+    <span><span class="d" style="background:var(--amber)"></span>En curso</span>
+    <span><span class="d" style="background:rgba(255,255,255,.15)"></span>Planeado</span>
+  </div>
+
+  <div class="timeline">
+
+    <!-- FASE 0 -->
+    <div class="phase reveal">
+      <div class="dot done">✓</div>
+      <div class="pcard">
+        <div class="phead"><span class="pt">Fase 0 · MVP — Validación</span></div>
+        <div class="phase-meta"><span class="tag tag-done">COMPLETADO</span><span class="when">Q2 2026 · entregado</span></div>
+        <p class="pdesc">La base funcional de la app, probada en campo y lista para demostrar a clientes.</p>
+        <div class="items">
+          <div class="item ok"><span class="ck">✓</span>Acceso directo a la app (sin fricción)</div>
+          <div class="item ok"><span class="ck">✓</span>Dashboard con KPIs en vivo</div>
+          <div class="item ok"><span class="ck">✓</span>Productores, Visitas, Conteo, Calidad, Libro</div>
+          <div class="item ok"><span class="ck">✓</span>GPS y captura de fotos en campo</div>
+          <div class="item ok"><span class="ck">✓</span>Validado en dispositivo Android real</div>
+          <div class="item ok"><span class="ck">✓</span>Prototipo visual de presentación</div>
+        </div>
+        <div class="deliver">Entregable: <b>app operativa + prototipo navegable</b> para presentación comercial.</div>
+      </div>
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="phase reveal">
+      <div class="dot done">✓</div>
+      <div class="pcard">
+        <div class="phead"><span class="pt">Fase 1 · Backend en la nube + Offline</span></div>
+        <div class="phase-meta"><span class="tag tag-done">COMPLETADO</span><span class="when">Q2 2026 · validado en dispositivo</span></div>
+        <p class="pdesc">El salto de "MVP" a "producto estable": base de datos real en la nube y operación de campo a prueba de falta de señal.</p>
+        <div class="items">
+          <div class="item ok"><span class="ck">✓</span>Backend en Supabase (PostgreSQL + Storage)</div>
+          <div class="item ok"><span class="ck">✓</span>Modo offline-first con cola de sincronización</div>
+          <div class="item ok"><span class="ck">✓</span>Hasta 20 fotos alta-res (miniatura + original)</div>
+          <div class="item ok"><span class="ck">✓</span>Indicador de pendientes en tiempo real</div>
+          <div class="item ok"><span class="ck">✓</span>Catálogos gestionados por admin (cultivos)</div>
+          <div class="item ok"><span class="ck">✓</span>Probado en campo: modo avión → sincroniza solo</div>
+        </div>
+        <div class="deliver">Entregable: <b>app offline-first sobre la nube</b>, sin pérdida de datos.</div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase reveal">
+      <div class="dot now">◐</div>
+      <div class="pcard cur">
+        <div class="phead"><span class="pt">Fase 2 · Multi-empresa (Alpha)</span></div>
+        <div class="phase-meta"><span class="tag tag-now">EN CURSO</span><span class="when">Q3 2026 · ~4–6 semanas</span></div>
+        <p class="pdesc">Aislar los datos por empresa y reintroducir identidad de usuario. Es lo que habilita poner la app frente a los primeros clientes reales.</p>
+        <div class="items">
+          <div class="item wip"><span class="ck">◐</span>Aislamiento por empresa (empresa_id + RLS)</div>
+          <div class="item wip"><span class="ck">◐</span>Login / identidad de usuario</div>
+          <div class="item pend"><span class="ck">○</span>Roles: técnico / administrador</div>
+          <div class="item pend"><span class="ck">○</span>Onboarding de empresas y usuarios</div>
+          <div class="item pend"><span class="ck">○</span>Endurecimiento de seguridad (RLS por empresa)</div>
+          <div class="item pend"><span class="ck">○</span>Notificaciones push de seguimientos</div>
+        </div>
+        <div class="deliver">Entregable: <b>plataforma multi-empresa</b> lista para los primeros clientes.</div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase reveal">
+      <div class="dot next">3</div>
+      <div class="pcard">
+        <div class="phead"><span class="pt">Fase 3 · Inteligencia y reportes</span></div>
+        <div class="phase-meta"><span class="tag tag-next">PLANEADO</span><span class="when">Q4 2026</span></div>
+        <p class="pdesc">Convertir los datos capturados en decisiones: visualización, mapas y reportes que el cliente puede usar para gerencia.</p>
+        <div class="items">
+          <div class="item pend"><span class="ck">○</span>Mapa interactivo de fincas y lotes</div>
+          <div class="item pend"><span class="ck">○</span>Gráficos de tendencias (calidad / producción)</div>
+          <div class="item pend"><span class="ck">○</span>Reportes PDF por productor y campaña</div>
+          <div class="item pend"><span class="ck">○</span>Exportación a Excel bajo demanda</div>
+          <div class="item pend"><span class="ck">○</span>Panel web para gerencia</div>
+          <div class="item pend"><span class="ck">○</span>Búsqueda y filtros avanzados</div>
+        </div>
+        <div class="deliver">Entregable: <b>dashboards, mapas y reportes exportables</b> para toma de decisiones.</div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase reveal">
+      <div class="dot next">4</div>
+      <div class="pcard">
+        <div class="phead"><span class="pt">Fase 4 · Escala enterprise</span></div>
+        <div class="phase-meta"><span class="tag tag-next">PLANEADO</span><span class="when">2027</span></div>
+        <p class="pdesc">Capacidades predictivas e integraciones para consolidar AgroField como plataforma comercial multi-cliente.</p>
+        <div class="items">
+          <div class="item pend"><span class="ck">○</span>Predicción de cosecha con datos históricos</div>
+          <div class="item pend"><span class="ck">○</span>Alertas fitosanitarias tempranas</div>
+          <div class="item pend"><span class="ck">○</span>Trazabilidad de exportación</div>
+          <div class="item pend"><span class="ck">○</span>Integraciones (ERP, certificadoras)</div>
+          <div class="item pend"><span class="ck">○</span>Módulo de Forecast para el rol admin</div>
+          <div class="item pend"><span class="ck">○</span>App publicada en App Store / Play Store</div>
+        </div>
+        <div class="deliver">Entregable: <b>plataforma SaaS multi-cliente</b> con analítica predictiva.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  AgroField · Roadmap del producto · 2026
+  <br>
+  <span class="by"><span class="l">λ</span>Creado por automatizaesto</span>
+</footer>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

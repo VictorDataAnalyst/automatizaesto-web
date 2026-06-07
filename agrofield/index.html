@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroField · Plataforma de Gestión de Campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B09;
+  --bg2:#0C1611;
+  --ink:#F4FBF6;
+  --muted:#9DB3A6;
+  --line:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.045);
+  --glass-brd:rgba(255,255,255,.10);
+  --lime:#7DF38A;
+  --emer:#27C26B;
+  --deep:#0F8A4D;
+  --teal:#2DD4BF;
+  --grad:linear-gradient(135deg,#27C26B 0%,#0F8A4D 55%,#0a6e3f 100%);
+  --glow:0 0 60px rgba(39,194,107,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+h1,h2,h3,h4,.font-display{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+
+/* ── Aurora animated background ── */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;mix-blend-mode:screen;animation:drift 22s ease-in-out infinite}
+.aurora .a1{width:520px;height:520px;background:#27C26B;top:-120px;left:-80px;animation-delay:0s}
+.aurora .a2{width:460px;height:460px;background:#2DD4BF;top:30%;right:-120px;animation-delay:-7s}
+.aurora .a3{width:600px;height:600px;background:#0F8A4D;bottom:-200px;left:25%;animation-delay:-14s}
+.aurora .a4{width:340px;height:340px;background:#7DF38A;top:55%;left:5%;animation-delay:-4s;opacity:.35}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.12)}66%{transform:translate(-40px,50px) scale(.92)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 28px}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(7,11,9,.55);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1240px;margin:0 auto;padding:0 28px}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Sora';font-weight:700;font-size:18px}
+.brand .logo{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;font-size:18px;box-shadow:var(--glow)}
+.brand small{display:block;font-family:'Inter';font-weight:500;font-size:10px;color:var(--muted);letter-spacing:.04em}
+.nav-links{display:flex;gap:30px;font-size:14px;color:var(--muted)}
+.nav-links a{color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--grad);color:#04160c;font-weight:700;font-size:13px;padding:10px 18px;border-radius:11px;text-decoration:none;box-shadow:0 6px 24px rgba(39,194,107,.35);transition:transform .2s}
+.nav-cta:hover{transform:translateY(-2px)}
+.nav-actions{display:flex;align-items:center;gap:14px}
+.nav-back{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;padding:9px 14px;border:1px solid var(--line);border-radius:11px;transition:color .2s,border-color .2s}
+.nav-back em{font-style:italic;color:var(--ink)}
+.nav-back:hover{color:var(--ink);border-color:var(--glass-brd)}
+.nav-back svg{transition:transform .2s}
+.nav-back:hover svg{transform:translateX(-2px)}
+@media(max-width:880px){.nav-links{display:none}}
+@media(max-width:560px){.nav-back em{display:none}.nav-back span{display:none}}
+
+/* ── Hero ── */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:72px 0 90px}
+@media(max-width:980px){.hero{grid-template-columns:1fr;text-align:center;padding:48px 0 60px}}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--lime);background:rgba(125,243,138,.10);border:1px solid rgba(125,243,138,.25);padding:7px 14px;border-radius:100px;margin-bottom:24px}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:clamp(38px,5.6vw,64px);font-weight:800;line-height:1.04;margin-bottom:22px}
+.hero h1 .grad{background:linear-gradient(120deg,#7DF38A,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:520px;margin-bottom:34px}
+@media(max-width:980px){.hero p.lead{margin-left:auto;margin-right:auto}}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+@media(max-width:980px){.hero-actions{justify-content:center}}
+.btn{padding:14px 26px;border-radius:13px;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:9px}
+.btn-primary{background:var(--grad);color:#04160c;box-shadow:0 10px 34px rgba(39,194,107,.40)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(39,194,107,.55)}
+.btn-ghost{background:var(--glass);color:var(--ink);border:1px solid var(--glass-brd);backdrop-filter:blur(10px)}
+.btn-ghost:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.25)}
+.hero-stats{display:flex;gap:34px;margin-top:46px}
+@media(max-width:980px){.hero-stats{justify-content:center}}
+.hstat .n{font-family:'Sora';font-weight:800;font-size:28px;background:linear-gradient(120deg,#fff,#9DB3A6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hstat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* ── Hero phone ── */
+.hero-phone-stage{position:relative;display:flex;justify-content:center;perspective:1600px}
+.glow-ring{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(39,194,107,.4),transparent 65%);filter:blur(30px);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0}
+.float{animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotateY(-14deg) rotateX(4deg)}50%{transform:translateY(-18px) rotateY(-9deg) rotateX(2deg)}}
+
+/* ── Phone frame ── */
+.phone{
+  position:relative;width:300px;height:640px;border-radius:46px;z-index:2;
+  background:linear-gradient(155deg,#1a1f1c,#0a0d0b);
+  padding:11px;
+  box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 2px rgba(255,255,255,.04);
+}
+.phone .screen-host{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;background:#0A0F0C;display:flex;flex-direction:column}
+.phone .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:108px;height:24px;background:#0a0d0b;border-radius:0 0 16px 16px;z-index:60}
+
+/* status bar */
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;position:relative;z-index:10}
+
+/* app header (gradient) */
+.appbar{padding:8px 20px 18px;flex-shrink:0;position:relative;z-index:5}
+.appbar h3{font-family:'Sora';font-size:21px;font-weight:700;color:#fff}
+.appbar p{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+
+/* screen body */
+.body{flex:1;overflow-y:auto;padding:14px;background:#0A0F0C;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+
+/* glass cards inside phone */
+.gcard{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;margin-bottom:11px;backdrop-filter:blur(6px)}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.kpi{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;background:var(--c,#27C26B);opacity:.16;filter:blur(14px)}
+.kpi .ic{font-size:19px;margin-bottom:8px}
+.kpi .nn{font-family:'Sora';font-size:25px;font-weight:800;color:#fff;line-height:1}
+.kpi .ll{font-size:10.5px;color:var(--muted);margin-top:4px}
+.sectlabel{font-family:'Sora';font-size:13px;font-weight:600;color:#fff;margin:6px 2px 10px}
+
+.row{display:flex;align-items:center;gap:11px}
+.avatar{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:15px;color:#04160c;background:linear-gradient(135deg,#7DF38A,#27C26B);flex-shrink:0}
+.row .nm{font-size:12.5px;font-weight:600;color:#fff}
+.row .mt{font-size:10px;color:var(--muted);margin-top:2px}
+.tag{font-size:9px;font-weight:700;padding:4px 9px;border-radius:100px;white-space:nowrap}
+.t-ok{background:rgba(39,194,107,.16);color:#7DF38A;border:1px solid rgba(39,194,107,.3)}
+.t-warn{background:rgba(245,158,11,.15);color:#FBBF24;border:1px solid rgba(245,158,11,.3)}
+.t-info{background:rgba(45,212,191,.15);color:#5EEAD4;border:1px solid rgba(45,212,191,.3)}
+.t-bad{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.3)}
+
+/* progress ring */
+.ring{--p:80;--col:#27C26B;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+  background:conic-gradient(var(--col) calc(var(--p)*1%),rgba(255,255,255,.08) 0)}
+.ring i{width:40px;height:40px;border-radius:50%;background:#0d130f;display:grid;place-items:center;font-family:'Sora';font-weight:700;font-size:12px;font-style:normal;color:#fff}
+
+/* bottom nav */
+.tabbar{display:flex;padding:8px 6px;flex-shrink:0;background:rgba(10,15,12,.85);border-top:1px solid rgba(255,255,255,.07);backdrop-filter:blur(14px)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 0;border:none;background:none;transition:transform .15s}
+.tab:active{transform:scale(.9)}
+.tab .ti{font-size:18px;opacity:.5;transition:opacity .2s}
+.tab .tl{font-size:8.5px;color:var(--muted);font-weight:600}
+.tab.on .ti{opacity:1}
+.tab.on .tl{color:var(--lime)}
+.tab.on{position:relative}
+.tab.on::before{content:'';position:absolute;top:0;width:22px;height:3px;border-radius:3px;background:var(--lime);box-shadow:0 0 10px var(--lime)}
+
+/* screens switching */
+.scr{display:none;flex-direction:column;flex:1;overflow:hidden}
+.scr.on{display:flex;animation:fade .4s ease}
+@keyframes fade{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+
+/* gradient header variants */
+.hdr-emer{background:radial-gradient(140% 120% at 0% 0%,#0F8A4D,#0A0F0C 70%)}
+/* ── Section heading ── */
+.sect{padding:80px 0}
+.sect-head{text-align:center;max-width:640px;margin:0 auto 54px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--emer);margin-bottom:14px}
+.sect h2{font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.1;margin-bottom:16px}
+.sect h2 .grad{background:linear-gradient(120deg,#7DF38A,#2DD4BF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sect-head p{color:var(--muted);font-size:16.5px}
+
+/* ── Interactive prototype dock ── */
+.proto{display:grid;grid-template-columns:300px 1fr;gap:44px;align-items:center}
+@media(max-width:860px){.proto{grid-template-columns:1fr;justify-items:center}}
+.screen-tabs{display:flex;flex-direction:column;gap:8px}
+.screen-tabs .st{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:15px;background:var(--glass);border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;text-align:left;transition:all .22s;backdrop-filter:blur(8px)}
+.screen-tabs .st .si{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:rgba(255,255,255,.05);flex-shrink:0;transition:all .22s}
+.screen-tabs .st:hover{color:var(--ink);border-color:rgba(255,255,255,.18);transform:translateX(4px)}
+.screen-tabs .st.on{background:linear-gradient(120deg,rgba(39,194,107,.18),rgba(45,212,191,.08));border-color:rgba(39,194,107,.4);color:#fff}
+.screen-tabs .st.on .si{background:var(--grad);box-shadow:var(--glow)}
+
+/* ── Feature cards ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.feat-grid{grid-template-columns:1fr}}
+.feat{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:26px;backdrop-filter:blur(10px);transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+.feat:hover{transform:translateY(-6px);border-color:rgba(39,194,107,.4)}
+.feat .fic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:rgba(39,194,107,.12);border:1px solid rgba(39,194,107,.25);margin-bottom:18px}
+.feat h3{font-size:18px;font-weight:700;margin-bottom:9px}
+.feat p{color:var(--muted);font-size:14px}
+.feat .status{position:absolute;top:18px;right:18px;font-size:9.5px;font-weight:700;padding:4px 10px;border-radius:100px}
+.s-done{background:rgba(39,194,107,.16);color:#7DF38A}
+.s-soon{background:rgba(245,158,11,.15);color:#FBBF24}
+
+/* ── Roadmap ── */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.road{grid-template-columns:1fr}}
+.rcard{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:28px;backdrop-filter:blur(10px)}
+.rcard .ph{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--emer);margin-bottom:8px}
+.rcard h3{font-size:20px;margin-bottom:16px}
+.rcard ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.rcard li{display:flex;gap:11px;font-size:14px;color:var(--muted);align-items:flex-start}
+.rcard li .ck{color:var(--emer);flex-shrink:0;margin-top:2px}
+
+/* ── CTA ── */
+.cta{margin:40px 0 90px;border-radius:30px;padding:64px 40px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(39,194,107,.14),rgba(45,212,191,.06));border:1px solid rgba(39,194,107,.3)}
+.cta h2{font-size:clamp(28px,4vw,42px);font-weight:800;margin-bottom:16px}
+.cta p{color:var(--muted);font-size:17px;max-width:480px;margin:0 auto 32px}
+
+footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:var(--muted);font-size:13px}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* toast */
+#toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(12,22,17,.96);border:1px solid rgba(39,194,107,.4);color:#fff;padding:13px 22px;border-radius:14px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;pointer-events:none;transition:all .35s;backdrop-filter:blur(14px);box-shadow:0 16px 50px rgba(0,0,0,.5)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* form bits inside phone */
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.fld input,.fld textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:10px 12px;font-size:12px;color:#fff;font-family:inherit;outline:none;transition:border-color .2s}
+.fld input:focus,.fld textarea:focus{border-color:var(--emer)}
+.fld textarea{height:62px;resize:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:10.5px;font-weight:600;padding:6px 12px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted);cursor:pointer;transition:all .18s}
+.chip.on{background:var(--grad);color:#04160c;border-color:transparent}
+.savebtn{width:100%;background:var(--grad);color:#04160c;font-weight:700;font-size:13.5px;padding:13px;border:none;border-radius:14px;cursor:pointer;box-shadow:0 8px 26px rgba(39,194,107,.35);transition:transform .2s}
+.savebtn:active{transform:scale(.97)}
+.gpsbtn{display:flex;align-items:center;gap:11px;width:100%;background:rgba(45,212,191,.10);border:1px solid rgba(45,212,191,.25);border-radius:13px;padding:12px;cursor:pointer}
+.gpsbtn .gi{font-size:20px}
+.gpsbtn .gt{font-size:12px;font-weight:700;color:#5EEAD4}
+.gpsbtn .gc{font-size:10px;color:var(--muted)}
+.counter{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.cc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px;text-align:center}
+.cc .cl{font-size:10px;color:var(--muted);margin-bottom:5px}
+.cc .cn{font-family:'Sora';font-size:22px;font-weight:800;color:#fff}
+.cc .cbtns{display:flex;gap:6px;justify-content:center;margin-top:7px}
+.cc .cbtns button{width:26px;height:26px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:700;display:grid;place-items:center}
+.cbm{background:rgba(255,255,255,.08);color:#fff}
+.cbp{background:var(--grad);color:#04160c}
+.pctbar{display:flex;justify-content:space-between;align-items:center;border-radius:13px;padding:11px 14px;margin-bottom:12px;background:rgba(39,194,107,.12);border:1px solid rgba(39,194,107,.25)}
+.pctbar .pl{font-size:11.5px;font-weight:600;color:#fff}
+.pctbar .pv{font-family:'Sora';font-size:16px;font-weight:800;color:#7DF38A}
+.photozone{display:flex;gap:8px}
+.photo{width:60px;height:56px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.photo-add{flex:1;border:1.5px dashed rgba(255,255,255,.18);border-radius:12px;display:grid;place-items:center;font-size:11px;color:var(--muted);cursor:pointer}
+.detail3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.dc{background:rgba(255,255,255,.04);border-radius:11px;padding:8px}
+.dc .dl{font-size:9px;color:var(--muted)}
+.dc .dv{font-family:'Sora';font-size:12px;font-weight:700;color:#fff;margin-top:2px}
+.searchbar{margin-bottom:12px}
+.searchbar input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:11px 14px;font-size:12px;color:#fff;outline:none}
+.filterrow{display:flex;gap:7px;overflow-x:auto;margin-bottom:13px;scrollbar-width:none}
+.filterrow::-webkit-scrollbar{display:none}
+.filterpill{font-size:11px;font-weight:600;padding:6px 13px;border-radius:100px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .18s}
+.filterpill.on{background:var(--grad);color:#04160c;border-color:transparent}
+.scrtabs{display:flex;gap:6px;padding:0 0 13px}
+.scrtab{flex:1;padding:9px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .18s}
+.scrtab.on{background:var(--grad);color:#04160c;border-color:transparent}
+.minirow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
+.mini{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:11px;text-align:center}
+.mini .mn{font-family:'Sora';font-size:17px;font-weight:800}
+.mini .ml{font-size:9px;color:var(--muted);margin-top:2px}
+.fruitrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.fruit{font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,.05);color:var(--muted)}
+.croprow{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.croprow:last-child{border-bottom:none}
+.croprow .cdot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;background:rgba(39,194,107,.14);flex-shrink:0}
+.croprow .cname{flex:1;font-size:12.5px;font-weight:600;color:#fff}
+.croprow .cdel{width:28px;height:28px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#FCA5A5;cursor:pointer;font-size:14px;display:grid;place-items:center;transition:background .18s}
+.croprow .cdel:hover{background:rgba(239,68,68,.25)}
+</style>
+</head>
+<body>
+
+<div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span><span class="a4"></span></div>
+<div class="grain"></div>
+<div id="toast"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-in">
+    <div class="brand">
+      <span class="logo">🌿</span>
+      <span>AgroField<small>Field Intelligence Platform</small></span>
+    </div>
+    <div class="nav-links">
+      <a href="#proto">Prototipo</a>
+      <a href="#features">Funciones</a>
+      <a href="#roadmap">Roadmap</a>
+    </div>
+    <div class="nav-actions">
+      <a href="../index.html" class="nav-back" aria-label="Volver a automatizaesto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" aria-hidden="true"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+        automatiza<em>esto</em>
+      </a>
+      <a href="#proto" class="nav-cta">Ver demo →</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div>
+      <span class="pill"><span class="dot"></span>Agritech · MVP funcional en producción</span>
+      <h1>La gestión de campo,<br><span class="grad">finalmente inteligente.</span></h1>
+      <p class="lead">Captura visitas, conteos de fruta y control de calidad directo desde el campo —con GPS, hasta 20 fotos y sincronización automática, <strong>incluso sin señal</strong>. Lo capturado se guarda local y sube solo al reconectar.</p>
+      <div class="hero-actions">
+        <a href="#proto" class="btn btn-primary">▶ Explorar prototipo</a>
+        <a href="#features" class="btn btn-ghost">Ver funcionalidades</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="n">6</div><div class="l">Módulos operativos</div></div>
+        <div class="hstat"><div class="n">100%</div><div class="l">Datos georreferenciados</div></div>
+        <div class="hstat"><div class="n">📴</div><div class="l">Funciona sin señal</div></div>
+      </div>
+    </div>
+    <div class="hero-phone-stage">
+      <div class="glow-ring"></div>
+      <div class="phone float">
+        <div class="notch"></div>
+        <div class="screen-host hdr-emer">
+          <div class="statusbar"><span>9:41</span><span>● ● ●  📶  🔋</span></div>
+          <div class="appbar"><h3>Dashboard</h3><p>Resumen de actividad del equipo</p></div>
+          <div class="body">
+            <div class="kgrid">
+              <div class="kpi" style="--c:#27C26B"><div class="ic">👤</div><div class="nn">24</div><div class="ll">Productores</div></div>
+              <div class="kpi" style="--c:#FBBF24"><div class="ic">📋</div><div class="nn">87</div><div class="ll">Visitas</div></div>
+              <div class="kpi" style="--c:#2DD4BF"><div class="ic">🌳</div><div class="nn">312</div><div class="ll">Conteos</div></div>
+              <div class="kpi" style="--c:#A78BFA"><div class="ic">🔬</div><div class="nn">43</div><div class="ll">Calidad</div></div>
+            </div>
+            <div class="sectlabel">Últimas visitas</div>
+            <div class="gcard"><div class="row"><div class="avatar">M</div><div style="flex:1"><div class="nm">Manuel Quispe</div><div class="mt">Palto · A-3 · hoy</div></div><span class="tag t-ok">Completada</span></div></div>
+            <div class="gcard"><div class="row"><div class="avatar">R</div><div style="flex:1"><div class="nm">Rosa Mamani</div><div class="mt">Arándano · B-1</div></div><span class="tag t-warn">En proceso</span></div></div>
+          </div>
+          <div class="tabbar">
+            <button class="tab on"><span class="ti">📊</span><span class="tl">Inicio</span></button>
+            <button class="tab"><span class="ti">👤</span><span class="tl">Prod.</span></button>
+            <button class="tab"><span class="ti">📋</span><span class="tl">Visitas</span></button>
+            <button class="tab"><span class="ti">🌳</span><span class="tl">Conteo</span></button>
+            <button class="tab"><span class="ti">🔬</span><span class="tl">Calidad</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INTERACTIVE PROTOTYPE ── -->
+  <section class="sect" id="proto">
+    <div class="sect-head reveal">
+      <div class="eyebrow">Prototipo interactivo</div>
+      <h2>Toca y <span class="grad">navega la app real</span></h2>
+      <p>Cada pantalla replica la app funcional. Selecciona un módulo y prueba los formularios, contadores y filtros en vivo.</p>
+    </div>
+    <div class="proto reveal">
+      <div class="screen-tabs">
+        <button class="st on" data-go="dashboard"><span class="si">📊</span>Dashboard</button>
+        <button class="st" data-go="productores"><span class="si">👤</span>Productores</button>
+        <button class="st" data-go="visitas"><span class="si">📋</span>Visitas</button>
+        <button class="st" data-go="conteo"><span class="si">🌳</span>Conteo de frutos</button>
+        <button class="st" data-go="calidad"><span class="si">🔬</span>Control de calidad</button>
+        <button class="st" data-go="libro"><span class="si">📖</span>Libro de campo</button>
+        <button class="st" data-go="admin"><span class="si">⚙️</span>Administración</button>
+      </div>
+
+      <div style="display:flex;justify-content:center">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen-host hdr-emer">
+            <div class="statusbar"><span>9:41</span><span>● ● ●  📶  🔋</span></div>
+
+            <!-- DASHBOARD -->
+            <div class="scr on" id="s-dashboard">
+              <div class="appbar"><h3>Dashboard</h3><p>Resumen de actividad del equipo</p></div>
+              <div class="body">
+                <div class="kgrid">
+                  <div class="kpi" style="--c:#27C26B"><div class="ic">👤</div><div class="nn">24</div><div class="ll">Productores</div></div>
+                  <div class="kpi" style="--c:#FBBF24"><div class="ic">📋</div><div class="nn">87</div><div class="ll">Visitas</div></div>
+                  <div class="kpi" style="--c:#2DD4BF"><div class="ic">🌳</div><div class="nn">312</div><div class="ll">Conteos</div></div>
+                  <div class="kpi" style="--c:#A78BFA"><div class="ic">📖</div><div class="nn">156</div><div class="ll">Reg. campo</div></div>
+                </div>
+                <div class="sectlabel">Últimas visitas</div>
+                <div class="gcard"><div class="row"><div class="avatar">M</div><div style="flex:1"><div class="nm">Manuel Quispe Huanca</div><div class="mt">Palto · A-3 · 28/05 · J. Flores</div></div><span class="tag t-ok">Completada</span></div></div>
+                <div class="gcard"><div class="row"><div class="avatar">R</div><div style="flex:1"><div class="nm">Rosa Mamani Torres</div><div class="mt">Arándano · B-1 · 27/05</div></div><span class="tag t-warn">En proceso</span></div></div>
+                <div class="gcard"><div class="row"><div class="avatar">C</div><div style="flex:1"><div class="nm">Carlos Cárdenas López</div><div class="mt">Uva · C-2 · 26/05</div></div><span class="tag t-info">Programada</span></div></div>
+                <div class="minirow" style="margin-top:13px">
+                  <div class="mini"><div class="mn" style="color:#7DF38A">62</div><div class="ml">Completadas</div></div>
+                  <div class="mini"><div class="mn" style="color:#FBBF24">18</div><div class="ml">Seguimiento</div></div>
+                  <div class="mini"><div class="mn" style="color:#5EEAD4">24</div><div class="ml">Activos</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PRODUCTORES -->
+            <div class="scr" id="s-productores">
+              <div class="appbar"><h3>Productores</h3><p>Agricultores asociados</p></div>
+              <div class="body">
+                <div class="searchbar"><input placeholder="🔍  Buscar productor..."></div>
+                <div class="gcard"><div class="row"><div class="avatar">M</div><div style="flex:1"><div class="nm">Manuel Quispe Huanca</div><div class="mt">📍 Ica, La Tinguiña · 12 ha</div><div class="fruitrow"><span class="fruit">Palto</span><span class="fruit">Arándano</span><span class="tag t-ok" style="font-size:8.5px">Activo</span></div></div></div></div>
+                <div class="gcard"><div class="row"><div class="avatar">R</div><div style="flex:1"><div class="nm">Rosa Mamani Torres</div><div class="mt">📍 Ica, Subtanjalla · 8 ha</div><div class="fruitrow"><span class="fruit">Arándano</span><span class="tag t-ok" style="font-size:8.5px">Activo</span></div></div></div></div>
+                <div class="gcard"><div class="row"><div class="avatar">C</div><div style="flex:1"><div class="nm">Carlos Cárdenas López</div><div class="mt">📍 Ica, Salas · 20 ha</div><div class="fruitrow"><span class="fruit">Uva</span><span class="fruit">Espárrago</span><span class="tag t-ok" style="font-size:8.5px">Activo</span></div></div></div></div>
+                <div class="gcard"><div class="row"><div class="avatar">L</div><div style="flex:1"><div class="nm">Lucía Vargas Soto</div><div class="mt">📍 Ica, Los Aquijes · 6 ha</div><div class="fruitrow"><span class="fruit">Espárrago</span><span class="tag t-ok" style="font-size:8.5px">Activo</span></div></div></div></div>
+              </div>
+            </div>
+
+            <!-- VISITAS -->
+            <div class="scr" id="s-visitas">
+              <div class="appbar"><h3>Visitas</h3><p>Asistencia técnica en campo</p></div>
+              <div class="body">
+                <div class="scrtabs">
+                  <button class="scrtab on" onclick="subtab(this,'v-list','v-form')">📋 Visitas</button>
+                  <button class="scrtab" onclick="subtab(this,'v-form','v-list')">➕ Nueva</button>
+                </div>
+                <div id="v-list">
+                  <div class="filterrow"><span class="filterpill on" onclick="pickFilter(this)">Todas</span><span class="filterpill" onclick="pickFilter(this)">Completada</span><span class="filterpill" onclick="pickFilter(this)">Programada</span><span class="filterpill" onclick="pickFilter(this)">En proceso</span></div>
+                  <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">Manuel Quispe Huanca</div><div class="mt">Palto · A-3 · 28/05 · J. Flores</div></div><span class="tag t-ok">Completada</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5"><b style="color:#fff">Dx:</b> Buen estado. Leve trips en hoja nueva. <b style="color:#fff">Rec:</b> Spinosad 0.3cc/L.</div></div>
+                  <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">Rosa Mamani Torres</div><div class="mt">Arándano · B-1 · 27/05 · A. Castillo</div></div><span class="tag t-warn">En proceso</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5"><b style="color:#fff">Dx:</b> Pre-cosecha, punto de corte 60%.</div></div>
+                  <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">Carlos Cárdenas López</div><div class="mt">Uva · C-2 · 26/05 · J. Flores</div></div><span class="tag t-info">Programada</span></div></div>
+                </div>
+                <div id="v-form" style="display:none">
+                  <div class="gcard">
+                    <div class="sectlabel" style="margin-top:0">📋 Datos de la visita</div>
+                    <div class="fld"><label>Productor *</label><div class="chips"><span class="chip" onclick="pick(this)">Manuel</span><span class="chip on" onclick="pick(this)">Rosa Mamani</span><span class="chip" onclick="pick(this)">Carlos</span></div></div>
+                    <div class="fld"><label>Cultivo</label><div class="chips crop-chips"></div></div>
+                    <div class="fld"><label>Evaluador *</label><input value="Ana Castillo"></div>
+                    <div class="fld"><label>Diagnóstico</label><textarea>Cultivo en pre-cosecha, buen calibre. Botritis leve en 5%.</textarea></div>
+                  </div>
+                  <div class="gcard"><div class="sectlabel" style="margin-top:0">📷 Fotos</div><div class="photozone"><div class="photo" style="background:rgba(39,194,107,.15)">🌿</div><div class="photo" style="background:rgba(45,212,191,.15)">🫐</div><div class="photo-add">+ Foto</div></div></div>
+                  <div class="gcard"><div class="sectlabel" style="margin-top:0">📍 Geolocalización</div><button class="gpsbtn"><span class="gi">📍</span><div><div class="gt">Ubicación capturada</div><div class="gc">-14.0675°, -75.7286° · ±4m</div></div></button></div>
+                  <button class="savebtn" onclick="toast('✅ Visita guardada correctamente')">💾  Guardar visita</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTEO -->
+            <div class="scr" id="s-conteo">
+              <div class="appbar"><h3>Conteo de frutos</h3><p>Producción por árbol</p></div>
+              <div class="body">
+                <div class="scrtabs">
+                  <button class="scrtab on" onclick="subtab(this,'c-list','c-form')">📊 Registros</button>
+                  <button class="scrtab" onclick="subtab(this,'c-form','c-list')">➕ Nuevo</button>
+                </div>
+                <div id="c-list">
+                  <div class="minirow"><div class="mini"><div class="mn" style="color:#7DF38A">312</div><div class="ml">Árboles</div></div><div class="mini"><div class="mn" style="color:#5EEAD4">82%</div><div class="ml">% Bueno</div></div><div class="mini"><div class="mn" style="color:#A78BFA">9.8k</div><div class="ml">Frutos</div></div></div>
+                  <div class="gcard"><div class="row"><div class="ring" style="--p:91;--col:#27C26B"><i>91%</i></div><div style="flex:1"><div class="nm">🌳 ARB-047 · Manuel Q.</div><div class="mt">Lote A-3 · 28/05</div></div></div><div class="fruitrow"><span class="fruit">✅ 32</span><span class="fruit">🟡 2</span><span class="fruit">🟢 1</span><span class="fruit">❌ 0</span></div></div>
+                  <div class="gcard"><div class="row"><div class="ring" style="--p:68;--col:#FBBF24"><i>68%</i></div><div style="flex:1"><div class="nm">🌳 ARB-031 · Rosa M.</div><div class="mt">Lote B-2 · 27/05</div></div></div><div class="fruitrow"><span class="fruit">✅ 22</span><span class="fruit">🟡 7</span><span class="fruit">🟢 2</span><span class="fruit">❌ 1</span></div></div>
+                  <div class="gcard"><div class="row"><div class="ring" style="--p:88;--col:#27C26B"><i>88%</i></div><div style="flex:1"><div class="nm">🌳 ARB-012 · Jorge P.</div><div class="mt">Lote E-1 · 27/05</div></div></div><div class="fruitrow"><span class="fruit">✅ 38</span><span class="fruit">🟡 4</span><span class="fruit">🟢 1</span><span class="fruit">❌ 0</span></div></div>
+                </div>
+                <div id="c-form" style="display:none">
+                  <div class="gcard">
+                    <div class="sectlabel" style="margin-top:0">🌳 Nuevo conteo</div>
+                    <div class="fld"><label>Productor *</label><div class="chips"><span class="chip on" onclick="pick(this)">Manuel</span><span class="chip" onclick="pick(this)">Rosa</span><span class="chip" onclick="pick(this)">Jorge</span></div></div>
+                    <div class="fld"><label>Cultivo</label><div class="chips crop-chips"></div></div>
+                    <div class="fld"><label>N° Árbol *</label><input value="ARB-048"></div>
+                    <label style="font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:7px;display:block">Conteo de frutos</label>
+                    <div class="counter">
+                      <div class="cc"><div class="cl">✅ Buenos</div><div class="cn" id="cb">28</div><div class="cbtns"><button class="cbm" onclick="adj('cb',-1)">−</button><button class="cbp" onclick="adj('cb',1)">+</button></div></div>
+                      <div class="cc"><div class="cl">🟡 Pintón</div><div class="cn" id="cp">4</div><div class="cbtns"><button class="cbm" onclick="adj('cp',-1)">−</button><button class="cbp" onclick="adj('cp',1)">+</button></div></div>
+                      <div class="cc"><div class="cl">🟢 Verde</div><div class="cn" id="cv">2</div><div class="cbtns"><button class="cbm" onclick="adj('cv',-1)">−</button><button class="cbp" onclick="adj('cv',1)">+</button></div></div>
+                      <div class="cc"><div class="cl">❌ Dañado</div><div class="cn" id="cd">1</div><div class="cbtns"><button class="cbm" onclick="adj('cd',-1)">−</button><button class="cbp" onclick="adj('cd',1)">+</button></div></div>
+                    </div>
+                    <div class="pctbar" id="pbar"><span class="pl">Total: <b id="ctot">35</b> frutos</span><span class="pv" id="cpct">80%</span></div>
+                  </div>
+                  <div class="gcard"><div class="sectlabel" style="margin-top:0">📍 GPS</div><button class="gpsbtn"><span class="gi">📍</span><div><div class="gt">Capturar ubicación</div><div class="gc">Toca para georreferenciar</div></div></button></div>
+                  <button class="savebtn" onclick="toast('✅ Conteo ARB-048 guardado')">💾  Guardar conteo</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CALIDAD -->
+            <div class="scr" id="s-calidad">
+              <div class="appbar"><h3>Control de calidad</h3><p>Muestras pre-cosecha</p></div>
+              <div class="body">
+                <div class="minirow"><div class="mini"><div class="mn" style="color:#7DF38A">43</div><div class="ml">Muestras</div></div><div class="mini"><div class="mn" style="color:#5EEAD4">31</div><div class="ml">Primera</div></div><div class="mini"><div class="mn" style="color:#7DF38A">38</div><div class="ml">Apto exp.</div></div></div>
+                <div class="gcard"><div class="nm">🔬 Manuel Quispe Huanca</div><div class="mt">28/05 · Lote A-3</div><div class="detail3"><div class="dc"><div class="dl">📏 Calibre</div><div class="dv">24/28</div></div><div class="dc"><div class="dl">🍬 Brix</div><div class="dv">22.4°</div></div><div class="dc"><div class="dl">💧 Mat.Seca</div><div class="dv">24.1%</div></div></div><div style="display:flex;gap:7px;margin-top:9px"><span class="tag t-ok">Primera</span><span class="tag t-ok">SI exp.</span></div></div>
+                <div class="gcard"><div class="nm">🔬 Rosa Mamani Torres</div><div class="mt">27/05 · Lote B-1</div><div class="detail3"><div class="dc"><div class="dl">📏 Calibre</div><div class="dv">20/22</div></div><div class="dc"><div class="dl">🍬 Brix</div><div class="dv">19.8°</div></div><div class="dc"><div class="dl">💧 Mat.Seca</div><div class="dv">21.5%</div></div></div><div style="display:flex;gap:7px;margin-top:9px"><span class="tag t-warn">Segunda</span><span class="tag t-ok">SI exp.</span></div></div>
+                <div class="gcard"><div class="nm">🔬 Carlos Cárdenas</div><div class="mt">26/05 · Lote C-2</div><div class="detail3"><div class="dc"><div class="dl">📏 Calibre</div><div class="dv">18/20</div></div><div class="dc"><div class="dl">🍬 Brix</div><div class="dv">17.2°</div></div><div class="dc"><div class="dl">💧 Mat.Seca</div><div class="dv">18.9%</div></div></div><div style="display:flex;gap:7px;margin-top:9px"><span class="tag t-warn">Segunda</span><span class="tag t-bad">NO exp.</span></div></div>
+              </div>
+            </div>
+
+            <!-- LIBRO -->
+            <div class="scr" id="s-libro">
+              <div class="appbar"><h3>Libro de campo</h3><p>Actividades agronómicas</p></div>
+              <div class="body">
+                <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">🌿 Aplicación fitosanitaria</div><div class="mt">Manuel Q. · Palto · A-3 · 28/05</div></div><span class="tag" style="background:rgba(167,139,250,.15);color:#C4B5FD;border:1px solid rgba(167,139,250,.3)">Fito</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5">Spinosad 0.3cc/L + aceite agrícola para control de trips. Cobertura total.</div></div>
+                <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">💧 Fertigación N°12</div><div class="mt">Rosa M. · Arándano · B-1 · 27/05</div></div><span class="tag t-info">Fertil.</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5">Nitrato de potasio 5kg/ha + ácido fúlvico vía goteo. 45 min.</div></div>
+                <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">✂️ Poda de formación</div><div class="mt">Carlos C. · Uva · C-2 · 26/05</div></div><span class="tag t-ok">Poda</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5">Despampanado de brotes laterales. 3 operarios, 280 plantas.</div></div>
+                <div class="gcard"><div class="row" style="align-items:flex-start"><div style="flex:1"><div class="nm">🌡️ Monitoreo climático</div><div class="mt">Jorge P. · Palto · E-1 · 25/05</div></div><span class="tag t-warn">Clima</span></div><div style="font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5">Máx 28°C / mín 14°C · HR 65% · sin heladas. Favorable a floración.</div></div>
+              </div>
+            </div>
+
+            <!-- ADMINISTRACIÓN -->
+            <div class="scr" id="s-admin">
+              <div class="appbar"><h3>Administración</h3><p>Configuración de la aplicación</p></div>
+              <div class="body">
+                <div class="scrtabs">
+                  <button class="scrtab on">🌱 Cultivos</button>
+                  <button class="scrtab" onclick="toast('💡 Más catálogos próximamente')">📋 Catálogos</button>
+                  <button class="scrtab" onclick="toast('💡 Gestión de usuarios próximamente')">👥 Usuarios</button>
+                </div>
+
+                <div class="gcard" style="border-color:rgba(45,212,191,.25);background:rgba(45,212,191,.06)">
+                  <div class="row" style="align-items:flex-start"><span style="font-size:18px">ℹ️</span><div style="font-size:11px;color:var(--muted);line-height:1.5">Los cultivos que registres aquí aparecerán automáticamente como opciones en <b style="color:#fff">Visitas</b>, <b style="color:#fff">Conteo</b> y <b style="color:#fff">Control de calidad</b>.</div></div>
+                </div>
+
+                <div class="gcard">
+                  <div class="sectlabel" style="margin-top:0">🌱 Agregar cultivo</div>
+                  <div class="fld">
+                    <label>Código de cultivo</label>
+                    <input id="crop-code" readonly style="font-family:'Sora';letter-spacing:.05em;color:#7DF38A;background:rgba(39,194,107,.06);border-color:rgba(39,194,107,.25)">
+                  </div>
+                  <div class="fld" style="margin-bottom:0">
+                    <label>Nombre del cultivo</label>
+                    <div style="display:flex;gap:8px">
+                      <input id="crop-input" placeholder="Ej. Mango, Cítricos..." onkeydown="if(event.key==='Enter')addCrop()" style="flex:1">
+                      <button class="savebtn" style="width:auto;padding:10px 18px;box-shadow:none" onclick="addCrop()">+ Añadir</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="gcard">
+                  <div class="row" style="justify-content:space-between;margin-bottom:11px"><div class="sectlabel" style="margin:0">Cultivos activos</div><span class="tag t-info" id="crop-count">5</span></div>
+                  <div id="crop-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- tab bar -->
+            <div class="tabbar" id="phone-tabs">
+              <button class="tab on" data-go="dashboard"><span class="ti">📊</span><span class="tl">Inicio</span></button>
+              <button class="tab" data-go="productores"><span class="ti">👤</span><span class="tl">Prod.</span></button>
+              <button class="tab" data-go="visitas"><span class="ti">📋</span><span class="tl">Visitas</span></button>
+              <button class="tab" data-go="conteo"><span class="ti">🌳</span><span class="tl">Conteo</span></button>
+              <button class="tab" data-go="calidad"><span class="ti">🔬</span><span class="tl">Calidad</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section class="sect" id="features">
+    <div class="sect-head reveal">
+      <div class="eyebrow">Capacidades</div>
+      <h2>Lo que <span class="grad">ya funciona hoy</span></h2>
+      <p>Una app sólida construida sobre React Native, con arquitectura offline-first y backend en la nube (Supabase).</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📴</div><h3>Modo offline-first</h3><p>Captura sin conexión durante días. Registros y fotos se guardan local y sincronizan solos al volver la señal —cero pérdida de datos.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📍</div><h3>GPS de precisión</h3><p>Cada registro queda georreferenciado con coordenadas y exactitud en metros.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📷</div><h3>Fotos de campo</h3><p>Hasta 20 fotos en alta resolución por registro, georreferenciadas y subidas a la nube (miniatura primero, original luego).</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">☁️</div><h3>Backend Supabase</h3><p>Datos y fotos en la nube (Postgres + Storage) con cola de sincronización resiliente. Indicador de pendientes en tiempo real.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📊</div><h3>KPIs en vivo</h3><p>Dashboard con métricas de productores, visitas, conteos y calidad.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">🔬</div><h3>Control de calidad</h3><p>Brix, calibre, firmeza, materia seca y aptitud de exportación por muestra.</p></div>
+    </div>
+  </section>
+
+  <!-- ── ROADMAP ── -->
+  <section class="sect" id="roadmap">
+    <div class="sect-head reveal">
+      <div class="eyebrow">Roadmap</div>
+      <h2>De MVP a <span class="grad">producto líder</span></h2>
+      <p>El camino para convertir AgroField en una plataforma de clase enterprise.</p>
+    </div>
+    <div class="road">
+      <div class="rcard reveal">
+        <div class="ph">Fase 1 · Confiabilidad &nbsp;✓ LIVE</div>
+        <h3>Operación sin fricción</h3>
+        <ul>
+          <li><span class="ck">✓</span><div><b>Modo offline-first</b> con base local y cola de sincronización automática —<b>en producción</b>.</div></li>
+          <li><span class="ck">✓</span><div><b>Backend en la nube</b> (Supabase) con fotos en alta resolución, validado en dispositivo.</div></li>
+          <li><span class="ck">◆</span><div><b>Multi-empresa</b> y roles (técnico / admin) —en desarrollo.</div></li>
+        </ul>
+      </div>
+      <div class="rcard reveal">
+        <div class="ph">Fase 2 · Inteligencia</div>
+        <h3>Datos que deciden</h3>
+        <ul>
+          <li><span class="ck">◆</span><div><b>Mapa interactivo</b> de fincas y lotes con pins de actividad.</div></li>
+          <li><span class="ck">◆</span><div><b>Gráficos de tendencias</b> de calidad y producción por semana.</div></li>
+          <li><span class="ck">◆</span><div><b>Reportes PDF</b> exportables por productor y por campaña.</div></li>
+        </ul>
+      </div>
+      <div class="rcard reveal">
+        <div class="ph">Fase 3 · Escala</div>
+        <h3>Plataforma enterprise</h3>
+        <ul>
+          <li><span class="ck">◆</span><div><b>Predicción de cosecha</b> con modelos sobre datos históricos.</div></li>
+          <li><span class="ck">◆</span><div><b>Alertas fitosanitarias</b> tempranas por patrones detectados.</div></li>
+          <li><span class="ck">◆</span><div><b>API y panel web</b> para gerencia y trazabilidad de exportación.</div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta reveal">
+    <h2>AgroField está listo para crecer.</h2>
+    <p>Un MVP funcional, una visión clara y una arquitectura preparada para escalar a producto comercial.</p>
+    <a href="#proto" class="btn btn-primary">▶ Volver al prototipo</a>
+  </section>
+
+</div>
+
+<footer>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)">
+      Creado por
+      <a href="https://automatizaesto.com" target="_blank" style="display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-weight:600">
+        <span style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#d4ff3f,#9eff3f);color:#0a0a0b;display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:13px">λ</span>
+        automatiza<span style="color:#d4ff3f;font-style:italic;font-weight:500">esto</span>
+      </a>
+    </div>
+    <div style="font-size:12px;color:rgba(157,179,166,.6)">AgroField · Field Intelligence Platform — Prototipo de presentación 2026</div>
+  </div>
+</footer>
+
+<script>
+const SCREENS=['dashboard','productores','visitas','conteo','calidad','libro','admin'];
+
+// ── Cultivos gestionados por el administrador (código + nombre) ──
+let CROPS=[
+  {code:'CUL-001',name:'Palto'},
+  {code:'CUL-002',name:'Arándano'},
+  {code:'CUL-003',name:'Uva'},
+  {code:'CUL-004',name:'Espárrago'},
+  {code:'CUL-005',name:'Otro'},
+];
+let CROP_SEQ=5; // último correlativo asignado
+const CROP_ICON={'Palto':'🥑','Arándano':'🫐','Uva':'🍇','Espárrago':'🌱','Mango':'🥭','Cítricos':'🍊','Otro':'🌿'};
+function cropIcon(n){return CROP_ICON[n]||'🌿'}
+function nextCropCode(){return 'CUL-'+String(CROP_SEQ+1).padStart(3,'0')}
+
+function renderCrops(){
+  // Código siguiente (preview)
+  const codeBox=document.getElementById('crop-code');
+  if(codeBox)codeBox.value=nextCropCode();
+  // Lista en Administración
+  const list=document.getElementById('crop-list');
+  if(list){
+    list.innerHTML=CROPS.map((c,i)=>
+      `<div class="croprow"><span class="cdot">${cropIcon(c.name)}</span><div style="flex:1"><div class="cname">${c.name}</div><div style="font-family:'Sora';font-size:9.5px;color:#7DF38A;letter-spacing:.04em;margin-top:1px">${c.code}</div></div><button class="cdel" onclick="delCrop(${i})">✕</button></div>`
+    ).join('');
+    document.getElementById('crop-count').textContent=CROPS.length;
+  }
+  // Chips en formularios (Visitas, Conteo) — muestran código + nombre
+  document.querySelectorAll('.crop-chips').forEach(box=>{
+    box.innerHTML=CROPS.map((c,i)=>
+      `<span class="chip${i===0?' on':''}" onclick="pick(this)" title="${c.code}">${c.name}</span>`
+    ).join('');
+  });
+}
+function addCrop(){
+  const inp=document.getElementById('crop-input');
+  const v=inp.value.trim();
+  if(!v)return;
+  if(CROPS.some(c=>c.name.toLowerCase()===v.toLowerCase())){toast('⚠️ Ese cultivo ya existe');return}
+  CROP_SEQ++;
+  const code=nextCropCode2();
+  CROPS.push({code,name:v});inp.value='';renderCrops();toast('✅ '+code+' · "'+v+'" agregado');
+}
+function nextCropCode2(){return 'CUL-'+String(CROP_SEQ).padStart(3,'0')}
+function delCrop(i){const n=CROPS[i].name;CROPS.splice(i,1);renderCrops();toast('🗑️ "'+n+'" eliminado')}
+function go(name){
+  SCREENS.forEach(s=>{const el=document.getElementById('s-'+s);if(el)el.classList.toggle('on',s===name)});
+  document.querySelectorAll('.screen-tabs .st').forEach(b=>b.classList.toggle('on',b.dataset.go===name));
+  document.querySelectorAll('#phone-tabs .tab').forEach(b=>{if(b.dataset.go)b.classList.toggle('on',b.dataset.go===name)});
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+function subtab(btn,show,hide){
+  btn.parentElement.querySelectorAll('.scrtab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(show).style.display='block';
+  document.getElementById(hide).style.display='none';
+}
+function pick(el){el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on')}
+function pickFilter(el){el.parentElement.querySelectorAll('.filterpill').forEach(c=>c.classList.remove('on'));el.classList.add('on')}
+function adj(id,d){const e=document.getElementById(id);let v=Math.max(0,parseInt(e.textContent)+d);e.textContent=v;updPct()}
+function updPct(){
+  const b=+document.getElementById('cb').textContent,p=+document.getElementById('cp').textContent,
+        v=+document.getElementById('cv').textContent,d=+document.getElementById('cd').textContent;
+  const t=b+p+v+d,pct=t?Math.round(b/t*1000)/10:0;
+  document.getElementById('ctot').textContent=t;
+  document.getElementById('cpct').textContent=pct+'%';
+  const bar=document.getElementById('pbar'),pv=document.getElementById('cpct');
+  let col,bg;
+  if(pct>=80){col='#7DF38A';bg='rgba(39,194,107,.12)';bar.style.borderColor='rgba(39,194,107,.25)'}
+  else if(pct>=60){col='#FBBF24';bg='rgba(245,158,11,.12)';bar.style.borderColor='rgba(245,158,11,.25)'}
+  else{col='#FCA5A5';bg='rgba(239,68,68,.12)';bar.style.borderColor='rgba(239,68,68,.25)'}
+  pv.style.color=col;bar.style.background=bg;
+}
+let tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400)}
+
+// scroll reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+renderCrops();
+</script>
+</body>
+</html>
