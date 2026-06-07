@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import PIL; print\\('Pillow', PIL.__version__\\)\")",
+      "Bash(python _gen_og.py)",
+      "Bash(cd /tmp)",
+      "Bash(python -m oletools.olevba \"C:/Users/USER/Desktop/Marand/Reporte_Individual_v7.xlsm\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(find \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/forecastmype_app\" -maxdepth 2 2>/dev/null | head -60)",
+      "Bash(git -C \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/forecastmype_app\" remote -v)",
+      "Bash(git -C \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/forecastmype_app\" log --oneline -5)",
+      "Bash(mkdir -p \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/Automatizaesto_Deploy/forecast\" && cp \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/forecastmype_app/landing_v2.html\" \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/Automatizaesto_Deploy/forecast/index.html\" && echo \"copiado OK\" && ls -la \"C:/Users/USER/Desktop/Marand/Proyecto_Geolocalizacion/Automatizaesto_Deploy/forecast\")",
+      "Bash(grep -v '^$')",
+      "Bash(git branch *)"
+    ]
+  }
+}
