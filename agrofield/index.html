@@ -4,6 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgroField · Plataforma de Gestión de Campo</title>
+<meta name="description" content="AgroField: plataforma móvil de gestión de campo para agroexportadoras. Evaluaciones agrícolas con registro offline, datos en la nube y trazabilidad por lote." />
+<meta name="author" content="automatizaesto" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://automatizaesto.com/agrofield/" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%230a0a0b'>&#955;</text></svg>" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="automatizaesto" />
+<meta property="og:url" content="https://automatizaesto.com/agrofield/" />
+<meta property="og:title" content="AgroField · Plataforma de Gestión de Campo" />
+<meta property="og:description" content="Gestión de campo para agroexportadoras: evaluaciones agrícolas con registro offline, datos en la nube y trazabilidad por lote." />
+<meta property="og:image" content="https://automatizaesto.com/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AgroField · Plataforma de Gestión de Campo" />
+<meta name="twitter:description" content="Gestión de campo para agroexportadoras: evaluaciones offline, datos en la nube y trazabilidad por lote." />
+<meta name="twitter:image" content="https://automatizaesto.com/og-cover.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,7 +68,8 @@ h1,h2,h3,h4,.font-display{font-family:'Sora',sans-serif;letter-spacing:-.02em}
 nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(7,11,9,.55);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1240px;margin:0 auto;padding:0 28px}
 .brand{display:flex;align-items:center;gap:11px;font-family:'Sora';font-weight:700;font-size:18px}
-.brand .logo{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;font-size:18px;box-shadow:var(--glow)}
+.brand .logo{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;font-size:18px;box-shadow:var(--glow);color:#04160c}
+.brand .logo svg{width:19px;height:19px}
 .brand small{display:block;font-family:'Inter';font-weight:500;font-size:10px;color:var(--muted);letter-spacing:.04em}
 .nav-links{display:flex;gap:30px;font-size:14px;color:var(--muted)}
 .nav-links a{color:var(--muted);text-decoration:none;transition:color .2s}
@@ -174,7 +191,9 @@ nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(
 @media(max-width:860px){.proto{grid-template-columns:1fr;justify-items:center}}
 .screen-tabs{display:flex;flex-direction:column;gap:8px}
 .screen-tabs .st{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:15px;background:var(--glass);border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;text-align:left;transition:all .22s;backdrop-filter:blur(8px)}
-.screen-tabs .st .si{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:rgba(255,255,255,.05);flex-shrink:0;transition:all .22s}
+.screen-tabs .st .si{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:rgba(255,255,255,.05);flex-shrink:0;transition:all .22s;color:var(--muted)}
+.screen-tabs .st .si svg{width:16px;height:16px}
+.screen-tabs .st.on .si{color:#04160c}
 .screen-tabs .st:hover{color:var(--ink);border-color:rgba(255,255,255,.18);transform:translateX(4px)}
 .screen-tabs .st.on{background:linear-gradient(120deg,rgba(39,194,107,.18),rgba(45,212,191,.08));border-color:rgba(39,194,107,.4);color:#fff}
 .screen-tabs .st.on .si{background:var(--grad);box-shadow:var(--glow)}
@@ -185,7 +204,8 @@ nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(
 @media(max-width:600px){.feat-grid{grid-template-columns:1fr}}
 .feat{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:26px;backdrop-filter:blur(10px);transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
 .feat:hover{transform:translateY(-6px);border-color:rgba(39,194,107,.4)}
-.feat .fic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:rgba(39,194,107,.12);border:1px solid rgba(39,194,107,.25);margin-bottom:18px}
+.feat .fic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:rgba(39,194,107,.12);border:1px solid rgba(39,194,107,.25);margin-bottom:18px;color:var(--lime)}
+.feat .fic svg{width:24px;height:24px}
 .feat h3{font-size:18px;font-weight:700;margin-bottom:9px}
 .feat p{color:var(--muted);font-size:14px}
 .feat .status{position:absolute;top:18px;right:18px;font-size:9.5px;font-weight:700;padding:4px 10px;border-radius:100px}
@@ -284,7 +304,7 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
 <nav>
   <div class="nav-in">
     <div class="brand">
-      <span class="logo">🌿</span>
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11C12 6 8 3 3 3c0 5 3 9 9 8z"/><path d="M12 14c0-4 3.5-6.5 8-6.5 0 4.5-3 7.5-8 6.5z"/></svg></span>
       <span>AgroField<small>Field Intelligence Platform</small></span>
     </div>
     <div class="nav-links">
@@ -309,15 +329,15 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
     <div>
       <span class="pill"><span class="dot"></span>Agritech · MVP funcional en producción</span>
       <h1>La gestión de campo,<br><span class="grad">finalmente inteligente.</span></h1>
-      <p class="lead">Captura visitas, conteos de fruta y control de calidad directo desde el campo —con GPS, hasta 20 fotos y sincronización automática, <strong>incluso sin señal</strong>. Lo capturado se guarda local y sube solo al reconectar.</p>
+      <p class="lead">Captura visitas, conteos de fruta y control de calidad directo desde el campo: con GPS, hasta 20 fotos y sincronización automática, <strong>incluso sin señal</strong>. Lo capturado se guarda en el dispositivo y sube solo al reconectar.</p>
       <div class="hero-actions">
-        <a href="#proto" class="btn btn-primary">▶ Explorar prototipo</a>
+        <a href="#proto" class="btn btn-primary">Explorar prototipo</a>
         <a href="#features" class="btn btn-ghost">Ver funcionalidades</a>
       </div>
       <div class="hero-stats">
         <div class="hstat"><div class="n">6</div><div class="l">Módulos operativos</div></div>
         <div class="hstat"><div class="n">100%</div><div class="l">Datos georreferenciados</div></div>
-        <div class="hstat"><div class="n">📴</div><div class="l">Funciona sin señal</div></div>
+        <div class="hstat"><div class="n">Offline</div><div class="l">Captura sin señal</div></div>
       </div>
     </div>
     <div class="hero-phone-stage">
@@ -359,13 +379,13 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
     </div>
     <div class="proto reveal">
       <div class="screen-tabs">
-        <button class="st on" data-go="dashboard"><span class="si">📊</span>Dashboard</button>
-        <button class="st" data-go="productores"><span class="si">👤</span>Productores</button>
-        <button class="st" data-go="visitas"><span class="si">📋</span>Visitas</button>
-        <button class="st" data-go="conteo"><span class="si">🌳</span>Conteo de frutos</button>
-        <button class="st" data-go="calidad"><span class="si">🔬</span>Control de calidad</button>
-        <button class="st" data-go="libro"><span class="si">📖</span>Libro de campo</button>
-        <button class="st" data-go="admin"><span class="si">⚙️</span>Administración</button>
+        <button class="st on" data-go="dashboard"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Dashboard</button>
+        <button class="st" data-go="productores"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>Productores</button>
+        <button class="st" data-go="visitas"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4a3 3 0 0 1 6 0"/><path d="M9 11h6M9 15h4"/></svg></span>Visitas</button>
+        <button class="st" data-go="conteo"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11C12 6 8 3 3 3c0 5 3 9 9 8z"/><path d="M12 14c0-4 3.5-6.5 8-6.5 0 4.5-3 7.5-8 6.5z"/></svg></span>Conteo de frutos</button>
+        <button class="st" data-go="calidad"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v6L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg></span>Control de calidad</button>
+        <button class="st" data-go="libro"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 4.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span>Libro de campo</button>
+        <button class="st" data-go="admin"><span class="si" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></svg></span>Administración</button>
       </div>
 
       <div style="display:flex;justify-content:center">
@@ -552,12 +572,12 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
       <p>Una app sólida construida sobre React Native, con arquitectura offline-first y backend en la nube (Supabase).</p>
     </div>
     <div class="feat-grid">
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📴</div><h3>Modo offline-first</h3><p>Captura sin conexión durante días. Registros y fotos se guardan local y sincronizan solos al volver la señal —cero pérdida de datos.</p></div>
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📍</div><h3>GPS de precisión</h3><p>Cada registro queda georreferenciado con coordenadas y exactitud en metros.</p></div>
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📷</div><h3>Fotos de campo</h3><p>Hasta 20 fotos en alta resolución por registro, georreferenciadas y subidas a la nube (miniatura primero, original luego).</p></div>
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">☁️</div><h3>Backend Supabase</h3><p>Datos y fotos en la nube (Postgres + Storage) con cola de sincronización resiliente. Indicador de pendientes en tiempo real.</p></div>
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">📊</div><h3>KPIs en vivo</h3><p>Dashboard con métricas de productores, visitas, conteos y calidad.</p></div>
-      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic">🔬</div><h3>Control de calidad</h3><p>Brix, calibre, firmeza, materia seca y aptitud de exportación por muestra.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.7 11.6a11 11 0 0 0-7.2-1"/><path d="M5 12.5a16 16 0 0 1 4.2-2.1M22 8.5a16 16 0 0 0-10.6-3.4M8.5 16a6 6 0 0 1 6.3-.7"/><circle cx="12" cy="20" r="1"/></svg></div><h3>Modo offline-first</h3><p>Captura sin conexión durante días. Los registros y fotos se guardan en el dispositivo y sincronizan solos al volver la señal.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div><h3>GPS de precisión</h3><p>Cada registro queda georreferenciado con coordenadas y exactitud en metros.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div><h3>Fotos de campo</h3><p>Hasta 20 fotos en alta resolución por registro, georreferenciadas y subidas a la nube (miniatura primero, original luego).</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 7 7 0 0 0-13.6 2A4 4 0 0 0 6 19z"/></svg></div><h3>Backend Supabase</h3><p>Datos y fotos en la nube (Postgres + Storage) con cola de sincronización resiliente. Indicador de pendientes en tiempo real.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M7 21v-6M12 21V9M17 21v-3"/></svg></div><h3>KPIs en vivo</h3><p>Dashboard con métricas de productores, visitas, conteos y calidad.</p></div>
+      <div class="feat reveal"><span class="status s-done">ACTIVO</span><div class="fic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v6L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg></div><h3>Control de calidad</h3><p>Brix, calibre, firmeza, materia seca y aptitud de exportación por muestra.</p></div>
     </div>
   </section>
 
@@ -573,9 +593,9 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
         <div class="ph">Fase 1 · Confiabilidad &nbsp;✓ LIVE</div>
         <h3>Operación sin fricción</h3>
         <ul>
-          <li><span class="ck">✓</span><div><b>Modo offline-first</b> con base local y cola de sincronización automática —<b>en producción</b>.</div></li>
+          <li><span class="ck">✓</span><div><b>Modo offline-first</b> con base local y cola de sincronización automática, <b>en producción</b>.</div></li>
           <li><span class="ck">✓</span><div><b>Backend en la nube</b> (Supabase) con fotos en alta resolución, validado en dispositivo.</div></li>
-          <li><span class="ck">◆</span><div><b>Multi-empresa</b> y roles (técnico / admin) —en desarrollo.</div></li>
+          <li><span class="ck">◆</span><div><b>Multi-empresa</b> y roles (técnico / admin), en desarrollo.</div></li>
         </ul>
       </div>
       <div class="rcard reveal">
@@ -603,7 +623,7 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
   <section class="cta reveal">
     <h2>AgroField está listo para crecer.</h2>
     <p>Un MVP funcional, una visión clara y una arquitectura preparada para escalar a producto comercial.</p>
-    <a href="#proto" class="btn btn-primary">▶ Volver al prototipo</a>
+    <a href="#proto" class="btn btn-primary">Volver al prototipo</a>
   </section>
 
 </div>
@@ -613,11 +633,11 @@ footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:v
     <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)">
       Creado por
       <a href="https://automatizaesto.com" target="_blank" style="display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-weight:600">
-        <span style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#d4ff3f,#9eff3f);color:#0a0a0b;display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:13px">λ</span>
-        automatiza<span style="color:#d4ff3f;font-style:italic;font-weight:500">esto</span>
+        <span style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#7c5cff,#a78bfa);color:#0a0a0b;display:grid;place-items:center;font-family:'Sora';font-weight:800;font-size:13px">λ</span>
+        automatiza<span style="color:#a78bfa;font-style:italic;font-weight:500">esto</span>
       </a>
     </div>
-    <div style="font-size:12px;color:rgba(157,179,166,.6)">AgroField · Field Intelligence Platform — Prototipo de presentación 2026</div>
+    <div style="font-size:12px;color:rgba(157,179,166,.6)">AgroField · Field Intelligence Platform · Prototipo de presentación 2026</div>
   </div>
 </footer>
 
@@ -705,5 +725,6 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 renderCrops();
 </script>
+<script src="../assets/consent.js" defer></script>
 </body>
 </html>

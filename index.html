@@ -231,7 +231,7 @@
     transform: translateY(-1px);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     .nav-links { display: none; }
     body > nav { padding: 8px 8px 8px 18px; }
   }
@@ -1022,9 +1022,49 @@
   @media (max-width:480px){ .pillars{ grid-template-columns:1fr; } }
   .pillar { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:22px; transition:all .35s cubic-bezier(0.22,1,0.36,1); }
   .pillar:hover { border-color:var(--accent); transform:translateY(-4px); }
-  .pillar .pi { font-size:24px; display:block; margin-bottom:12px; }
+  .pillar .pi {
+    width:40px; height:40px; border-radius:10px;
+    background:rgba(var(--accent-rgb),0.12);
+    border:1px solid rgba(var(--accent-rgb),0.25);
+    display:grid; place-items:center;
+    color:var(--accent);
+    margin-bottom:14px;
+  }
+  .pillar .pi svg { width:20px; height:20px; }
   .pillar h4 { font-family:var(--serif); font-size:18px; font-weight:500; margin-bottom:6px; letter-spacing:-0.01em; }
   .pillar p { color:var(--ink-dim); font-size:13px; line-height:1.55; }
+
+  /* ========= TECNOLOGÍAS ========= */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 36px;
+  }
+  .tech-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .tech-card:hover { border-color: var(--border-hot); transform: translateY(-3px); }
+  .tech-badge {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: grid; place-items: center;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .tech-badge.b-accent { background: rgba(var(--accent-rgb),.14); border: 1px solid rgba(var(--accent-rgb),.45); color: var(--accent); }
+  .tech-badge.b-cool { background: rgba(122,184,255,.14); border: 1px solid rgba(122,184,255,.45); color: var(--accent-cool); }
+  .tech-badge.b-warm { background: rgba(255,106,61,.14); border: 1px solid rgba(255,106,61,.45); color: var(--accent-warm); }
+  .tech-card h3 { font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+  .tech-card p { font-size: 14px; line-height: 1.55; color: var(--ink-dim); }
+  .tech-note { margin-top: 22px; font-size: 13.5px; color: var(--ink-mute); }
+  .tech-note strong { color: var(--ink-dim); }
 
   /* ========= MODAL GRACIAS ========= */
   .modal-overlay { position:fixed; inset:0; background:rgba(5,5,7,.82); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity .35s ease; padding:24px; }
@@ -1101,7 +1141,10 @@
     border: 1px solid rgba(var(--accent-rgb),0.25);
     display: grid; place-items: center;
     font-size: 26px;
+    color: var(--accent);
   }
+
+  .product-logo svg { width: 26px; height: 26px; }
 
   .product-status {
     display: inline-flex;
@@ -1968,10 +2011,12 @@
   }
   .mobile-menu .mobile-cta:hover { background: #9173ff; color: var(--bg); }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     .nav-toggle { display: flex; }
-    .nav-cta { display: none; }
     .mobile-menu { display: flex; }
+  }
+  @media (max-width: 768px) {
+    .nav-cta { display: none; }
   }
 
   /* Hero stat strip */
@@ -2250,8 +2295,8 @@
   </h1>
 
   <p>
-    Transformamos operaciones complejas en flujos simples con soluciones
-    de inteligencia artificial que trabajan por ti — 24 horas al día.
+    Transformamos operaciones complejas en flujos simples: agentes de IA,
+    integraciones y automatizaciones que trabajan por ti las 24 horas.
   </p>
 
   <div class="hero-cta-group">
@@ -2266,10 +2311,10 @@
 
   <!-- Hero stats -->
   <div class="hero-stats">
-    <div class="hero-stat"><span class="hs-num">10<em>×</em></span><span class="hs-label">Más rápido</span></div>
-    <div class="hero-stat"><span class="hs-num">24/7</span><span class="hs-label">Operación</span></div>
-    <div class="hero-stat"><span class="hs-num">&lt;1<em>s</em></span><span class="hs-label">Respuesta IA</span></div>
-    <div class="hero-stat"><span class="hs-num">100<em>%</em></span><span class="hs-label">En español</span></div>
+    <div class="hero-stat"><span class="hs-num">1–4<em> sem</em></span><span class="hs-label">De idea a producción</span></div>
+    <div class="hero-stat"><span class="hs-num">24/7</span><span class="hs-label">Operación continua</span></div>
+    <div class="hero-stat"><span class="hs-num">+100</span><span class="hs-label">Apps integrables</span></div>
+    <div class="hero-stat"><span class="hs-num">2</span><span class="hs-label">Productos propios</span></div>
   </div>
 
   <!-- Hero visual: flow diagram -->
@@ -2355,8 +2400,8 @@
               <circle cx="90" cy="90" r="62" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 4"/>
             </svg>
             <div class="gauge-center">
-              <div class="gauge-num">10<sup>×</sup></div>
-              <div class="gauge-label">Más rápido</div>
+              <div class="gauge-num">&lt;1<sup>s</sup></div>
+              <div class="gauge-label">Respuesta del agente</div>
             </div>
           </div>
         </div>
@@ -2402,8 +2447,8 @@
     <span class="eyebrow reveal">Antes / Después</span>
     <h2 class="section-title reveal">Del caos manual al <em>flujo automatizado</em>.</h2>
     <p class="section-intro reveal">
-      Arrastra el control: lo que hoy te consume horas de trabajo manual,
-      con automatización sucede solo — al instante y sin errores.
+      Arrastra el control: lo que hoy consume horas de trabajo manual,
+      con automatización sucede en segundo plano, con cada paso registrado.
     </p>
 
     <div class="compare reveal">
@@ -2433,7 +2478,7 @@
             <span class="cmp-meta meta-bad">sin hacer</span>
           </div>
         </div>
-        <div class="cmp-foot bad">≈ 6 h/día perdidas · errores frecuentes</div>
+        <div class="cmp-foot bad">horas en tareas repetitivas · errores frecuentes</div>
       </div>
 
       <!-- DESPUÉS (automatizado) -->
@@ -2462,7 +2507,7 @@
             <span class="cmp-meta meta-good">24/7</span>
           </div>
         </div>
-        <div class="cmp-foot good">≈ 0 h/día perdidas · sin errores</div>
+        <div class="cmp-foot good">horas recuperadas · proceso trazable</div>
       </div>
 
       <div class="compare-divider"></div>
@@ -2482,7 +2527,7 @@
         <span class="eyebrow reveal">Nosotros</span>
         <h2 class="section-title reveal" style="margin-bottom:28px;">Convertimos ideas en <em>sistemas que trabajan solos</em>.</h2>
         <p class="reveal"><strong>automatizaesto</strong> nace de una convicción simple: las empresas pierden horas cada día en tareas repetitivas que la tecnología puede resolver en segundos. Somos un estudio de <strong>automatización e inteligencia artificial</strong> enfocado en negocios de habla hispana.</p>
-        <p class="reveal">No nos quedamos en la teoría: <strong>construimos</strong>. Diseñamos agentes de IA, integraciones y flujos a medida — y desarrollamos nuestros propios productos, como <em>AgroField</em>, nuestra plataforma de gestión de campo agrícola. Eso nos obliga a dominar la tecnología <strong>de punta a punta</strong>, no solo a recomendarla.</p>
+        <p class="reveal">No nos quedamos en la teoría: <strong>construimos</strong>. Diseñamos agentes de IA, integraciones y flujos a medida, y desarrollamos productos propios como <em>AgroField</em>, nuestra plataforma de gestión de campo agrícola. Eso nos obliga a dominar la tecnología <strong>de punta a punta</strong>, no solo a recomendarla.</p>
         <p class="reveal">Hablamos tu idioma, entendemos tu contexto y nos involucramos como un <strong>socio técnico</strong>, no como un proveedor más.</p>
         <div class="about-sign reveal">
           <span class="av">V</span>
@@ -2490,10 +2535,10 @@
         </div>
       </div>
       <div class="pillars reveal">
-        <div class="pillar"><span class="pi">🧠</span><h4>IA aplicada</h4><p>Agentes y modelos que resuelven problemas reales, no demos vacías.</p></div>
-        <div class="pillar"><span class="pi">⚡</span><h4>De extremo a extremo</h4><p>Del diseño al despliegue: lo pensamos, lo construimos y lo dejamos funcionando.</p></div>
-        <div class="pillar"><span class="pi">🌎</span><h4>Hecho en español</h4><p>Soluciones pensadas para el mercado y la realidad latinoamericana.</p></div>
-        <div class="pillar"><span class="pi">📈</span><h4>Resultados medibles</h4><p>Menos tareas manuales, menos errores, más tiempo para lo que importa.</p></div>
+        <div class="pillar"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg></span><h4>IA aplicada</h4><p>Agentes y modelos que resuelven problemas reales, no demos vacías.</p></div>
+        <div class="pillar"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M7.5 6H15a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H9a3 3 0 0 0-3 3v0a3 3 0 0 0 3 3h7.5"/></svg></span><h4>De extremo a extremo</h4><p>Del diseño al despliegue: lo pensamos, lo construimos y lo dejamos funcionando.</p></div>
+        <div class="pillar"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg></span><h4>Hecho en español</h4><p>Soluciones pensadas para el mercado y la realidad latinoamericana.</p></div>
+        <div class="pillar"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V13M10 21V9M15 21v-7M20 21V5"/></svg></span><h4>Resultados medibles</h4><p>Menos tareas manuales, menos errores, más tiempo para lo que importa.</p></div>
       </div>
     </div>
   </div>
@@ -2563,8 +2608,8 @@
         <div class="service-body">
           <h3>Automatización de leads</h3>
           <p>
-            Convierte más leads, más rápido. Agentes de IA que califican, hacen seguimientos
-            y programan citas automáticamente — aumentando la conversión sin esfuerzo humano.
+            Agentes de IA que califican cada lead, hacen el seguimiento y agendan citas
+            automáticamente, para que tu equipo hable solo con quienes están listos para comprar.
           </p>
           <a class="service-link" href="servicios/automatizacion-leads.html">
             Ver detalle
@@ -2587,8 +2632,8 @@
         <div class="service-body">
           <h3>Base de conocimiento</h3>
           <p>
-            Agentes RAG que responden al instante extrayendo información de tus documentos,
-            FAQs y SOPs — cero alucinaciones, respuestas siempre fundamentadas.
+            Agentes RAG que responden al instante usando tus documentos, FAQs y
+            procedimientos como única fuente, con la referencia de dónde salió cada respuesta.
           </p>
           <a class="service-link" href="servicios/base-de-conocimiento.html">
             Ver detalle
@@ -2625,8 +2670,8 @@
         <div class="service-body">
           <h3>Flujos documentales</h3>
           <p>
-            Del caos a la claridad. Procesamiento de facturas, cotizaciones y contratos
-            con flujos impulsados por IA (n8n + GPT) — enteramente desatendidos.
+            Procesamiento de facturas, cotizaciones y contratos con flujos de IA
+            que extraen, validan y archivan los datos sin intervención manual.
           </p>
           <a class="service-link" href="servicios/flujos-documentales.html">
             Ver detalle
@@ -2646,45 +2691,45 @@
     <h2 class="section-title reveal">Con qué <em>construimos</em>.</h2>
     <p class="section-intro reveal">
       No-code para salir rápido, e ingeniería robusta cuando hay que escalar.
-      Elegimos la herramienta correcta para cada caso — y empezamos pequeño y medible.
+      Elegimos la herramienta correcta para cada caso, y empezamos pequeño y medible.
     </p>
 
-    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:36px;">
+    <div class="tech-grid reveal">
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
-        <div style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-bottom:16px;background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.45);color:var(--accent);">AS</div>
-        <h3 style="font-size:18px;margin:0 0 8px;color:var(--ink);">AppSheet</h3>
-        <p style="font-size:14px;line-height:1.55;color:var(--ink-dim);margin:0;">Apps móviles no-code de captura sobre tus datos. Para salir a producción en semanas.</p>
+      <div class="tech-card">
+        <div class="tech-badge b-accent" aria-hidden="true">AS</div>
+        <h3>AppSheet</h3>
+        <p>Apps móviles no-code de captura sobre tus datos. Para salir a producción en semanas.</p>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
-        <div style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-bottom:16px;background:rgba(122,184,255,.14);border:1px solid rgba(122,184,255,.45);color:var(--accent-cool);">VBA</div>
-        <h3 style="font-size:18px;margin:0 0 8px;color:var(--ink);">Macros · Excel / VBA</h3>
-        <p style="font-size:14px;line-height:1.55;color:var(--ink-dim);margin:0;">Automatizamos hojas y reportes manuales: cálculos, consolidados y plantillas que se llenan solas.</p>
+      <div class="tech-card">
+        <div class="tech-badge b-cool" aria-hidden="true">VBA</div>
+        <h3>Macros · Excel / VBA</h3>
+        <p>Automatizamos hojas y reportes manuales: cálculos, consolidados y plantillas que se llenan solas.</p>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
-        <div style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-bottom:16px;background:rgba(255,106,61,.14);border:1px solid rgba(255,106,61,.45);color:var(--accent-warm);">SQL</div>
-        <h3 style="font-size:18px;margin:0 0 8px;color:var(--ink);">Bases de datos SQL</h3>
-        <p style="font-size:14px;line-height:1.55;color:var(--ink-dim);margin:0;">Modelado, consultas e integración de tus datos en bases robustas y seguras.</p>
+      <div class="tech-card">
+        <div class="tech-badge b-warm" aria-hidden="true">SQL</div>
+        <h3>Bases de datos SQL</h3>
+        <p>Modelado, consultas e integración de tus datos en bases robustas y seguras.</p>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
-        <div style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-bottom:16px;background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.45);color:var(--accent);">Py</div>
-        <h3 style="font-size:18px;margin:0 0 8px;color:var(--ink);">Python · Integraciones</h3>
-        <p style="font-size:14px;line-height:1.55;color:var(--ink-dim);margin:0;">Conectamos sistemas, procesamos datos y automatizamos tareas a la medida.</p>
+      <div class="tech-card">
+        <div class="tech-badge b-accent" aria-hidden="true">Py</div>
+        <h3>Python · Integraciones</h3>
+        <p>Conectamos sistemas, procesamos datos y automatizamos tareas a la medida.</p>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;">
-        <div style="width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin-bottom:16px;background:rgba(122,184,255,.14);border:1px solid rgba(122,184,255,.45);color:var(--accent-cool);">BI</div>
-        <h3 style="font-size:18px;margin:0 0 8px;color:var(--ink);">Power BI</h3>
-        <p style="font-size:14px;line-height:1.55;color:var(--ink-dim);margin:0;">Tableros e indicadores que convierten tus datos en decisiones, actualizados solos.</p>
+      <div class="tech-card">
+        <div class="tech-badge b-cool" aria-hidden="true">BI</div>
+        <h3>Power BI</h3>
+        <p>Tableros e indicadores que convierten tus datos en decisiones, actualizados solos.</p>
       </div>
 
     </div>
 
-    <p class="reveal" style="margin-top:22px;font-size:13.5px;color:var(--ink-mute);">
-      Y seguimos ampliando nuestro stack: bases de datos NoSQL <strong style="color:var(--ink-dim);">(MongoDB, Cassandra)</strong>.
+    <p class="tech-note reveal">
+      Y seguimos ampliando nuestro stack: bases de datos NoSQL <strong>(MongoDB, Cassandra)</strong>.
     </p>
   </div>
 </section>
@@ -2705,7 +2750,7 @@
       <div class="product-card reveal">
         <div class="product-glow"></div>
         <div class="product-top">
-          <div class="product-logo" aria-hidden="true">📊</div>
+          <div class="product-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 17v-3M12 17v-5M16 17v-2"/></svg></div>
           <span class="product-status"><span class="product-pulse" aria-hidden="true"></span>En producción</span>
         </div>
         <div class="product-body">
@@ -2758,7 +2803,7 @@
       <a class="product-card soon reveal" href="#contacto">
         <div class="product-glow"></div>
         <div class="product-top">
-          <div class="product-logo" style="background:var(--bg);border:1px dashed var(--border-hot);box-shadow:none" aria-hidden="true">✦</div>
+          <div class="product-logo" style="background:var(--bg);border:1px dashed var(--border-hot);box-shadow:none;color:var(--ink-mute)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
           <span class="product-status" style="color:var(--ink-mute)">Tu proceso</span>
         </div>
         <div class="product-body">
@@ -2798,7 +2843,7 @@
       <div class="product-card agro-card reveal">
         <div class="product-glow"></div>
         <div class="product-top">
-          <div class="product-logo" aria-hidden="true">🌿</div>
+          <div class="product-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11C12 6 8 3 3 3c0 5 3 9 9 8z"/><path d="M12 14c0-4 3.5-6.5 8-6.5 0 4.5-3 7.5-8 6.5z"/></svg></div>
           <span class="product-status"><span class="product-pulse" aria-hidden="true"></span>MVP en vivo</span>
         </div>
         <div class="product-body">
@@ -2848,7 +2893,7 @@
       <div class="product-card agro-card reveal">
         <div class="product-glow"></div>
         <div class="product-top">
-          <div class="product-logo" aria-hidden="true">📈</div>
+          <div class="product-logo" aria-hidden="true" style="color:var(--accent-cool)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg></div>
           <span class="product-status" style="color:var(--accent-cool)"><span class="product-pulse" style="background:var(--accent-cool);box-shadow:0 0 8px var(--accent-cool)" aria-hidden="true"></span>Beta en vivo</span>
         </div>
         <div class="product-body">
@@ -2896,7 +2941,7 @@
       <a class="product-card soon reveal" href="#contacto">
         <div class="product-glow"></div>
         <div class="product-top">
-          <div class="product-logo" style="background:var(--bg);border:1px dashed var(--border-hot);box-shadow:none" aria-hidden="true">✦</div>
+          <div class="product-logo" style="background:var(--bg);border:1px dashed var(--border-hot);box-shadow:none;color:var(--ink-mute)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
           <span class="product-status" style="color:var(--ink-mute)">Próximamente</span>
         </div>
         <div class="product-body">
@@ -2923,7 +2968,7 @@
 <section id="proceso">
   <div class="container">
     <span class="eyebrow reveal">Nuestro proceso</span>
-    <h2 class="section-title reveal">Un método probado para <em>resultados garantizados</em>.</h2>
+    <h2 class="section-title reveal">Un método claro, de la primera reunión <em>a producción</em>.</h2>
     <p class="section-intro reveal">
       Nuestro enfoque simplifica la automatización para que cualquier empresa
       pueda implementarla sin complicaciones técnicas.
@@ -2954,7 +2999,7 @@
         <div class="step reveal">
           <div class="step-num">04</div>
           <h3>Optimizamos</h3>
-          <p>Medimos, ajustamos y escalamos — porque la mejora continua es parte del servicio.</p>
+          <p>Medimos, ajustamos y escalamos. La mejora continua es parte del servicio.</p>
         </div>
 
       </div>
@@ -2985,7 +3030,7 @@
       <details class="faq-item reveal">
         <summary>¿Trabajan con las herramientas que ya uso?<span class="faq-icon" aria-hidden="true"></span></summary>
         <div class="faq-body">
-          Sí. Nos integramos con lo que ya tienes — Excel, Google Workspace, Microsoft 365,
+          Sí. Nos integramos con lo que ya tienes: Excel, Google Workspace, Microsoft 365,
           WhatsApp, CRMs, ERPs y cientos de apps vía API y n8n. La idea no es que cambies de
           software, sino que el que usas trabaje solo.
         </div>
@@ -3022,7 +3067,7 @@
         <summary>¿Cuánto cuesta? <span class="faq-icon" aria-hidden="true"></span></summary>
         <div class="faq-body">
           Cada proyecto se cotiza según su alcance. Manejamos rangos desde planes Starter
-          hasta Enterprise — cuéntanos tu caso en el formulario y te enviamos una propuesta
+          hasta Enterprise. Cuéntanos tu caso en el formulario y te enviamos una propuesta
           clara, sin sorpresas.
         </div>
       </details>
@@ -3116,8 +3161,8 @@
       </form>
 
       <div class="contact-meta">
-        <span>Expertos en IA</span>
-        <span>Integraciones a medida</span>
+        <span>Respuesta en 24 h</span>
+        <span>Propuesta sin compromiso</span>
         <span>Soporte continuo</span>
       </div>
     </div>
@@ -3314,5 +3359,6 @@
   })();
 </script>
 
+<script src="assets/consent.js" defer></script>
 </body>
 </html>

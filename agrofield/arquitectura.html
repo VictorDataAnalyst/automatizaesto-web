@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgroField · Modelo de Datos — Del Excel a la Nube</title>
+<meta name="description" content="Cómo AgroField migró la gestión de campo agrícola del Excel a una arquitectura en la nube: modelo de datos, sincronización offline y seguridad multiempresa." />
+<meta name="author" content="automatizaesto" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://automatizaesto.com/agrofield/arquitectura.html" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%230a0a0b'>&#955;</text></svg>" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="automatizaesto" />
+<meta property="og:url" content="https://automatizaesto.com/agrofield/arquitectura.html" />
+<meta property="og:title" content="AgroField · Modelo de Datos — Del Excel a la Nube" />
+<meta property="og:description" content="Del Excel a la nube: modelo de datos, sincronización offline y seguridad multiempresa detrás de AgroField." />
+<meta property="og:image" content="https://automatizaesto.com/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -29,7 +42,8 @@ h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em}
 /* header */
 .top{padding:64px 0 30px;text-align:center}
 .brand{display:inline-flex;align-items:center;gap:11px;margin-bottom:26px}
-.brand .logo{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-size:20px;box-shadow:0 0 50px rgba(39,194,107,.5)}
+.brand .logo{width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-size:20px;box-shadow:0 0 50px rgba(39,194,107,.5);color:#04160c}
+.brand .logo svg{width:21px;height:21px}
 .brand b{font-family:'Sora';font-weight:700;font-size:19px}
 .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500}
 .eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--emer);margin-bottom:16px}
@@ -168,7 +182,7 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
 
   <div class="top">
     <div class="brand">
-      <span class="logo">🌿</span>
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11C12 6 8 3 3 3c0 5 3 9 9 8z"/><path d="M12 14c0-4 3.5-6.5 8-6.5 0 4.5-3 7.5-8 6.5z"/></svg></span>
       <span><b>AgroField</b><small>Field Intelligence Platform</small></span>
     </div>
     <div class="eyebrow">Arquitectura de datos</div>
@@ -176,8 +190,8 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
     <p>AgroField <b>ya migró</b> de un Excel en OneDrive a una base de datos real en la nube (Supabase). Aquí el modelo actual implementado, comparado con el modelo anterior del MVP.</p>
 
     <div class="toggle">
-      <button class="tg on" onclick="show('next',this)">☁️ Modelo actual · Supabase</button>
-      <button class="tg" onclick="show('now',this)">📁 Modelo anterior · OneDrive + Excel</button>
+      <button class="tg on" onclick="show('next',this)">Modelo actual · Supabase</button>
+      <button class="tg" onclick="show('now',this)">Modelo anterior · OneDrive + Excel</button>
     </div>
   </div>
 
@@ -187,7 +201,7 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
       <span class="chip chip-now">MODELO ANTERIOR · MVP</span>
       <h2>OneDrive + Excel</h2>
     </div>
-    <p class="msub">La app móvil leía y escribía directamente sobre un archivo de Excel en OneDrive (API de Microsoft Graph). Fue el modelo del MVP inicial —ya reemplazado por Supabase.</p>
+    <p class="msub">La app móvil leía y escribía directamente sobre un archivo de Excel en OneDrive (API de Microsoft Graph). Fue el modelo del MVP inicial, ya reemplazado por Supabase.</p>
 
     <!-- flow -->
     <div class="flow">
@@ -241,21 +255,21 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
         <div class="er"><div class="ec">VIS-002</div><div class="ec">Rosa Simbana</div><div class="ec warn-cell">Arandano</div><div class="ec">Completada</div></div>
         <div class="er"><div class="ec">VIS-003</div><div class="ec warn-cell">carlos mendoza</div><div class="ec warn-cell">Palta </div><div class="ec">En Proceso</div></div>
       </div>
-      <p class="flownote" style="margin:14px 0 0;text-align:left">⚠️ <b>Problema típico:</b> el nombre y el cultivo se escriben como texto libre → "carlos mendoza" vs "Carlos Mendoza", "Palto" vs "Palta " (con espacio). Datos duplicados e inconsistentes que rompen los reportes.</p>
+      <p class="flownote" style="margin:14px 0 0;text-align:left"><b>Problema típico:</b> el nombre y el cultivo se escriben como texto libre → "carlos mendoza" vs "Carlos Mendoza", "Palto" vs "Palta " (con espacio). Datos duplicados e inconsistentes que rompen los reportes.</p>
     </div>
 
     <div class="pc">
       <div class="pcc good">
-        <h4>✅ Ventajas</h4>
+        <h4>Ventajas</h4>
         <ul>
           <li><span class="mk">+</span>Costo casi cero (ya tienen Microsoft 365)</li>
-          <li><span class="mk">+</span>Rápido de montar — ideal para validar el MVP</li>
+          <li><span class="mk">+</span>Rápido de montar: ideal para validar el MVP</li>
           <li><span class="mk">+</span>El cliente puede abrir y ver los datos en Excel</li>
           <li><span class="mk">+</span>Sin servidores que administrar</li>
         </ul>
       </div>
       <div class="pcc bad">
-        <h4>⚠️ Limitaciones</h4>
+        <h4>Limitaciones</h4>
         <ul>
           <li><span class="mk">−</span>Sin integridad: datos duplicados e inconsistentes</li>
           <li><span class="mk">−</span>No hay relaciones reales entre hojas</li>
@@ -369,12 +383,12 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
   id_productor <span class="ty">VARCHAR(20)</span> <span class="kw">REFERENCES</span> productores(id_productor),
   cod_cultivo  <span class="ty">VARCHAR(10)</span> <span class="kw">REFERENCES</span> cultivos(codigo)   <span class="cm">-- ← relación, no texto</span>
 );</div>
-      <p class="flownote" style="margin:14px 0 0;text-align:left">✅ Si el admin renombra "Palto" → "Palta Hass", cambia en <b>un solo lugar</b> y se refleja en todas las visitas. Imposible registrar un cultivo que no existe en el catálogo.</p>
+      <p class="flownote" style="margin:14px 0 0;text-align:left">Si el admin renombra "Palto" → "Palta Hass", cambia en <b>un solo lugar</b> y se refleja en todas las visitas. Imposible registrar un cultivo que no existe en el catálogo.</p>
     </div>
 
     <div class="pc">
       <div class="pcc good">
-        <h4>✅ Ventajas</h4>
+        <h4>Ventajas</h4>
         <ul>
           <li><span class="mk">+</span>Integridad referencial: cero datos huérfanos o duplicados</li>
           <li><span class="mk">+</span>El admin gestiona catálogos (cultivos, técnicos) por código</li>
@@ -385,7 +399,7 @@ footer .by .l{width:20px;height:20px;border-radius:6px;background:linear-gradien
         </ul>
       </div>
       <div class="pcc bad">
-        <h4>⚠️ A considerar</h4>
+        <h4>A considerar</h4>
         <ul>
           <li><span class="mk">−</span>Costo mensual de hosting (bajo: ~USD 0–25/mes inicial)</li>
           <li><span class="mk">−</span>Migración de los datos existentes del Excel (one-time)</li>
@@ -450,5 +464,6 @@ function show(which,btn){
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
+<script src="../assets/consent.js" defer></script>
 </body>
 </html>
