@@ -2,17 +2,14 @@
  * automatizaesto — Consentimiento de cookies + Google Analytics 4
  *
  * GA4 solo se carga DESPUÉS de que el visitante acepta (cumplimiento RGPD/LGPD).
- * Para activarlo: crear una propiedad GA4 en https://analytics.google.com,
- * copiar el ID de medición (formato G-XXXXXXXXXX) y reemplazarlo abajo.
  */
 (function () {
   'use strict';
 
-  var GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // ← reemplazar con el ID real de GA4
+  var GA_MEASUREMENT_ID = 'G-8M7KKRZY2V';
   var STORAGE_KEY = 'ae-cookie-consent';  // 'accepted' | 'rejected'
 
   function loadAnalytics() {
-    if (GA_MEASUREMENT_ID === 'G-XXXXXXXXXX') return; // sin ID configurado, no cargar nada
     var s = document.createElement('script');
     s.async = true;
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
