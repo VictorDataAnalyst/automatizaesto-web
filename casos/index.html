@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Casos de éxito — automatizaesto</title>
+<meta name="description" content="Historias reales de automatización: cómo empresas peruanas digitalizaron sus operaciones con agentes de IA, apps de campo y flujos a medida." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0a0a0b" />
+<meta name="color-scheme" content="dark" />
+<link rel="canonical" href="https://automatizaesto.com/casos/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="automatizaesto" />
+<meta property="og:url" content="https://automatizaesto.com/casos/" />
+<meta property="og:title" content="Casos de éxito — automatizaesto" />
+<meta property="og:description" content="Cómo empresas peruanas digitalizaron sus operaciones con automatización e IA." />
+<meta property="og:image" content="https://automatizaesto.com/og-cover.png" />
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%230a0a0b'>&#955;</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/site.css" />
+<style>
+  .case-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    padding: 36px;
+    margin-top: 24px;
+  }
+  .case-head {
+    display: flex; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .case-sector {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+    border-radius: 100px;
+    padding: 5px 12px;
+  }
+  .case-card h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(22px, 3.5vw, 30px);
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  @media (max-width: 760px) { .case-grid { grid-template-columns: 1fr; } }
+  .case-col h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 10px;
+  }
+  .case-col p, .case-col li {
+    color: var(--ink-dim);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .case-col ul { padding-left: 18px; }
+  .case-col li { margin-top: 6px; }
+  .case-col li::marker { color: var(--accent); }
+  .case-tools {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .case-tools span {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .case-card.soon {
+    border-style: dashed;
+    opacity: 0.7;
+  }
+  .case-card.soon h2 { color: var(--ink-dim); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Navegación principal">
+  <a href="../index.html" class="logo" aria-label="automatizaesto — inicio">
+    <span class="logo-mark" aria-hidden="true">λ</span>
+    automatiza<em>esto</em>
+  </a>
+  <div class="nav-links">
+    <a href="../index.html#servicios">Servicios</a>
+    <a href="./">Casos</a>
+    <a href="../index.html#productos">Productos</a>
+    <a href="../blog/index.html">Recursos</a>
+  </div>
+  <a href="../index.html#contacto" class="nav-cta">Solicita una demo →</a>
+</nav>
+
+<header class="page-head">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="../index.html">Inicio</a> / Casos de éxito
+    </nav>
+    <span class="eyebrow">Resultados reales</span>
+    <h1 class="page-title">Operaciones que hoy <em>trabajan solas</em>.</h1>
+    <p class="page-lead">
+      Cada proyecto parte de un problema operativo concreto y termina en un sistema
+      funcionando en producción. Estas son algunas de las historias.
+    </p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- CASO: Marand / AgroField -->
+    <article class="case-card">
+      <div class="case-head">
+        <span class="case-sector">Agroexportación · Ica, Perú</span>
+      </div>
+      <h2>Del cuaderno de campo a la trazabilidad digital: AgroField</h2>
+      <div class="case-grid">
+        <div class="case-col">
+          <h3>El problema</h3>
+          <p>
+            Una agroexportadora gestionaba sus evaluaciones de campo en cuadernos y
+            archivos Excel dispersos: visitas a productores, conteos, controles de calidad
+            y evidencia fotográfica viajaban por WhatsApp y correo, sin trazabilidad ni
+            visión consolidada de la operación.
+          </p>
+        </div>
+        <div class="case-col">
+          <h3>La solución</h3>
+          <ul>
+            <li>App móvil para los técnicos de campo: visitas, conteos y calidad registrados desde el celular.</li>
+            <li>Fotos vinculadas a cada evaluación, con respaldo automático en la nube.</li>
+            <li>Migración del histórico de Excel a una base de datos centralizada.</li>
+            <li>Diseñada para operar en zonas con mala señal.</li>
+          </ul>
+        </div>
+        <div class="case-col">
+          <h3>El resultado</h3>
+          <ul>
+            <li>Información de campo disponible el mismo día, no semanas después.</li>
+            <li>Trazabilidad completa por productor, lote y evaluación.</li>
+            <li>Una sola fuente de verdad para toda la operación agrícola.</li>
+            <li>Base lista para indicadores de peso exportable y descarte.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-tools">
+        <span>React Native</span><span>Supabase</span><span>PostgreSQL</span><span>Power BI</span>
+      </div>
+    </article>
+
+    <!-- CASO: en redacción -->
+    <article class="case-card soon">
+      <div class="case-head">
+        <span class="case-sector">Contact center · Pronóstico de demanda</span>
+      </div>
+      <h2>Pronóstico de ventas con IA para planificar operaciones</h2>
+      <div class="case-grid">
+        <div class="case-col" style="grid-column: 1 / -1">
+          <p>Caso en redacción — disponible próximamente.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="case-card soon">
+      <div class="case-head">
+        <span class="case-sector">Servicios · Automatización documental</span>
+      </div>
+      <h2>Flujos documentales sin trabajo manual</h2>
+      <div class="case-grid">
+        <div class="case-col" style="grid-column: 1 / -1">
+          <p>Caso en redacción — disponible próximamente.</p>
+        </div>
+      </div>
+    </article>
+
+    <section class="cta-band">
+      <h2>¿Tu operación podría ser <em>el siguiente caso</em>?</h2>
+      <p>Cuéntanos qué proceso te quita más tiempo y te mostramos cómo se vería automatizado.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="../index.html#contacto">Solicita una demo gratis</a>
+        <a class="btn btn-wa" href="https://wa.me/51955179232?text=Hola%2C%20quiero%20automatizar%20un%20proceso%20de%20mi%20empresa." target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<a class="wa-float"
+   href="https://wa.me/51955179232?text=Hola%2C%20quiero%20automatizar%20un%20proceso%20de%20mi%20empresa."
+   target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" title="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.82-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.4 9.4 0 0 1-1.45-5.02c0-5.21 4.25-9.45 9.47-9.45 2.53 0 4.9.99 6.69 2.78a9.4 9.4 0 0 1 2.77 6.68c0 5.21-4.25 9.45-9.47 9.45zM20.52 3.45A11.36 11.36 0 0 0 12.04 0C5.74 0 .61 5.13.61 11.43c0 2.01.53 3.98 1.53 5.71L.51 24l6.99-1.83a11.4 11.4 0 0 0 5.54 1.41h.01c6.3 0 11.43-5.13 11.43-11.43 0-3.05-1.19-5.92-3.36-8.08z"/>
+  </svg>
+</a>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> automatizaesto.com · Todos los derechos reservados</span>
+      <span class="footer-legal">
+        <a href="../index.html">← Inicio</a>
+        <a href="../legal.html#privacidad">Privacidad</a>
+        <a href="../legal.html#terminos">Términos</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="../assets/consent.js" defer></script>
+</body>
+</html>
