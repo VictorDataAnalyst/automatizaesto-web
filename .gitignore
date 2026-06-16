@@ -12,5 +12,14 @@ desktop.ini
 *.log
 *.tmp
 
+# Python
+__pycache__/
+*.py[cod]
+
+# Secretos (nunca commitear credenciales reales)
+.env
+.env.local
+*.env
+
 # Claude Code (config local)
 .claude/
