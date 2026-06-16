@@ -186,7 +186,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop
 .segment-card p{font-size:0.78rem;color:var(--muted);line-height:1.5}
 .segment-highlight{display:inline-block;margin-top:10px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:var(--teal);background:rgba(40,176,136,0.1);padding:2px 8px;border-radius:10px}
 
-/* ── Call center spotlight ───────────────────────────── */
+/* ── Spotlight oscuro (multi-rol) ────────────────────── */
 .cc-spotlight{padding:80px 0;background:linear-gradient(165deg,#0C1A2E 0%,#1A3A5C 100%);color:white;overflow:hidden;position:relative}
 .cc-spotlight::after{content:'';position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(40,176,136,0.12),transparent 70%)}
 .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
@@ -478,7 +478,7 @@ html[data-theme="dark"] .footer-brand p{color:#7A9EC0;}
 .proto-insight p{font-size:0.85rem;color:var(--navy2);line-height:1.6;margin:0}
 .proto-insight p strong{color:var(--text)}
 html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
-/* erlang table */
+/* tabla de demo (prototipo) */
 .proto-params{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 .proto-param{flex:1;min-width:80px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px;text-align:center}
 .proto-param-val{font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:500;color:var(--gold)}
@@ -489,8 +489,47 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
 .proto-table td.gold{color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:500}
 .proto-table td.teal{color:var(--teal);font-family:'JetBrains Mono',monospace;font-weight:500}
 .proto-table tr:last-child td{border-bottom:none}
+/* configura: propuestas + roles */
+.proto-props{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+.proto-prop{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 14px 13px}
+.proto-prop.off{opacity:.62;border-style:dashed}
+.proto-prop .estado{font-family:'JetBrains Mono',monospace;font-size:.54rem;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:20px;float:right}
+.proto-prop.ok .estado{background:rgba(40,176,136,0.12);color:var(--teal)}
+.proto-prop.off .estado{background:var(--bg2);color:var(--muted)}
+.proto-prop h5{font-size:.85rem;color:var(--text);margin:0 0 4px;font-weight:600}
+.proto-prop p{font-size:.76rem;color:var(--muted);line-height:1.45;margin:0}
+.proto-prop em{display:block;margin-top:7px;font-size:.72rem;color:var(--gold);font-weight:600;font-style:normal}
+.proto-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.proto-rol{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:14px;cursor:pointer;transition:all .15s}
+.proto-rol:hover{border-color:#B9C9DD}
+.proto-rol.on{border-color:var(--gold);background:rgba(200,144,28,0.07)}
+.proto-rol .ic{font-size:1.2rem}
+.proto-rol b{display:block;color:var(--text);font-size:.85rem;margin:6px 0 3px}
+.proto-rol span{font-size:.76rem;color:var(--muted);line-height:1.45}
+/* informe */
+.proto-informe-hero{text-align:center;margin-bottom:20px}
+.proto-eti{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.proto-cifra{font-family:'Fraunces',serif;font-size:clamp(2.2rem,5vw,3rem);font-weight:700;color:var(--text);letter-spacing:-.03em;line-height:1.05;margin:6px 0 4px}
+.proto-cifra small{font-size:.3em;font-weight:600;color:var(--muted)}
+.proto-var{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;padding:4px 13px;border-radius:20px;margin-bottom:8px}
+.proto-var.up{background:rgba(40,176,136,0.12);color:var(--teal)}
+.proto-veredicto{font-size:.86rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6}
+.proto-veredicto b{color:var(--text)}
+.proto-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:7px;vertical-align:middle}
+.proto-roltabs{display:flex;gap:8px;justify-content:center;margin:18px 0 4px;flex-wrap:wrap}
+.proto-roltab{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;transition:all .15s}
+.proto-roltab.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.proto-roltab-nota{text-align:center;font-size:.75rem;color:var(--muted);margin:8px 0 4px}
+/* memoria */
+.proto-mem{background:linear-gradient(135deg,rgba(43,108,176,0.07),rgba(40,176,136,0.07));border:1px solid var(--border);border-radius:var(--r-md);padding:16px 20px;margin-bottom:16px}
+.proto-mem .cab{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:9px}
+.proto-mem ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.proto-mem li{font-size:.84rem;color:var(--navy2);padding-left:16px;position:relative}
+.proto-mem li::before{content:'\203A';position:absolute;left:2px;color:var(--gold);font-weight:700}
+html[data-theme="dark"] .proto-mem li{color:#B0C8E0}
 @media(max-width:600px){
   .proto-detect,.proto-metrics{grid-template-columns:repeat(2,1fr)}
+  .proto-props,.proto-roles{grid-template-columns:1fr}
   .fwin-body{padding:18px}
 }
 </style>
@@ -551,12 +590,12 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <div class="hero-card">
           <div class="hero-card-header">
             <span class="hero-card-title">Análisis de ventas · Retail Lima</span>
-            <span class="hero-card-badge">MAPE 8.3%</span>
+            <span class="hero-card-badge">WAPE 8.3%</span>
           </div>
           <div class="hero-metrics">
             <div class="hero-metric">
               <div class="hero-metric-val gold">8.3%</div>
-              <div class="hero-metric-label">MAPE</div>
+              <div class="hero-metric-label">WAPE</div>
             </div>
             <div class="hero-metric">
               <div class="hero-metric-val teal">+12.4%</div>
@@ -591,15 +630,15 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
               <circle cx="340" cy="22" r="3.5" fill="none" stroke="#28B088" stroke-width="2"/>
             </svg>
           </div>
-          <div class="hero-chat-msg">He completado el análisis. El modelo ARIMA(2,1,1) proyecta un crecimiento del <strong>12.4%</strong> para el próximo trimestre.</div>
-          <div class="hero-chat-msg user">¿Qué significa el MAPE de 8.3%?</div>
+          <div class="hero-chat-msg">Competí 4 modelos contra tu historia y elegí el mejor: proyecta un crecimiento del <strong>12.4%</strong> para el próximo trimestre.</div>
+          <div class="hero-chat-msg user">¿Qué significa el WAPE de 8.3%?</div>
         </div>
         <div class="hero-float hero-float-1">
           <strong>+ S/18,400</strong>
           Ingreso proyectado adicional
         </div>
         <div class="hero-float hero-float-2">
-          <strong style="color:#5DDCB8">Erlang C</strong> → 14 agentes requeridos
+          <strong style="color:#5DDCB8">Informe multi-rol</strong> → Gerente · Analista · Ops
         </div>
       </div>
     </div>
@@ -613,7 +652,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
       <span class="logos-label">Usado por empresas de:</span>
       <div class="logos-track">
         <span class="logo-pill">Retail</span>
-        <span class="logo-pill">Call Center / BPO</span>
+        <span class="logo-pill">Agro / Exportación</span>
         <span class="logo-pill">Restaurantes</span>
         <span class="logo-pill">E-commerce</span>
         <span class="logo-pill">Servicios</span>
@@ -653,7 +692,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <div class="solution-steps">
           <div class="solution-step"><div class="step-num">1</div><span>Sube tu archivo CSV o Excel con tu historial</span></div>
           <div class="solution-step"><div class="step-num">2</div><span>El sistema detecta columnas y frecuencia automáticamente</span></div>
-          <div class="solution-step"><div class="step-num">3</div><span>ARIMA automático entrena y genera el forecast</span></div>
+          <div class="solution-step"><div class="step-num">3</div><span>Compite 4 modelos y elige el más preciso por serie</span></div>
           <div class="solution-step"><div class="step-num">4</div><span>Recibe insights en lenguaje natural + Excel descargable</span></div>
         </div>
       </div>
@@ -667,19 +706,19 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
     <div class="features-header">
       <span class="tag">Funcionalidades</span>
       <h2 class="section-title">Todo lo que necesitas para predecir y planificar</h2>
-      <p class="section-sub">Desde el forecast estadístico hasta el plan de dotación de agentes. Una sola herramienta, resultados accionables.</p>
+      <p class="section-sub">Desde la detección automática de tus datos hasta un informe que se adapta a quién lo lee. Una sola herramienta, resultados accionables.</p>
     </div>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 20l1.1-5.3A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg></div>
         <h3>Forecast conversacional</h3>
-        <p>Interactúa con la IA como un chat. Sube tu archivo, responde 4 preguntas de contexto y recibe el forecast explicado en lenguaje natural.</p>
+        <p>Interactúa con la IA como un chat. Sube tu archivo, responde unas preguntas de contexto y recibe el forecast explicado en lenguaje natural.</p>
         <span class="feature-badge all">Incluido</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg></div>
-        <h3>ARIMA automático</h3>
-        <p>El sistema selecciona el modelo ARIMA óptimo entre cientos de combinaciones usando el criterio AIC. Sin configuración manual.</p>
+        <h3>Compite 4 modelos por ti</h3>
+        <p>La app entrena varios modelos contra tu propia historia y elige el más preciso por serie, midiendo el error con WAPE. Sin configuración manual.</p>
         <span class="feature-badge all">Incluido</span>
       </div>
       <div class="feature-card">
@@ -689,10 +728,10 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <span class="feature-badge all">Incluido</span>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M20 19a3 3 0 0 1-3 3h-3"/></svg></div>
-        <h3>Erlang C para Call Centers</h3>
-        <p>Convierte automáticamente el forecast de llamadas en un plan de dotación por período. AHT, SLA objetivo y shrinkage configurables.</p>
-        <span class="feature-badge pro">Función avanzada</span>
+        <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.4a6.5 6.5 0 0 1 3 5.6"/></svg></div>
+        <h3>Informe que se adapta a tu rol</h3>
+        <p>El mismo análisis, contado para quien lo lee: Gerente, Analista u Operaciones. Cambia el lenguaje, el orden y el nivel de detalle.</p>
+        <span class="feature-badge all">Incluido</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 11v6M9 14l3 3 3-3"/></svg></div>
@@ -731,13 +770,13 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
       </div>
       <div class="step-block">
         <div class="step-circle">03</div>
-        <h4>Responde el contexto</h4>
-        <p>4 preguntas rápidas sobre estacionalidad, objetivos y anomalías. El forecast se adapta a tu respuesta.</p>
+        <h4>Elige tu rol y contexto</h4>
+        <p>Indicas tu rol (Gerente, Analista u Operaciones), país y horizonte. El informe se redacta a la medida de quien lo lee.</p>
       </div>
       <div class="step-block">
         <div class="step-circle">04</div>
-        <h4>Recibe tu plan</h4>
-        <p>Gráfico interactivo, insights automáticos, Excel descargable y, si eres call center, plan de dotación Erlang C.</p>
+        <h4>Recibe tu informe</h4>
+        <p>Gráfico interactivo, KPIs con tu error real (WAPE) y rango de confianza, insights en tu idioma y Excel descargable.</p>
       </div>
     </div>
   </div>
@@ -749,7 +788,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
     <div class="proto-header">
       <span class="tag teal">Prototipo interactivo</span>
       <h2 class="section-title">Así se ve por dentro</h2>
-      <p class="section-sub" style="margin:0 auto">Recorre el flujo real de la plataforma: carga tus datos, genera el forecast, lee los insights y dimensiona tu equipo. Haz clic en las pestañas.</p>
+      <p class="section-sub" style="margin:0 auto">Recorre el flujo real de la plataforma: cargas tus datos, configuras el análisis, lees tu informe y la app aprende de tu negocio. Haz clic en las pestañas.</p>
     </div>
 
     <div class="fwin">
@@ -758,60 +797,82 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <div class="fwin-url">app.automatizaesto.com/forecast</div>
       </div>
       <div class="fwin-tabs">
-        <button class="fwin-tab on" data-go="upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><span class="n">01</span>Cargar datos</button>
-        <button class="fwin-tab" data-go="forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><span class="n">02</span>Forecast</button>
-        <button class="fwin-tab" data-go="insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-3.6 3.1 1.1 4.7L12 14.4 8 16.8l1.1-4.7L5.5 9l4.6-1.4z"/></svg><span class="n">03</span>Insights</button>
-        <button class="fwin-tab" data-go="erlang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/></svg><span class="n">04</span>Dotación</button>
+        <button class="fwin-tab on" data-go="datos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><span class="n">01</span>Datos</button>
+        <button class="fwin-tab" data-go="config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg><span class="n">02</span>Configura</button>
+        <button class="fwin-tab" data-go="informe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><span class="n">03</span>Informe</button>
+        <button class="fwin-tab" data-go="memoria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-3.6 3.1 1.1 4.7L12 14.4 8 16.8l1.1-4.7L5.5 9l4.6-1.4z"/></svg><span class="n">04</span>Memoria</button>
       </div>
       <div class="fwin-body">
 
-        <!-- Screen 01 · Cargar datos -->
-        <div class="fscreen on" data-screen="upload">
-          <div class="fscreen-title">Sube tu historial de ventas</div>
-          <div class="fscreen-sub">Detectamos columnas, frecuencia y sector automáticamente. CSV o Excel.</div>
+        <!-- Screen 01 · Datos -->
+        <div class="fscreen on" data-screen="datos">
+          <div class="fscreen-title">Sube tus datos. Nosotros detectamos el resto.</div>
+          <div class="fscreen-sub">Excel o CSV con una columna de fecha y una numérica. La app reconoce columnas, frecuencia y tu rubro.</div>
           <div class="proto-drop">
             <div class="proto-drop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
             <div class="proto-drop-file">ventas_2024.xlsx <span>· 312 KB · 24 meses</span></div>
-            <div class="proto-drop-status">✓ Archivo leído correctamente — 24 períodos válidos</div>
+            <div class="proto-drop-status">✓ Archivo leído — 24 períodos válidos · rubro detectado: Retail</div>
           </div>
           <div class="proto-detect">
-            <div class="proto-chip"><span>Columna fecha</span><strong>Mes</strong></div>
-            <div class="proto-chip"><span>Columna valor</span><strong>Ventas (S/)</strong></div>
+            <div class="proto-chip"><span>Columna de fecha</span><strong>Mes</strong></div>
+            <div class="proto-chip"><span>Valor a proyectar</span><strong>Ventas (S/)</strong></div>
+            <div class="proto-chip"><span>Serie</span><strong>Una sola</strong></div>
             <div class="proto-chip"><span>Frecuencia</span><strong>Mensual</strong></div>
-            <div class="proto-chip"><span>Sector</span><strong>Retail</strong></div>
           </div>
           <div class="proto-act">
-            <button class="proto-btn" data-go="forecast">Generar forecast
+            <button class="proto-btn" data-go="config">Continuar
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
         </div>
 
-        <!-- Screen 02 · Forecast -->
-        <div class="fscreen" data-screen="forecast">
-          <div class="fscreen-title">Forecast a 6 meses · modelo ARIMA(2,1,1)</div>
-          <div class="fscreen-sub">Seleccionado automáticamente entre cientos de combinaciones por criterio AIC.</div>
+        <!-- Screen 02 · Configura -->
+        <div class="fscreen" data-screen="config">
+          <div class="fscreen-title">Con estos datos puedo ofrecerte</div>
+          <div class="fscreen-sub">Análisis disponibles según tus columnas. Los bloqueados te dicen qué falta para habilitarlos.</div>
+          <div class="proto-props">
+            <div class="proto-prop ok"><span class="estado">Disponible</span><h5>Proyección de ventas</h5><p>Forecast del total con banda de confianza al 80%.</p></div>
+            <div class="proto-prop ok"><span class="estado">Disponible</span><h5>Estacionalidad y feriados</h5><p>Picos por temporada y feriados de tu país marcados.</p></div>
+            <div class="proto-prop off"><span class="estado">Bloqueado</span><h5>Forecast por producto</h5><p>Proyección separada por SKU o sucursal.</p><em>Falta: una columna de serie</em></div>
+          </div>
+          <div class="fscreen-title" style="margin-top:22px">El informe se redacta para quien lo lee</div>
+          <div class="fscreen-sub">El mismo análisis cambia de lenguaje, orden y detalle según tu rol.</div>
+          <div class="proto-roles">
+            <div class="proto-rol on"><span class="ic">👔</span><b>Gerente / Dueño</b><span>Decisiones, riesgos y compromisos. Sin jerga.</span></div>
+            <div class="proto-rol"><span class="ic">📐</span><b>Analista</b><span>Modelos, WAPE, sesgo y validación al detalle.</span></div>
+            <div class="proto-rol"><span class="ic">🏭</span><b>Operaciones</b><span>Capacidad, buffers y fechas a blindar.</span></div>
+          </div>
+          <div class="proto-act">
+            <button class="proto-btn ghost" data-go="datos">← Volver</button>
+            <button class="proto-btn" data-go="informe">Generar informe
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Screen 03 · Informe -->
+        <div class="fscreen" data-screen="informe">
+          <div class="proto-informe-hero">
+            <div class="proto-eti">Proyección · 8 periodos mensuales · 1 serie</div>
+            <div class="proto-cifra">S/148K <small>ventas proyectadas</small></div>
+            <div class="proto-var up">▲ 12.4% vs periodo anterior</div>
+            <p class="proto-veredicto" id="proto-veredicto"><span class="proto-dot"></span><b>Crecimiento sólido y sostenido.</b> Asegura caja e inventario para sostener el ritmo; el riesgo de quiebre es bajo.</p>
+          </div>
           <div class="proto-metrics">
-            <div class="proto-metric"><div class="proto-metric-val gold">8.3%</div><div class="proto-metric-label">MAPE</div></div>
-            <div class="proto-metric"><div class="proto-metric-val teal">+12.4%</div><div class="proto-metric-label">Proyección</div></div>
-            <div class="proto-metric"><div class="proto-metric-val">S/148K</div><div class="proto-metric-label">Total proy.</div></div>
-            <div class="proto-metric"><div class="proto-metric-val blue">95%</div><div class="proto-metric-label">Intervalo conf.</div></div>
+            <div class="proto-metric"><div class="proto-metric-val">S/121K–175K</div><div class="proto-metric-label">Rango 80%</div></div>
+            <div class="proto-metric"><div class="proto-metric-val gold">8.3%</div><div class="proto-metric-label">Error (WAPE)</div></div>
+            <div class="proto-metric"><div class="proto-metric-val teal">+12.4%</div><div class="proto-metric-label">vs anterior</div></div>
+            <div class="proto-metric"><div class="proto-metric-val blue">8</div><div class="proto-metric-label">Horizonte (meses)</div></div>
           </div>
           <div class="proto-chart">
             <svg width="100%" height="180" viewBox="0 0 720 180" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-              <!-- grid -->
               <line x1="0" y1="45" x2="720" y2="45" stroke="currentColor" stroke-width="1" opacity=".06"/>
               <line x1="0" y1="90" x2="720" y2="90" stroke="currentColor" stroke-width="1" opacity=".06"/>
               <line x1="0" y1="135" x2="720" y2="135" stroke="currentColor" stroke-width="1" opacity=".06"/>
-              <!-- IC band -->
               <path d="M440,96 L500,86 L560,74 L620,60 L680,50 L720,42 L720,86 L680,92 L620,100 L560,108 L500,118 L440,120 Z" fill="#28B088" opacity=".12"/>
-              <!-- Historical line -->
               <path d="M0,130 L60,124 L120,118 L180,126 L240,108 L300,96 L360,104 L420,92 L440,96" stroke="#E8B440" stroke-width="2.5" fill="none"/>
-              <!-- Forecast dashed -->
               <path d="M440,96 L500,86 L560,74 L620,60 L680,50 L720,42" stroke="#28B088" stroke-width="2.5" stroke-dasharray="6,4" fill="none"/>
-              <!-- Divider (hoy) -->
               <line x1="440" y1="14" x2="440" y2="168" stroke="#E8B440" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
-              <!-- dots -->
               <circle cx="300" cy="96" r="3.5" fill="#E8B440"/>
               <circle cx="420" cy="92" r="3.5" fill="#E8B440"/>
               <circle cx="560" cy="74" r="4" fill="none" stroke="#28B088" stroke-width="2"/>
@@ -820,63 +881,44 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
             <div class="proto-legend">
               <span><i style="background:#E8B440"></i>Histórico</span>
               <span><i style="background:#28B088"></i>Forecast</span>
-              <span><i style="background:rgba(40,176,136,.4)"></i>Intervalo 95%</span>
+              <span><i style="background:rgba(40,176,136,.4)"></i>Rango 80%</span>
             </div>
           </div>
+          <div class="proto-roltabs">
+            <button class="proto-roltab on" data-rol="gerente">👔 Gerente</button>
+            <button class="proto-roltab" data-rol="analista">📐 Analista</button>
+            <button class="proto-roltab" data-rol="operaciones">🏭 Operaciones</button>
+          </div>
+          <p class="proto-roltab-nota">El mismo análisis, contado para quien lo lee — toca un rol y mira cómo cambia el veredicto.</p>
           <div class="proto-act">
-            <button class="proto-btn ghost" data-go="upload">← Volver</button>
-            <button class="proto-btn" data-go="insights">Ver insights
+            <button class="proto-btn ghost" data-go="config">← Volver</button>
+            <button class="proto-btn" data-go="memoria">Ver lo aprendido
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
         </div>
 
-        <!-- Screen 03 · Insights -->
-        <div class="fscreen" data-screen="insights">
-          <div class="fscreen-title">Insights en lenguaje natural</div>
-          <div class="fscreen-sub">La IA interpreta el forecast y te dice qué hacer, sin jerga estadística.</div>
-          <div class="proto-insight">
-            <div class="proto-insight-ic t">↗</div>
-            <p><strong>Crecimiento sostenido.</strong> Tus ventas proyectan un <strong>+12.4%</strong> para el próximo trimestre. La tendencia es clara y el modelo tiene alta confianza (MAPE 8.3%).</p>
+        <!-- Screen 04 · Memoria -->
+        <div class="fscreen" data-screen="memoria">
+          <div class="fscreen-title">Lo que la app aprende de tu negocio</div>
+          <div class="fscreen-sub">Entre corrida y corrida recuerda tu rubro, tu rol y tu error típico — y compara cada proyección con tu propia historia.</div>
+          <div class="proto-mem">
+            <div class="cab">◆ Lo que recuerdo de tu negocio · corrida N°4</div>
+            <ul>
+              <li>Tu rubro habitual es <strong>Retail</strong>: preparo la detección de columnas para eso.</li>
+              <li>Sueles leer el informe como <strong>Gerente</strong>: priorizo decisiones sobre tecnicismos.</li>
+              <li>Tu error típico (WAPE) ronda el <strong>8%</strong>: tus proyecciones vienen siendo confiables.</li>
+              <li>Frente a tu corrida anterior, la tendencia mejora <strong>+2.1 puntos</strong>.</li>
+            </ul>
           </div>
-          <div class="proto-insight">
-            <div class="proto-insight-ic g">⚑</div>
-            <p><strong>Prepara stock para julio.</strong> Fiestas Patrias marca tu pico anual: se proyecta <strong>S/31K</strong> ese mes. Asegura inventario y personal con 3–4 semanas de anticipación.</p>
+          <div class="proto-metrics">
+            <div class="proto-metric"><div class="proto-metric-val">4</div><div class="proto-metric-label">Corridas hechas</div></div>
+            <div class="proto-metric"><div class="proto-metric-val">Retail</div><div class="proto-metric-label">Rubro</div></div>
+            <div class="proto-metric"><div class="proto-metric-val">Gerente</div><div class="proto-metric-label">Rol preferido</div></div>
+            <div class="proto-metric"><div class="proto-metric-val gold">8.1%</div><div class="proto-metric-label">Error típico</div></div>
           </div>
-          <div class="proto-insight">
-            <div class="proto-insight-ic b">$</div>
-            <p><strong>Ingreso adicional estimado.</strong> Frente al mismo período del año pasado, el forecast equivale a <strong>+S/18,400</strong> en ventas incrementales si mantienes el ritmo.</p>
-          </div>
-          <div class="proto-act">
-            <button class="proto-btn ghost" data-go="forecast">← Volver</button>
-            <button class="proto-btn" data-go="erlang">Dimensionar equipo
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Screen 04 · Erlang C -->
-        <div class="fscreen" data-screen="erlang">
-          <div class="fscreen-title">Dotación de agentes · Erlang C</div>
-          <div class="fscreen-sub">Para call centers: convertimos el forecast de llamadas en personal por período.</div>
-          <div class="proto-params">
-            <div class="proto-param"><div class="proto-param-val">180s</div><div class="proto-param-label">AHT</div></div>
-            <div class="proto-param"><div class="proto-param-val">80%</div><div class="proto-param-label">SLA obj.</div></div>
-            <div class="proto-param"><div class="proto-param-val">20s</div><div class="proto-param-label">Umbral</div></div>
-            <div class="proto-param"><div class="proto-param-val">25%</div><div class="proto-param-label">Shrinkage</div></div>
-          </div>
-          <table class="proto-table">
-            <thead><tr><th>Período</th><th>Llamadas</th><th>Erlangs</th><th>Agentes netos</th><th>c/Shrinkage</th></tr></thead>
-            <tbody>
-              <tr><td>Ene 2025</td><td>4,820</td><td class="gold">3.21</td><td class="teal">8</td><td class="teal">11</td></tr>
-              <tr><td>Feb 2025</td><td>5,140</td><td class="gold">3.42</td><td class="teal">9</td><td class="teal">12</td></tr>
-              <tr><td>Mar 2025</td><td>6,290</td><td class="gold">4.19</td><td class="teal">10</td><td class="teal">14</td></tr>
-              <tr><td>Abr 2025</td><td>7,850</td><td class="gold">5.23</td><td class="teal">12</td><td class="teal">16</td></tr>
-              <tr><td>May 2025</td><td>8,440</td><td class="gold">5.63</td><td class="teal">13</td><td class="teal">18</td></tr>
-            </tbody>
-          </table>
           <div class="proto-act" style="margin-top:18px">
-            <button class="proto-btn ghost" data-go="upload">↺ Empezar de nuevo</button>
+            <button class="proto-btn ghost" data-go="datos">↺ Empezar de nuevo</button>
             <a href="../index.html#contacto" class="proto-btn" style="text-decoration:none">Probarlo con mis datos
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
@@ -896,7 +938,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
     <div class="segments-header">
       <span class="tag">Para tu negocio</span>
       <h2 class="section-title">Diseñado para cada tipo de MYPE</h2>
-      <p class="section-sub">Detección de columnas adaptada a cada sector. Preguntas de sondeo especializadas para Retail, Restaurantes, E-commerce y también Call Center.</p>
+      <p class="section-sub">Detección de columnas adaptada a cada sector. Preguntas de sondeo especializadas para Retail, Restaurantes, E-commerce, Agroexportación y más.</p>
     </div>
     <div class="segments-grid">
       <div class="segment-card active">
@@ -916,10 +958,10 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <p>Proyección de revenue y GMV con ajuste por campañas estacionales.</p>
       </div>
       <div class="segment-card">
-        <div class="segment-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v2.7a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 2.4 4.2 2 2 0 0 1 4.4 2h2.7a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.25a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2z"/></svg></div>
-        <h4>Call Center / BPO</h4>
-        <p>Forecast de llamadas + Erlang C para dimensionamiento de agentes.</p>
-        <span class="segment-highlight">Erlang C incluido</span>
+        <div class="segment-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 6 8 9 8 12a4 4 0 0 0 8 0c0-3-1-6-4-10z"/><path d="M12 12v10"/><path d="M12 18c-2 0-4-1-5-3M12 16c2 0 4-1 5-3"/></svg></div>
+        <h4>Agro / Exportación</h4>
+        <p>Proyección de volúmenes, campañas y despachos con estacionalidad marcada.</p>
+        <span class="segment-highlight">Campañas estacionales</span>
       </div>
       <div class="segment-card">
         <div class="segment-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg></div>
@@ -945,39 +987,37 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
   </div>
 </section>
 
-<!-- ══ CALL CENTER SPOTLIGHT ═════════════════════════════ -->
+<!-- ══ MULTI-ROL SPOTLIGHT ═══════════════════════════════ -->
 <section class="cc-spotlight">
   <div class="container">
     <div class="cc-grid">
       <div class="cc-content">
-        <span class="tag teal" style="background:rgba(40,176,136,0.15)">Call Center / BPO</span>
-        <h2>Del forecast al plan de <em>dotación</em> automáticamente</h2>
-        <p>Forecasting estadístico (ARIMA) y cálculo de dotación Erlang C en una sola herramienta. Lo que antes tomaba horas en Excel ahora tarda segundos.</p>
+        <span class="tag teal" style="background:rgba(40,176,136,0.15)">Informe multi-rol</span>
+        <h2>El mismo análisis, contado para <em>quien lo lee</em></h2>
+        <p>Gerencia, análisis y operaciones necesitan distinto nivel de detalle. ForecastMYPE reescribe el informe según el rol: cambia el lenguaje, el orden y lo que se resalta — sin volver a correr nada.</p>
         <div class="cc-features">
-          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Forecast de llamadas / tickets / contactos / ingresos</span></div>
-          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Erlang C: agentes netos y brutos (con shrinkage) por período</span></div>
-          <div class="cc-feat"><div class="cc-feat-dot"></div><span>SLA proyectado por dotación para cada período del horizonte</span></div>
-          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Período pico identificado automáticamente para planificación</span></div>
-          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Excel con plan completo de dotación descargable</span></div>
+          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Gerente: decisiones, riesgos y compromisos, sin jerga</span></div>
+          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Analista: modelo ganador, WAPE, sesgo y validación</span></div>
+          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Operaciones: capacidad, buffers y fechas a blindar</span></div>
+          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Banda de confianza al 80% en cada proyección</span></div>
+          <div class="cc-feat"><div class="cc-feat-dot"></div><span>Memoria que aprende tu rubro, tu rol y tu error típico</span></div>
         </div>
         <a href="#proto" class="btn btn-white btn-lg">Ver el prototipo →</a>
       </div>
       <div class="cc-visual">
         <div class="cc-param-row">
-          <div class="cc-param"><div class="cc-param-val">180s</div><div class="cc-param-label">AHT</div></div>
-          <div class="cc-param"><div class="cc-param-val">80%</div><div class="cc-param-label">SLA obj.</div></div>
-          <div class="cc-param"><div class="cc-param-val">20s</div><div class="cc-param-label">Umbral</div></div>
-          <div class="cc-param"><div class="cc-param-val">25%</div><div class="cc-param-label">Shrinkage</div></div>
+          <div class="cc-param"><div class="cc-param-val">4</div><div class="cc-param-label">Modelos</div></div>
+          <div class="cc-param"><div class="cc-param-val">8.3%</div><div class="cc-param-label">WAPE</div></div>
+          <div class="cc-param"><div class="cc-param-val">80%</div><div class="cc-param-label">Banda</div></div>
+          <div class="cc-param"><div class="cc-param-val">3</div><div class="cc-param-label">Roles</div></div>
         </div>
         <table class="cc-table">
-          <thead><tr><th>Período</th><th>Llamadas</th><th>Erlangs</th><th>Agentes netos</th><th>c/Shrinkage</th></tr></thead>
+          <thead><tr><th>Serie</th><th>Modelo ganador</th><th>WAPE %</th><th>Sesgo %</th></tr></thead>
           <tbody>
-            <tr><td>Ene 2025</td><td>4,820</td><td class="gold">3.21</td><td class="teal">8</td><td class="teal">11</td></tr>
-            <tr><td>Feb 2025</td><td>5,140</td><td class="gold">3.42</td><td class="teal">9</td><td class="teal">12</td></tr>
-            <tr><td>Mar 2025</td><td>6,290</td><td class="gold">4.19</td><td class="teal">10</td><td class="teal">14</td></tr>
-            <tr><td>Abr 2025</td><td>7,850</td><td class="gold">5.23</td><td class="teal">12</td><td class="teal">16</td></tr>
-            <tr><td>May 2025</td><td>8,440</td><td class="gold">5.63</td><td class="teal">13</td><td class="teal">18</td></tr>
-            <tr><td>Jun 2025</td><td>9,120</td><td class="gold">6.08</td><td class="teal">14</td><td class="teal">19</td></tr>
+            <tr><td>Ventas totales</td><td class="teal">SARIMA</td><td class="gold">8.3</td><td>+1.2</td></tr>
+            <tr><td>—</td><td>Holt-Winters</td><td>9.1</td><td>−0.8</td></tr>
+            <tr><td>—</td><td>Prophet</td><td>9.7</td><td>+2.4</td></tr>
+            <tr><td>—</td><td>Media móvil</td><td>13.5</td><td>−3.1</td></tr>
           </tbody>
         </table>
       </div>
@@ -995,7 +1035,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
     <div class="results-grid">
       <div class="result-card">
         <div class="result-num gold">94%</div>
-        <div class="result-label">Precisión promedio de forecast (1 - MAPE)</div>
+        <div class="result-label">Precisión promedio de forecast (1 − WAPE)</div>
       </div>
       <div class="result-card">
         <div class="result-num teal">3 min</div>
@@ -1045,9 +1085,9 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
       <ul style="list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px">
         <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Acceso completo, sin restricciones</li>
         <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Todos los sectores de negocio</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Forecast ARIMA + feriados de Perú</li>
+        <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Compite 4 modelos + feriados de Perú</li>
         <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Excel ejecutivo listo para presentar</li>
-        <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Erlang C para call centers</li>
+        <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Informe multi-rol (Gerente · Analista · Ops)</li>
         <li style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text)"><div class="plan-check">✓</div>Onboarding directo 1:1 con el equipo</li>
       </ul>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
@@ -1080,8 +1120,8 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
         <div class="faq-a">Mínimo 10 períodos. Para mejores resultados: 2+ años de datos mensuales o 6+ meses de datos diarios. Más historial = mayor precisión.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">¿Qué es el Erlang C y para qué sirve?</div>
-        <div class="faq-a">Es la fórmula estándar de la industria para calcular cuántos agentes necesita un call center. ForecastMYPE lo integra directamente con el forecast de llamadas.</div>
+        <div class="faq-q">¿Qué es el WAPE y por qué importa?</div>
+        <div class="faq-a">Es el error porcentual de la proyección frente a tu historia real (menor = mejor). La app compite 4 modelos y elige el de menor WAPE por serie, así sabes qué tan confiable es cada forecast.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">¿Mis datos están seguros?</div>
@@ -1133,7 +1173,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
           <li><a href="#segments">Retail</a></li>
           <li><a href="#segments">Restaurantes</a></li>
           <li><a href="#segments">E-commerce</a></li>
-          <li><a href="#segments">Call Center / BPO</a></li>
+          <li><a href="#segments">Agro / Exportación</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1181,7 +1221,7 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
 })();
 </script>
 <script>
-/* Prototipo interactivo · cambio de pantallas */
+/* Prototipo interactivo · cambio de pantallas y de rol */
 (function(){
   var tabs=document.querySelectorAll('.fwin-tab');
   var screens=document.querySelectorAll('.fscreen');
@@ -1192,6 +1232,29 @@ html[data-theme="dark"] .proto-insight p{color:#B0C8E0}
   document.querySelectorAll('[data-go]').forEach(function(el){
     if(el.tagName==='A') return;
     el.addEventListener('click',function(){go(el.dataset.go);});
+  });
+
+  // Configura: selección visual de rol
+  document.querySelectorAll('.proto-rol').forEach(function(c){
+    c.addEventListener('click',function(){
+      document.querySelectorAll('.proto-rol').forEach(function(x){x.classList.remove('on');});
+      c.classList.add('on');
+    });
+  });
+
+  // Informe: las pestañas de rol reescriben el veredicto (el diferenciador clave)
+  var VERED={
+    gerente:'<b>Crecimiento sólido y sostenido.</b> Asegura caja e inventario para sostener el ritmo; el riesgo de quiebre es bajo.',
+    analista:'<b>Tendencia estadísticamente significativa.</b> El modelo ganador rinde WAPE 8.3% con sesgo +1.2%; la banda 80% se mantiene contenida.',
+    operaciones:'<b>Prepara capacidad para el pico de julio.</b> Blinda stock y turnos 3–4 semanas antes del periodo de mayor demanda.'
+  };
+  var ver=document.getElementById('proto-veredicto');
+  document.querySelectorAll('.proto-roltab').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.proto-roltab').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      if(ver) ver.innerHTML='<span class="proto-dot"></span>'+VERED[b.dataset.rol];
+    });
   });
 })();
 </script>
