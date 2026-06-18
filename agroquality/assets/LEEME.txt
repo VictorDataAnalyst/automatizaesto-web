@@ -1,0 +1,20 @@
+AgroQuality · carpeta de medios
+================================
+
+Coloca aquí tus videos y la landing los usará automáticamente:
+
+  hero.mp4   → video de fondo del hero (recomendado: 1920x1080, 8-15 s, en loop,
+               silenciado, < 6 MB. Plano cenital de fruta / inspección / packing.)
+  demo.mp4   → video de la sección "AgroQuality en acción" (walkthrough de la app,
+               16:10 o 16:9. Se reproduce al hacer clic en el botón ▷.)
+
+Mientras NO existan estos archivos:
+  - El hero muestra un fondo verde animado de respaldo (se ve con movimiento).
+  - La sección de demo muestra un póster con botón de play y un aviso.
+
+Formato: usa MP4 (H.264) para máxima compatibilidad. Opcional: agrega también
+hero.webm para navegadores que lo prefieran (habría que añadir un <source> webm).
+
+Imágenes de las tarjetas (industrias / recursos): hoy usan degradados de marca.
+Si quieres fotos reales, reemplaza los fondos .ph-avo / .ph-grape / .ph-berry
+en el <style> de index.html por: background:url('assets/tu-foto.jpg') center/cover;

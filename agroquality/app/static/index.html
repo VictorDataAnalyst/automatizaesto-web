@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroQuality · Plataforma de auditoría de calidad</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2327C26B'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%23ffffff'>&#955;</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F5; --panel:#FFFFFF; --ink:#0F1A14; --muted:#5C6B62; --line:#E4E9E6; --line2:#EEF2F0;
+  --emer:#1F9D57; --emer-d:#157F47; --lime:#27C26B;
+  --good:#22A65A; --good-bg:#E4F6EC; --fair:#E0B100; --fair-bg:#FBF4D6; --poor:#E2602A; --poor-bg:#FBE7DC;
+  --shadow:0 1px 2px rgba(16,26,20,.04),0 8px 24px rgba(16,26,20,.06);
+  --shadow-lg:0 12px 40px rgba(16,26,20,.12); --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;font-size:14px}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+button{font-family:inherit;cursor:pointer}
+.app{display:flex;min-height:100vh}
+.side{width:230px;background:#0F1A14;color:#CFE6D8;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#27C26B,#157F47);display:grid;place-items:center;font-family:monospace;font-weight:700;color:#fff;font-size:20px}
+.brand b{font-family:'Sora';font-size:16px;color:#fff;display:block;line-height:1.1}
+.brand small{color:#7FA890;font-size:11px}
+.nav{padding:14px 10px;display:flex;flex-direction:column;gap:3px;flex:1}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:none;color:#9DBBA9;padding:10px 12px;border-radius:9px;font-size:13.5px;font-weight:500;transition:.15s}
+.nav button:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav button.on{background:rgba(39,194,107,.16);color:#fff}
+.nav .ic{width:18px;text-align:center}
+.side .who{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:#7FA890}
+.side .who b{color:#fff;font-weight:600;display:block}
+.side .who .modo{margin-top:6px;display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:rgba(39,194,107,.18);color:#9DF2AE;padding:2px 7px;border-radius:5px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:20}
+.top h1{font-size:18px}.top .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
+.wrap{padding:24px 28px;max-width:1320px;width:100%}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.btn:hover{border-color:#C9D4CE;background:#FAFBFA}
+.btn.primary{background:var(--emer);border-color:var(--emer);color:#fff}.btn.primary:hover{background:var(--emer-d)}
+.btn.sm{padding:6px 11px;font-size:12px}.btn.ghost{border-color:transparent;background:transparent}.btn.ghost:hover{background:#EDF1EF}
+.grid-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.kpi .val{font-family:'Sora';font-size:30px;font-weight:700;margin-top:6px;line-height:1}.kpi .val small{font-size:15px;color:var(--muted)}
+.kpi .delta{font-size:12px;margin-top:7px;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel .hd{padding:15px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel .hd h3{font-size:14.5px}.panel .hd .mut{font-size:12px;color:var(--muted);font-weight:500}
+.panel .bd{padding:18px}
+.cols{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}}
+.filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow)}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.fld input,.fld select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);min-width:140px}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--emer)}
+.spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700}
+.chip.good{background:var(--good-bg);color:#147A41}.chip.fair{background:var(--fair-bg);color:#8A6D00}.chip.poor{background:var(--poor-bg);color:#B5431A}
+.dot{width:8px;height:8px;border-radius:50%}.dot.good{background:var(--good)}.dot.fair{background:var(--fair)}.dot.poor{background:var(--poor)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:#FAFBFA;cursor:pointer}
+.mono{font-family:'Sora';font-variant-numeric:tabular-nums}.nowrap{white-space:nowrap}
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:grid;grid-template-columns:170px 1fr 46px;align-items:center;gap:10px;font-size:12.5px}
+.bar-track{height:10px;background:var(--line2);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#27C26B,#157F47)}
+.bar-row b{font-variant-numeric:tabular-nums;text-align:right;font-family:'Sora';font-size:12px}
+.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+.legend{display:flex;flex-direction:column;gap:10px}.legend .li{display:flex;align-items:center;gap:9px;font-size:13px}.legend .li b{font-family:'Sora';margin-left:4px}
+.dt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:900px){.dt-grid{grid-template-columns:repeat(2,1fr)}}
+.dt-cell{background:#fff;padding:10px 12px}.dt-cell .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}.dt-cell .v{font-size:13.5px;font-weight:500;margin-top:2px}
+.scrim{position:fixed;inset:0;background:rgba(15,26,20,.5);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;z-index:100;overflow-y:auto}
+.scrim.show{display:flex}
+.modal{background:var(--bg);width:100%;max-width:1060px;border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden}
+.modal .mhd{background:var(--panel);padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2}
+.modal .mbd{padding:22px}
+.x{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;color:var(--muted);line-height:1}
+.frm{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}@media(max-width:900px){.frm{grid-template-columns:repeat(2,1fr)}}
+.frm .ff{display:flex;flex-direction:column;gap:5px}.frm .ff.wide{grid-column:span 2}
+.frm label{font-size:11.5px;color:var(--muted);font-weight:600}
+.frm input,.frm select{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;background:#fff}
+.frm input:focus,.frm select:focus{outline:none;border-color:var(--emer)}
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--emer);margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.pill{display:inline-block;background:var(--line2);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;color:var(--muted)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F1A14;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.25s;z-index:200}
+.toast.show{opacity:1}
+.note{background:#F0F7F3;border:1px solid #D6EADD;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#2C5C42;display:flex;gap:9px;margin-bottom:18px}
+/* ===== Login premium (B2B SaaS) ===== */
+.login{position:fixed;inset:0;display:none;z-index:300;background:#fff}
+.login.show{display:grid;grid-template-columns:1fr 1.06fr}
+@media(max-width:900px){.login.show{grid-template-columns:1fr;overflow-y:auto}}
+.lx-form{position:relative;display:flex;flex-direction:column;padding:30px 6.5%;min-height:100vh}
+@media(max-width:900px){.lx-form{min-height:auto;padding:26px 22px;order:1}}
+.lx-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lx-brand{display:flex;align-items:center;gap:10px}.lx-brand b{font-family:'Sora';font-size:16px}
+.lx-ctas{display:flex;gap:8px}
+.lx-ctas a{font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--line);color:var(--ink2);transition:.15s;white-space:nowrap}
+.lx-ctas a:hover{border-color:#C9D4CE;background:var(--soft)}
+.lx-ctas a.alt{background:var(--ink);color:#fff;border-color:var(--ink)}.lx-ctas a.alt:hover{background:#000}
+@media(max-width:480px){.lx-ctas a:first-child{display:none}}
+.lx-body{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px;width:100%;margin:0 auto;padding:30px 0}
+.lx-eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--emer);margin-bottom:12px}
+.lx-body h1{font-size:27px;line-height:1.12;margin-bottom:8px}
+.lx-body .sub{color:var(--muted);font-size:14px;margin-bottom:22px}
+.lx-field{margin-bottom:14px}
+.lx-field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.lx-input{position:relative}
+.lx-input input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:16px;font-family:inherit;background:#fff;transition:.15s}
+.lx-input input:focus{outline:none;border-color:var(--emer);box-shadow:0 0 0 4px rgba(31,157,87,.13)}
+.lx-input .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);padding:6px 9px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600}
+.lx-input .eye:hover{background:var(--soft);color:var(--ink)}
+.lx-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 18px;font-size:13px;flex-wrap:wrap}
+.lx-check{display:flex;align-items:center;gap:8px;color:var(--ink2);cursor:pointer}
+.lx-check input{width:16px;height:16px;accent-color:var(--emer)}
+.lx-link{color:var(--emer);font-weight:600;background:none;border:none;cursor:pointer;font-size:13px;font-family:inherit;padding:0}
+.lx-link:hover{text-decoration:underline}
+.lx-btn{width:100%;border:none;border-radius:11px;padding:13px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:.15s}
+.lx-btn.primary{background:var(--emer);color:#fff}.lx-btn.primary:hover{background:var(--emer-d)}
+.lx-btn.primary:disabled{opacity:.7;cursor:default}
+.lx-oauth{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lx-ob{border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--ink);transition:.15s}
+.lx-ob:hover{border-color:#C9D4CE;background:var(--soft)}.lx-ob svg{flex-shrink:0}
+.lx-sep{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:18px 0}
+.lx-sep::before,.lx-sep::after{content:"";flex:1;height:1px;background:var(--line)}
+.lx-switch{margin-top:20px;text-align:center;font-size:13.5px;color:var(--muted)}
+.lx-err{font-size:12.5px;margin-top:12px;min-height:16px;line-height:1.4}
+.lx-err.bad{color:#B5431A}.lx-err.ok{color:#147A41}
+.lx-foot{text-align:center;font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:7px;padding-top:16px}
+.lx-foot b{color:var(--ink2);font-weight:600}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Showcase del producto */
+.lx-show{position:relative;overflow:hidden;background:linear-gradient(150deg,#0a3d24 0%,#0C5A33 45%,#08311d 100%);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:46px 52px}
+@media(max-width:900px){.lx-show{order:2;padding:40px 22px}}
+.lx-show .glow{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;pointer-events:none}
+.lx-show .g1{width:340px;height:340px;background:#27C26B;top:-90px;right:-60px}
+.lx-show .g2{width:300px;height:300px;background:#0a6e3f;bottom:-110px;left:-50px;opacity:.55}
+.lx-show .net{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse at center,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 25%,transparent 75%)}
+.lx-show>*{position:relative;z-index:1}
+.lx-vp .eb{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9DF2AE;margin-bottom:12px}
+.lx-vp h2{font-size:clamp(23px,2.5vw,31px);line-height:1.14;max-width:18ch}
+.lx-vp p{color:#CFE6D8;font-size:15px;margin-top:12px;max-width:42ch}
+.lx-dash{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(0,0,0,.32)}
+.lx-dash .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.lx-dash .dh .t{font-family:'Sora';font-weight:600;font-size:13px}
+.lx-dash .dh .pill{font-size:10px;background:rgba(157,242,174,.18);color:#9DF2AE;padding:3px 9px;border-radius:100px;font-weight:700;letter-spacing:.02em}
+.lx-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
+.lx-kpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 11px}
+.lx-kpi .l{font-size:9.5px;color:#AFC8BB;text-transform:uppercase;letter-spacing:.04em}
+.lx-kpi .v{font-family:'Sora';font-weight:700;font-size:20px;margin-top:3px;line-height:1}.lx-kpi .v small{font-size:11px;color:#9DF2AE}
+.lx-chart{display:flex;align-items:flex-end;gap:6px;height:64px;padding:6px 2px 0}
+.lx-chart i{flex:1;background:linear-gradient(180deg,#7DF38A,#27C26B);border-radius:4px 4px 2px 2px;opacity:.92}
+.lx-dash .leg{display:flex;gap:13px;margin-top:10px;font-size:10px;color:#CFE6D8}
+.lx-dash .leg span{display:flex;align-items:center;gap:5px}.lx-dash .leg i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.lx-benes{display:flex;flex-direction:column;gap:9px}
+.lx-bene{display:flex;align-items:center;gap:10px;font-size:14px;color:#E4F0E9}
+.lx-bene .ck{width:20px;height:20px;border-radius:50%;background:rgba(157,242,174,.18);color:#9DF2AE;display:grid;place-items:center;flex-shrink:0}
+.lx-proof{display:flex;align-items:center;gap:22px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.12);padding-top:18px}
+.lx-proof .m b{font-family:'Sora';font-size:22px;display:block;line-height:1}
+.lx-proof .m span{font-size:11px;color:#AFC8BB}
+.lx-proof .logos{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+.lx-proof .logos span{font-size:11px;font-weight:600;color:#CFE6D8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:4px 9px;border-radius:7px}
+.loader{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:250;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="loader" id="loader">Cargando…</div>
+
+<div class="login" id="login">
+  <!-- ===== Formulario ===== -->
+  <div class="lx-form">
+    <div class="lx-top">
+      <div class="lx-brand"><div class="logo">&#955;</div><b>AgroQuality</b></div>
+      <div class="lx-ctas">
+        <a href="mailto:hola@automatizaesto.com?subject=Quiero%20ver%20una%20demo%20de%20AgroQuality">Ver demo</a>
+        <a class="alt" href="mailto:hola@automatizaesto.com?subject=Solicitud%20de%20cotizaci%C3%B3n%20AgroQuality">Solicitar cotización</a>
+      </div>
+    </div>
+
+    <div class="lx-body">
+      <!-- Iniciar sesión -->
+      <div id="form_login">
+        <div class="lx-eyebrow">Acceso a la plataforma</div>
+        <h1>Bienvenido de vuelta</h1>
+        <div class="sub">Controla la calidad de tus exportaciones desde un solo lugar.</div>
+        <div class="lx-oauth">
+          <button class="lx-ob" id="oauth_ms" type="button"><svg width="16" height="16" viewBox="0 0 23 23" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg> Microsoft</button>
+          <button class="lx-ob" id="oauth_google" type="button"><svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.2 35 26.7 36 24 36c-5.3 0-9.7-2.6-11.3-6.9l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.1-2.2 3.9-4 5.2l6.3 5.2C41.4 35.6 44 30.3 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg> Google</button>
+        </div>
+        <div class="lx-sep">o con tu correo institucional</div>
+        <div class="lx-field"><label for="lg_email">Correo institucional</label>
+          <div class="lx-input"><input id="lg_email" type="email" placeholder="correo@empresa.com" autocomplete="username"></div></div>
+        <div class="lx-field"><label for="lg_pass">Contraseña</label>
+          <div class="lx-input"><input id="lg_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+            <button class="eye" id="lg_eye" type="button" aria-label="Mostrar u ocultar contraseña">Ver</button></div></div>
+        <div class="lx-row">
+          <label class="lx-check"><input type="checkbox" id="lg_remember" checked> Recordarme</label>
+          <button class="lx-link" id="lg_forgot" type="button">¿Olvidaste tu contraseña?</button>
+        </div>
+        <button class="lx-btn primary" id="lg_btn">Iniciar sesión</button>
+        <div class="lx-err bad" id="lg_err" role="alert" aria-live="polite"></div>
+        <div class="lx-switch">¿No tienes cuenta? <button class="lx-link" id="go_reg">Crear cuenta →</button></div>
+      </div>
+
+      <!-- Crear cuenta -->
+      <div id="form_reg" style="display:none">
+        <div class="lx-eyebrow">Crear cuenta</div>
+        <h1>Empieza con AgroQuality</h1>
+        <div class="sub">Usa tu correo institucional; te asignamos a tu empresa por el dominio.</div>
+        <div class="lx-field"><label for="rg_email">Correo institucional</label>
+          <div class="lx-input"><input id="rg_email" type="email" placeholder="tu-nombre@tuempresa.com" autocomplete="username"></div></div>
+        <div class="lx-field"><label for="rg_pass">Contraseña</label>
+          <div class="lx-input"><input id="rg_pass" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+            <button class="eye" id="rg_eye" type="button" aria-label="Mostrar u ocultar contraseña">Ver</button></div></div>
+        <div class="lx-field"><label for="rg_pass2">Repite la contraseña</label>
+          <div class="lx-input"><input id="rg_pass2" type="password" placeholder="••••••••" autocomplete="new-password"></div></div>
+        <button class="lx-btn primary" id="rg_btn">Crear cuenta</button>
+        <div class="lx-err" id="rg_err" role="alert" aria-live="polite"></div>
+        <div class="lx-switch">¿Ya tienes cuenta? <button class="lx-link" id="go_login">Iniciar sesión</button></div>
+      </div>
+
+      <!-- Recuperar contraseña -->
+      <div id="form_forgot" style="display:none">
+        <div class="lx-eyebrow">Recuperar acceso</div>
+        <h1>Restablece tu contraseña</h1>
+        <div class="sub">Te enviaremos un enlace a tu correo para crear una nueva.</div>
+        <div class="lx-field"><label for="fg_email">Correo institucional</label>
+          <div class="lx-input"><input id="fg_email" type="email" placeholder="correo@empresa.com" autocomplete="username"></div></div>
+        <button class="lx-btn primary" id="fg_btn">Enviar enlace</button>
+        <div class="lx-err" id="fg_err" role="alert" aria-live="polite"></div>
+        <div class="lx-switch"><button class="lx-link" id="go_login2">← Volver a iniciar sesión</button></div>
+      </div>
+    </div>
+
+    <div class="lx-foot"><div class="logo" style="width:20px;height:20px;font-size:12px;border-radius:6px">&#955;</div> Powered by <b>automatizaesto</b></div>
+  </div>
+
+  <!-- ===== Showcase del producto ===== -->
+  <div class="lx-show">
+    <span class="glow g1"></span><span class="glow g2"></span><span class="net"></span>
+    <div class="lx-vp">
+      <div class="eb">Auditoría de calidad post-cosecha</div>
+      <h2>Controla la calidad de tus exportaciones desde una sola plataforma.</h2>
+      <p>Inspecciones, evidencia fotográfica, reportes automáticos y trazabilidad completa.</p>
+    </div>
+    <div class="lx-dash" aria-hidden="true">
+      <div class="dh"><span class="t">Panel de calidad · período actual</span><span class="pill">● EN VIVO</span></div>
+      <div class="lx-kpis">
+        <div class="lx-kpi"><div class="l">Calidad prom.</div><div class="v">87<small>%</small></div></div>
+        <div class="lx-kpi"><div class="l">Lotes inspecc.</div><div class="v">512</div></div>
+        <div class="lx-kpi"><div class="l">Aprobación</div><div class="v">94<small>%</small></div></div>
+      </div>
+      <div class="lx-chart"><i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:66%"></i><i style="height:58%"></i><i style="height:74%"></i><i style="height:63%"></i><i style="height:82%"></i><i style="height:71%"></i><i style="height:90%"></i><i style="height:78%"></i><i style="height:96%"></i></div>
+      <div class="leg"><span><i style="background:#7DF38A"></i>Good</span><span><i style="background:#E0B100"></i>Fair</span><span><i style="background:#E2602A"></i>Poor</span><span style="margin-left:auto;color:#9DF2AE">▲ Tendencia +6%</span></div>
+    </div>
+    <div class="lx-benes">
+      <div class="lx-bene"><span class="ck">✓</span> Reduce errores manuales</div>
+      <div class="lx-bene"><span class="ck">✓</span> Centraliza todas tus inspecciones</div>
+      <div class="lx-bene"><span class="ck">✓</span> Reportes automáticos para gerencia</div>
+      <div class="lx-bene"><span class="ck">✓</span> Evidencia fotográfica por pallet</div>
+      <div class="lx-bene"><span class="ck">✓</span> Trazabilidad y seguimiento por lote</div>
+    </div>
+    <div class="lx-proof">
+      <div class="m"><b>+10,000</b><span>inspecciones registradas</span></div>
+      <div class="m"><b>+500</b><span>lotes auditados</span></div>
+      <div class="logos"><span>Marand</span><span>Supafresh</span><span>Wonokoyo</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="appRoot" style="display:none">
+  <aside class="side">
+    <div class="brand"><div class="logo">&#955;</div><div><b>AgroQuality</b><small>by automatizaesto</small></div></div>
+    <nav class="nav">
+      <button class="on" data-view="gerencia"><span class="ic">▦</span> Panel del gerente</button>
+      <button data-view="inspecciones"><span class="ic">▤</span> Inspecciones</button>
+      <button data-view="nueva"><span class="ic">＋</span> Nueva inspección</button>
+      <button data-view="solicitudes" id="navAdmin" style="display:none"><span class="ic">✓</span> Solicitudes</button>
+    </nav>
+    <div class="who"><b id="whoOrg">Marand Company</b>Auditoría de calidad · Paltas<span class="modo" id="whoModo">demo</span></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div><h1 id="topTitle">Panel del gerente</h1><div class="sub" id="topSub">Extrae la información por período de ingreso</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="btnExport">⤓ Exportar CSV</button>
+        <button class="btn primary" id="btnNew">＋ Nueva inspección</button>
+      </div>
+    </header>
+    <div class="wrap" id="wrap"></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Estado / API ===== */
+let TOKEN=null, MODO="demo", DATA=[], SUPA=null, ES_ADMIN=false, CREATE_CLIENT=null, SUPA_URL="", SUPA_ANON="";
+let VIEW="gerencia", FIL={d1:"",d2:"",score:"",consig:""};
+
+async function api(path,opts={}){
+  const headers={"Content-Type":"application/json"};
+  if(TOKEN) headers["Authorization"]="Bearer "+TOKEN;
+  const r=await fetch(path,{method:opts.method||"GET",headers,
+    body:opts.body?JSON.stringify(opts.body):undefined});
+  if(!r.ok) throw new Error((await r.text())||("HTTP "+r.status));
+  const ct=r.headers.get("content-type")||"";
+  return ct.includes("json")?r.json():r.text();
+}
+
+/* ===== Scoring / helpers ===== */
+const SCORE_LABEL={good:"Good",fair:"Fair",poor:"Poor"};
+function scoreDe(p){ if(p<12) return "good"; if(p<=25) return "fair"; return "poor"; }
+function resumen(ins){
+  const ps=ins.pallets||[], n=ps.length||1, cont={good:0,fair:0,poor:0};
+  let cal=0,cond=0,temp=0,tempN=0,peso=0;
+  ps.forEach(p=>{ cont[p.pallet_score]=(cont[p.pallet_score]||0)+1;
+    cal+=+p.pct_calidad||0; cond+=+p.pct_condicion||0;
+    if(p.temp_prom){temp+=+p.temp_prom;tempN++} peso+=+p.peso_neto_prom||0; });
+  const totProm=+((cal+cond)/n).toFixed(2);
+  return {n,cont,scoreGlobal:scoreDe(totProm),calProm:+(cal/n).toFixed(2),
+    condProm:+(cond/n).toFixed(2),totProm,
+    tempProm:tempN?+(temp/tempN).toFixed(1):null,pesoProm:+(peso/n).toFixed(1)};
+}
+function pctScore(c,n){return {good:Math.round((c.good||0)/n*100),fair:Math.round((c.fair||0)/n*100),poor:Math.round((c.poor||0)/n*100)};}
+function fmtFecha(s){ if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; }
+function inRango(f,d1,d2){ if(!f) return false; if(d1&&f<d1) return false; if(d2&&f>d2) return false; return true; }
+function chip(s){return `<span class="chip ${s}">${SCORE_LABEL[s]||s}</span>`;}
+function v(id){return document.getElementById(id).value;}
+
+function filtradas(){
+  return DATA.filter(i=>{
+    if((FIL.d1||FIL.d2)&&!inRango(i.fecha_frigorifico,FIL.d1,FIL.d2)) return false;
+    if(FIL.consig&&i.consignatario!==FIL.consig) return false;
+    if(FIL.score&&resumen(i).scoreGlobal!==FIL.score) return false;
+    return true;
+  });
+}
+
+/* ===== Vistas ===== */
+const wrap=document.getElementById("wrap");
+function setView(vw){
+  VIEW=vw;
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.view===vw));
+  const T={gerencia:["Panel del gerente","Extrae la información por período de ingreso"],
+           inspecciones:["Inspecciones","Todos los reportes de auditoría guardados"],
+           nueva:["Nueva inspección","Captura de auditoría · lote → pallets"],
+           solicitudes:["Solicitudes de acceso","Aprueba o rechaza nuevos registros por empresa"]};
+  document.getElementById("topTitle").textContent=T[vw][0];
+  document.getElementById("topSub").textContent=T[vw][1];
+  if(vw==="gerencia") renderGerencia();
+  else if(vw==="inspecciones") renderInspecciones();
+  else if(vw==="solicitudes") renderSolicitudes();
+  else renderNueva();
+}
+
+function renderGerencia(){
+  const list=filtradas();
+  let totPallets=0, cont={good:0,fair:0,poor:0}, totCajas=0;
+  const defMap={}, consigSet=new Set();
+  DATA.forEach(i=>consigSet.add(i.consignatario));
+  list.forEach(i=>{ totCajas+=i.cajas||0;
+    (i.pallets||[]).forEach(p=>{ totPallets++; cont[p.pallet_score]=(cont[p.pallet_score]||0)+1;
+      (p.defecto_principal||"").split(",").map(s=>s.trim()).forEach(d=>{if(d)defMap[d]=(defMap[d]||0)+1;}); }); });
+  const pct=pctScore(cont,totPallets||1);
+  const defArr=Object.entries(defMap).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const maxDef=defArr.length?defArr[0][1]:1;
+  const consigOpts=["<option value=''>Todos</option>"].concat([...consigSet].filter(Boolean).map(c=>`<option ${FIL.consig===c?"selected":""}>${c}</option>`)).join("");
+
+  wrap.innerHTML=`
+  <div class="filters">
+    <div class="fld"><label>Ingreso desde</label><input type="date" id="f_d1" value="${FIL.d1}"></div>
+    <div class="fld"><label>Ingreso hasta</label><input type="date" id="f_d2" value="${FIL.d2}"></div>
+    <div class="fld"><label>Score global</label><select id="f_score">
+      <option value="">Todos</option><option value="good" ${FIL.score==="good"?"selected":""}>Good</option>
+      <option value="fair" ${FIL.score==="fair"?"selected":""}>Fair</option><option value="poor" ${FIL.score==="poor"?"selected":""}>Poor</option></select></div>
+    <div class="fld"><label>Consignatario</label><select id="f_consig">${consigOpts}</select></div>
+    <button class="btn ghost sm" id="f_reset">↺ Limpiar</button>
+    <div class="spacer"></div><span class="pill">${list.length} inspección(es) · ${totPallets} pallets</span>
+  </div>
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lab">Inspecciones</div><div class="val">${list.length}</div><div class="delta">en el período</div></div>
+    <div class="kpi"><div class="lab">Pallets auditados</div><div class="val">${totPallets}</div><div class="delta">${totCajas.toLocaleString("es-PE")} cajas</div></div>
+    <div class="kpi"><div class="lab">Aprobación (Good+Fair)</div><div class="val">${pct.good+pct.fair}<small>%</small></div><div class="delta">${pct.poor}% Poor (rechazo)</div></div>
+    <div class="kpi"><div class="lab">Defecto principal</div><div class="val" style="font-size:18px;line-height:1.2">${defArr.length?defArr[0][0]:"—"}</div><div class="delta">${defArr.length?defArr[0][1]+" pallets":""}</div></div>
+  </div>
+  <div class="cols">
+    <div class="panel"><div class="hd"><h3>Distribución de scores</h3><span class="mut">${totPallets} pallets</span></div>
+      <div class="bd"><div class="donut-wrap">${donut(pct)}<div class="legend">
+        <div class="li"><span class="dot good"></span> Good <b>${pct.good}%</b> <span style="color:var(--muted)">(${cont.good||0})</span></div>
+        <div class="li"><span class="dot fair"></span> Fair <b>${pct.fair}%</b> <span style="color:var(--muted)">(${cont.fair||0})</span></div>
+        <div class="li"><span class="dot poor"></span> Poor <b>${pct.poor}%</b> <span style="color:var(--muted)">(${cont.poor||0})</span></div>
+      </div></div></div></div>
+    <div class="panel"><div class="hd"><h3>Pareto de defectos</h3><span class="mut">por pallet</span></div>
+      <div class="bd"><div class="bars">${defArr.map(([d,c])=>`<div class="bar-row"><span class="nowrap" title="${d}">${d.length>24?d.slice(0,23)+"…":d}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxDef*100)}%"></div></div><b>${c}</b></div>`).join("")||"<div class='empty'>Sin datos</div>"}</div></div></div>
+  </div>
+  <div class="panel"><div class="hd"><h3>Inspecciones del período</h3><span class="mut">clic para ver el reporte</span></div>
+    <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Inspección</th><th>Lote / Barco</th><th>Consignatario</th><th>Locación</th><th>Ingreso</th><th>Pallets</th><th>Score</th><th>Defectos</th></tr></thead>
+      <tbody>${list.map(i=>{const r=resumen(i);return `<tr onclick="abrir('${i.id}')">
+        <td class="mono"><b>${i.codigo||i.id}</b></td><td><div class="mono">${i.lote||""}</div><div style="color:var(--muted);font-size:11px">${i.barco||""}</div></td>
+        <td>${i.consignatario||"—"}</td><td>${i.locacion||"—"}</td><td class="nowrap">${fmtFecha(i.fecha_frigorifico)}</td>
+        <td class="mono">${r.n}</td><td>${chip(r.scoreGlobal)}</td><td class="mono">${r.totProm}%</td></tr>`;}).join("")||`<tr><td colspan="8"><div class="empty">No hay inspecciones en este período.</div></td></tr>`}</tbody>
+    </table></div></div>`;
+
+  const upd=()=>{FIL.d1=v("f_d1");FIL.d2=v("f_d2");FIL.score=v("f_score");FIL.consig=v("f_consig");renderGerencia();};
+  ["f_d1","f_d2","f_score","f_consig"].forEach(id=>document.getElementById(id).addEventListener("change",upd));
+  document.getElementById("f_reset").onclick=()=>{FIL={d1:"",d2:"",score:"",consig:""};renderGerencia();};
+}
+
+function renderInspecciones(){
+  wrap.innerHTML=`<div class="panel"><div class="hd"><h3>Reportes de auditoría</h3><span class="mut">${DATA.length} guardados</span></div>
+    <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
+    <thead><tr><th>ID</th><th>Lote</th><th>Producto</th><th>Consignatario</th><th>Inspector</th><th>Ingreso</th><th>Pallets</th><th>Score</th><th></th></tr></thead>
+    <tbody>${DATA.map(i=>{const r=resumen(i);return `<tr onclick="abrir('${i.id}')">
+      <td class="mono"><b>${i.codigo||i.id}</b></td><td class="mono">${i.lote||""}</td><td>${i.producto||""} · ${i.variedad||""}</td>
+      <td>${i.consignatario||"—"}</td><td>${i.inspector||"—"}</td><td class="nowrap">${fmtFecha(i.fecha_frigorifico)}</td>
+      <td class="mono">${r.n}</td><td>${chip(r.scoreGlobal)}</td><td style="text-align:right"><span class="btn sm">Ver ›</span></td></tr>`;}).join("")||`<tr><td colspan="9"><div class="empty">Aún no hay inspecciones.</div></td></tr>`}</tbody>
+    </table></div></div>`;
+}
+
+async function renderSolicitudes(){
+  wrap.innerHTML=`<div class="note">⚖️ Aquí apruebas nuevos registros. Si el dominio es nuevo, al aprobar se crea su empresa y los siguientes correos de ese dominio entrarán directo.</div>
+    <div class="panel"><div class="hd"><h3>Solicitudes pendientes</h3><span class="mut">por aprobar</span></div><div class="bd" id="solBd"><div class="empty">Cargando…</div></div></div>`;
+  let data;
+  try{ data=(await api("/api/solicitudes")).solicitudes||[]; }
+  catch(e){ document.getElementById("solBd").innerHTML=`<div class="empty">${e.message}</div>`; return; }
+  const bd=document.getElementById("solBd");
+  if(!data.length){ bd.innerHTML=`<div class="empty"><div class="pill">No hay solicitudes pendientes</div></div>`; return; }
+  bd.style.padding="0";
+  bd.innerHTML=`<table class="tbl"><thead><tr><th>Correo</th><th>Dominio (empresa)</th><th>Solicitado</th><th style="text-align:right">Acción</th></tr></thead>
+    <tbody>${data.map(s=>`<tr><td class="mono">${s.email}</td><td>${s.dominio||"—"}</td><td class="nowrap">${(s.creado_en||"").slice(0,10)}</td>
+      <td style="text-align:right;white-space:nowrap"><button class="btn primary sm" data-ap="${s.id}">✓ Aprobar</button> <button class="btn sm" data-re="${s.id}">Rechazar</button></td></tr>`).join("")}</tbody></table>`;
+  bd.querySelectorAll("[data-ap]").forEach(b=>b.onclick=async()=>{ b.disabled=true; b.textContent="Aprobando…";
+    try{ const d=await api("/api/solicitudes/"+b.dataset.ap+"/aprobar",{method:"POST"});
+      toast((d.empresa_nueva?`Empresa "${d.empresa}" creada. `:"")+"Acceso aprobado ✓"); renderSolicitudes(); }
+    catch(e){ toast("Error: "+e.message); b.disabled=false; b.textContent="✓ Aprobar"; } });
+  bd.querySelectorAll("[data-re]").forEach(b=>b.onclick=async()=>{
+    if(!confirm("¿Rechazar y eliminar esta solicitud?")) return;
+    try{ await api("/api/solicitudes/"+b.dataset.re+"/rechazar",{method:"POST"}); toast("Solicitud rechazada"); renderSolicitudes(); }
+    catch(e){ toast("Error: "+e.message); } });
+}
+
+function abrir(id){
+  const i=DATA.find(x=>x.id===id); if(!i) return;
+  const r=resumen(i), pct=pctScore(r.cont,r.n);
+  const cell=(k,val)=>`<div class="dt-cell"><div class="k">${k}</div><div class="v">${val??"—"}</div></div>`;
+  document.getElementById("modal").innerHTML=`
+    <div class="mhd"><div><div style="display:flex;align-items:center;gap:10px"><h2 style="font-size:18px">${i.codigo||i.id}</h2>${chip(r.scoreGlobal)}</div>
+      <div style="color:var(--muted);font-size:12.5px;margin-top:2px">Lote ${i.lote||""} · ${i.compania||""}</div></div>
+      <button class="x" onclick="cerrar()">×</button></div>
+    <div class="mbd">
+      <div class="dt-grid">
+        ${cell("Lote",i.lote)}${cell("Compañía",i.compania)}${cell("Exportador",i.exportador)}${cell("Consignatario",i.consignatario)}
+        ${cell("Producto",i.producto)}${cell("Variedad",i.variedad)}${cell("Embalaje",i.embalaje)}${cell("Tipo producto",i.tipo_producto)}
+        ${cell("Locación",i.locacion)}${cell("País",i.pais_origen)}${cell("Barco",i.barco)}${cell("Tipo carrier",i.tipo_carrier)}
+        ${cell("Container",i.container)}${cell("Frigorífico",i.frigorifico)}${cell("Inspector",i.inspector)}${cell("Tipo inspección",i.tipo_inspeccion)}
+        ${cell("Fecha embalaje",fmtFecha(i.fecha_embalaje))}${cell("Fecha arribo",fmtFecha(i.fecha_arribo))}${cell("Ingreso frigorífico",fmtFecha(i.fecha_frigorifico)+" "+(i.hora_frigorifico||""))}${cell("Fumigación",i.fumigacion)}
+        ${cell("Cajas",i.cajas)}${cell("# Pallets",i.total_pallets)}${cell("Nº Factura",i.num_factura)}${cell("Muestra Σ",(i.pallets||[]).reduce((a,p)=>a+(p.tamano_muestra||0),0))}
+      </div>
+      <div class="cols" style="margin-top:18px">
+        <div class="panel"><div class="hd"><h3>Resumen del reporte</h3><span class="mut">Global</span></div>
+          <div class="bd"><div class="donut-wrap">${donut(pct)}<div class="legend">
+            <div class="li"><span class="dot good"></span> Good <b>${pct.good}%</b></div>
+            <div class="li"><span class="dot fair"></span> Fair <b>${pct.fair}%</b></div>
+            <div class="li"><span class="dot poor"></span> Poor <b>${pct.poor}%</b></div></div></div></div></div>
+        <div class="panel"><div class="hd"><h3>Totales</h3><span class="mut">promedios</span></div>
+          <div class="bd"><table class="tbl"><tbody>
+            <tr><td>Suma Defectos Calidad</td><td class="mono" style="text-align:right"><b>${r.calProm}%</b></td></tr>
+            <tr><td>Suma Defectos Condición</td><td class="mono" style="text-align:right"><b>${r.condProm}%</b></td></tr>
+            <tr><td>Suma Defectos Totales</td><td class="mono" style="text-align:right"><b>${r.totProm}%</b></td></tr>
+            <tr><td>Temp. promedio</td><td class="mono" style="text-align:right">${r.tempProm??"—"} °C</td></tr>
+            <tr><td>Peso neto promedio</td><td class="mono" style="text-align:right">${r.pesoProm} kg</td></tr>
+          </tbody></table></div></div>
+      </div>
+      <div class="panel" style="margin-top:16px"><div class="hd"><h3>Pallets</h3><span class="mut">${r.n} evaluados</span></div>
+        <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
+          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Calidad</th><th>D. Condición</th><th>Total</th><th>Temp</th><th>Muestra</th><th>Fotos</th></tr></thead>
+          <tbody>${(i.pallets||[]).map(p=>`<tr><td class="mono">${p.codigo}</td><td>${chip(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
+            <td style="max-width:260px">${p.defecto_principal||"—"}</td><td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td>
+            <td class="mono"><b>${p.pct_total}%</b></td><td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.tamano_muestra??"—"}</td>
+            <td><div style="display:flex;gap:4px">${(p.fotos||[]).map(f=>f._url?`<img src="${f._url}" onclick="window.open('${f._url}')" style="width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:pointer" title="Ver foto">`:"").join("")||"<span style='color:var(--muted)'>—</span>"}</div></td></tr>`).join("")}</tbody>
+        </table></div></div>
+    </div>`;
+  document.getElementById("scrim").classList.add("show");
+}
+function cerrar(){document.getElementById("scrim").classList.remove("show");}
+document.getElementById("scrim").addEventListener("click",e=>{if(e.target.id==="scrim")cerrar();});
+
+/* ===== Nueva inspección ===== */
+const PRODUCTORES=["004-03006-03","016-42980-01","016-4726-01","010-62372-01","009-33744-02","016-40726-01"];
+let DRAFT=null;
+function nuevoDraft(){return {codigo:"",lote:"",container:"",compania:"Marand Company Asia",exportador:"Marand Company",
+  consignatario:"",locacion:"",pais_origen:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipo_producto:"CONV",
+  tipo_inspeccion:"Normal Inspection",barco:"",tipo_carrier:"Ocean",frigorifico:"",inspector:"",cajas:"",total_pallets:"",
+  hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",pallets:[]};}
+
+function renderNueva(){
+  if(!DRAFT) DRAFT=nuevoDraft();
+  const F=(k,lab,type="text",wide=false,opts=null)=>{
+    if(opts) return `<div class="ff ${wide?'wide':''}"><label>${lab}</label><select data-k="${k}">${opts.map(o=>`<option ${DRAFT[k]===o?"selected":""}>${o}</option>`).join("")}</select></div>`;
+    return `<div class="ff ${wide?'wide':''}"><label>${lab}</label><input type="${type}" data-k="${k}" value="${DRAFT[k]||""}" placeholder="—"></div>`;
+  };
+  wrap.innerHTML=`
+  <div class="note">⌬ Captura jerárquica: cabecera del lote, luego cada pallet con su % de defectos. El score Good/Fair/Poor lo calcula el servidor.</div>
+  <div class="panel"><div class="bd">
+    <div class="sec-title">Cabecera del lote</div>
+    <div class="frm">
+      ${F("lote","Lote")}${F("container","Container / Guía")}${F("compania","Compañía")}${F("consignatario","Consignatario")}
+      ${F("producto","Producto")}${F("variedad","Variedad")}${F("embalaje","Embalaje")}${F("tipo_producto","Tipo producto",null,false,["CONV","ORG"])}
+      ${F("locacion","Locación (destino)")}${F("pais_origen","País origen")}${F("barco","Barco")}${F("tipo_carrier","Tipo carrier",null,false,["Ocean","Air"])}
+      ${F("frigorifico","Frigorífico")}${F("inspector","Inspector")}${F("tipo_inspeccion","Tipo inspección",null,false,["Normal Inspection","Re-inspection","Pre-shipment"])}${F("fumigacion","Fumigación",null,false,["None","SO2","Otra"])}
+      ${F("cajas","Cajas","number")}${F("total_pallets","# Pallets","number")}${F("num_factura","Nº Factura")}${F("hora_frigorifico","Hora frigorífico")}
+      ${F("fecha_embalaje","Fecha embalaje","date")}${F("fecha_arribo","Fecha arribo","date")}${F("fecha_frigorifico","Ingreso frigorífico ★","date")}<div class="ff"></div>
+    </div>
+    <div class="sec-title">Pallets <span class="pill" style="text-transform:none;letter-spacing:0">${DRAFT.pallets.length} agregados</span></div>
+    <div id="palletRows"></div>
+    <button class="btn sm" id="addPallet" style="margin-top:6px">＋ Agregar pallet</button>
+    <div style="display:flex;gap:10px;margin-top:24px;border-top:1px solid var(--line);padding-top:18px">
+      <button class="btn primary" id="guardar">✓ Guardar inspección</button>
+      <button class="btn" id="descartar">Descartar</button>
+      <div class="spacer"></div>
+      <span style="color:var(--muted);align-self:center;font-size:12px">★ campo que usa el gerente para filtrar por período</span>
+    </div>
+  </div></div>`;
+  wrap.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",e=>DRAFT[e.target.dataset.k]=e.target.value));
+  renderPalletRows();
+  document.getElementById("addPallet").onclick=()=>{DRAFT.pallets.push({codigo:"",calibre:"",productor:PRODUCTORES[0],temp_prom:"",peso_neto_prom:10,pct_calidad:0,pct_condicion:0,defecto_principal:"",tamano_muestra:"",fotos:[]});renderPalletRows();};
+  document.getElementById("guardar").onclick=guardarDraft;
+  document.getElementById("descartar").onclick=()=>{DRAFT=null;setView("inspecciones");};
+}
+function renderPalletRows(){
+  const host=document.getElementById("palletRows"); if(!host) return;
+  if(!DRAFT.pallets.length){host.innerHTML=`<div class="empty" style="padding:24px"><div class="pill">Aún no agregas pallets</div></div>`;return;}
+  const inp="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px";
+  host.innerHTML=DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const nf=(p.fotos||[]).length;
+    return `<div style="display:grid;grid-template-columns:1.3fr .7fr 1fr .75fr .75fr 1.8fr 64px 60px 34px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)" data-row="${idx}">
+      <input data-pk="codigo" value="${p.codigo}" placeholder="R-MAR-…" style="${inp};font-family:'Sora'">
+      <input data-pk="calibre" value="${p.calibre}" placeholder="Calibre" type="number" style="${inp}">
+      <select data-pk="productor" style="${inp};font-size:12px">${PRODUCTORES.map(o=>`<option ${p.productor===o?"selected":""}>${o}</option>`).join("")}</select>
+      <input data-pk="pct_calidad" value="${p.pct_calidad}" type="number" step="0.1" title="% Calidad" style="${inp}">
+      <input data-pk="pct_condicion" value="${p.pct_condicion}" type="number" step="0.1" title="% Condición" style="${inp}">
+      <input data-pk="defecto_principal" value="${p.defecto_principal}" placeholder="Defecto principal" style="${inp}">
+      <span style="text-align:center">${chip(sc)}</span>
+      <button class="btn ghost sm" data-foto="${idx}" title="Adjuntar fotos" style="white-space:nowrap">📷${nf?" "+nf:""}</button>
+      <button class="btn ghost sm" data-del="${idx}">✕</button>
+      <input type="file" accept="image/*" multiple data-file="${idx}" style="display:none"></div>`;}).join("");
+  host.querySelectorAll("[data-row]").forEach(row=>{const idx=+row.dataset.row;
+    row.querySelectorAll("[data-pk]").forEach(el=>el.addEventListener("input",e=>{DRAFT.pallets[idx][e.target.dataset.pk]=e.target.value;
+      if(["pct_calidad","pct_condicion"].includes(e.target.dataset.pk))renderPalletRows();}));
+    row.querySelector("[data-del]").onclick=()=>{DRAFT.pallets.splice(idx,1);renderPalletRows();};
+    const file=row.querySelector("[data-file]");
+    row.querySelector("[data-foto]").onclick=()=>file.click();
+    file.onchange=async()=>{ if(!file.files.length) return;
+      try{ for(const f of file.files){ const r=await uploadFoto(f,"pallet"); (DRAFT.pallets[idx].fotos=DRAFT.pallets[idx].fotos||[]).push({tipo:"pallet",ref:r.ref,_url:r.url}); }
+        toast("Foto(s) adjuntada(s) ✓"); renderPalletRows(); }
+      catch(e){ toast("Error al subir foto"); } };});
+}
+async function guardarDraft(){
+  if(!DRAFT.lote) return toast("Falta el Lote");
+  if(!DRAFT.fecha_frigorifico) return toast("Falta la fecha de ingreso al frigorífico");
+  if(!DRAFT.pallets.length) return toast("Agrega al menos un pallet");
+  const body={...DRAFT,
+    cajas:DRAFT.cajas?+DRAFT.cajas:null, total_pallets:DRAFT.total_pallets?+DRAFT.total_pallets:null,
+    codigo:DRAFT.codigo||null,
+    pallets:DRAFT.pallets.map(p=>({codigo:p.codigo,productor:p.productor,calibre:p.calibre?+p.calibre:null,
+      temp_prom:p.temp_prom?+p.temp_prom:null,peso_neto_prom:+p.peso_neto_prom||10,
+      tamano_muestra:p.tamano_muestra?+p.tamano_muestra:null,
+      pct_calidad:+p.pct_calidad||0,pct_condicion:+p.pct_condicion||0,defecto_principal:p.defecto_principal||null,
+      fotos:(p.fotos&&p.fotos.length)?p.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null}))};
+  // limpia strings vacíos
+  Object.keys(body).forEach(k=>{if(body[k]==="")body[k]=null;});
+  try{ await api("/api/inspecciones",{method:"POST",body}); DRAFT=null; toast("Inspección guardada ✓"); await cargar(); setView("gerencia"); }
+  catch(e){ toast("Error: "+e.message); }
+}
+
+/* ===== Componentes ===== */
+function donut(pct){
+  const seg=[["good","#22A65A",pct.good],["fair","#E0B100",pct.fair],["poor","#E2602A",pct.poor]];
+  const tot=pct.good+pct.fair+pct.poor||1; let acc=0; const R=54,C=2*Math.PI*R;
+  const arcs=seg.map(([k,col,val])=>{const frac=val/tot;const dash=`${frac*C} ${C}`;const off=-acc*C;acc+=frac;
+    return `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${col}" stroke-width="20" stroke-dasharray="${dash}" stroke-dashoffset="${off}" transform="rotate(-90 70 70)"/>`;}).join("");
+  return `<svg width="140" height="140" viewBox="0 0 140 140">${arcs}<circle r="40" cx="70" cy="70" fill="#fff"/>
+    <text x="70" y="66" text-anchor="middle" font-family="Sora" font-weight="700" font-size="20" fill="#0F1A14">${pct.good+pct.fair}%</text>
+    <text x="70" y="84" text-anchor="middle" font-family="Inter" font-size="10" fill="#5C6B62">aprobado</text></svg>`;
+}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
+
+async function exportCSV(){
+  const qs=new URLSearchParams();
+  if(FIL.d1)qs.set("d1",FIL.d1); if(FIL.d2)qs.set("d2",FIL.d2);
+  if(FIL.score)qs.set("score",FIL.score); if(FIL.consig)qs.set("consignatario",FIL.consig);
+  try{
+    const headers={}; if(TOKEN)headers["Authorization"]="Bearer "+TOKEN;
+    const r=await fetch("/api/export.csv?"+qs.toString(),{headers});
+    const blob=await r.blob(); const u=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=u; a.download="agroquality.csv"; a.click(); URL.revokeObjectURL(u);
+    toast("CSV descargado ✓");
+  }catch(e){toast("Error al exportar");}
+}
+
+/* ===== Fotos ===== */
+async function uploadFoto(file,tipo){
+  const fd=new FormData(); fd.append("archivo",file); fd.append("tipo",tipo||"pallet");
+  const headers={}; if(TOKEN)headers["Authorization"]="Bearer "+TOKEN;
+  const r=await fetch("/api/fotos",{method:"POST",headers,body:fd});
+  if(!r.ok) throw new Error((await r.text())||"upload");
+  return r.json();
+}
+async function resolverFotos(){
+  for(const i of DATA){ for(const p of (i.pallets||[])){ for(const f of (p.fotos||[])){
+    if(f._url) continue;
+    if(MODO==="demo"){ f._url="/api/fotos/"+f.ref; }
+    else { try{ f._url=(await api("/api/fotos-url?ref="+encodeURIComponent(f.ref))).url; }catch(e){} }
+  }}}
+}
+
+/* ===== Carga / arranque ===== */
+async function cargar(){ const res=await api("/api/inspecciones"); DATA=res.inspecciones||[]; await resolverFotos(); }
+
+async function arrancarApp(){
+  document.getElementById("loader").style.display="none";
+  document.getElementById("login").classList.remove("show");
+  document.getElementById("appRoot").style.display="flex";
+  document.getElementById("whoModo").textContent=MODO;
+  try{ const st=await api("/api/estado"); ES_ADMIN=!!st.es_admin;
+    if(st.usuario) document.getElementById("whoOrg").textContent=st.usuario; }catch(e){}
+  document.getElementById("navAdmin").style.display=ES_ADMIN?"":"none";
+  document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setView(b.dataset.view));
+  document.getElementById("btnNew").onclick=()=>setView("nueva");
+  document.getElementById("btnExport").onclick=exportCSV;
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrar();});
+  setView("gerencia");
+}
+
+async function init(){
+  const cfg=await fetch("/api/config").then(r=>r.json());
+  MODO=cfg.modo;
+  if(MODO==="saas"){
+    const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2");
+    CREATE_CLIENT=createClient; SUPA_URL=cfg.supabase_url; SUPA_ANON=cfg.supabase_anon_key;
+    SUPA=createClient(SUPA_URL,SUPA_ANON);
+    const {data}=await SUPA.auth.getSession();
+    if(data.session){ TOKEN=data.session.access_token; await cargar(); arrancarApp(); }
+    else { mostrarLogin(); }
+  } else {
+    await cargar(); arrancarApp();
+  }
+}
+async function entrar(email,pass,remember){
+  // "Recordarme": persistente (localStorage) vs solo la sesión del navegador (sessionStorage)
+  if(CREATE_CLIENT && remember===false){
+    SUPA=CREATE_CLIENT(SUPA_URL,SUPA_ANON,{auth:{persistSession:true,autoRefreshToken:true,storage:window.sessionStorage}});
+  }
+  const {data,error}=await SUPA.auth.signInWithPassword({email,password:pass});
+  if(error) throw error;
+  TOKEN=data.session.access_token; await cargar(); await arrancarApp();
+}
+function _vista(id){ ["form_login","form_reg","form_forgot"].forEach(f=>document.getElementById(f).style.display=f===id?"":"none"); }
+function _cargando(btn,on,txt){ btn.disabled=on; btn.innerHTML= on ? '<span class="spin"></span> '+txt : btn.dataset.label; }
+function mostrarLogin(){
+  document.getElementById("loader").style.display="none";
+  document.getElementById("login").classList.add("show");
+  const $=id=>document.getElementById(id);
+  [["lg_btn","Iniciar sesión"],["rg_btn","Crear cuenta"],["fg_btn","Enviar enlace"]].forEach(([id,l])=>$(id).dataset.label=l);
+
+  // cambio de vistas (login / crear cuenta / recuperar)
+  $("go_reg").onclick=()=>_vista("form_reg");
+  $("go_login").onclick=()=>_vista("form_login");
+  $("go_login2").onclick=()=>_vista("form_login");
+  $("lg_forgot").onclick=()=>{ $("fg_email").value=$("lg_email").value; _vista("form_forgot"); };
+
+  // mostrar / ocultar contraseña
+  const eye=(b,i)=>$(b).onclick=()=>{ const inp=$(i),sh=inp.type==="password"; inp.type=sh?"text":"password"; $(b).textContent=sh?"Ocultar":"Ver"; };
+  eye("lg_eye","lg_pass"); eye("rg_eye","rg_pass");
+
+  // OAuth corporativo (Microsoft / Google)
+  async function oauth(provider){
+    const err=$("lg_err"); err.className="lx-err bad"; err.textContent="";
+    try{ const {error}=await SUPA.auth.signInWithOAuth({provider,options:{redirectTo:location.origin}}); if(error) throw error; }
+    catch(e){ err.textContent=/not enabled|provider/i.test(e.message||"")?"Ese proveedor aún no está habilitado en Supabase.":(e.message||"No se pudo continuar."); }
+  }
+  $("oauth_ms").onclick=()=>oauth("azure");
+  $("oauth_google").onclick=()=>oauth("google");
+
+  // iniciar sesión
+  $("lg_btn").onclick=async()=>{
+    const err=$("lg_err"); err.className="lx-err bad"; err.textContent="";
+    const email=$("lg_email").value.trim();
+    if(!email||!$("lg_pass").value){ err.textContent="Ingresa tu correo y contraseña."; return; }
+    _cargando($("lg_btn"),true,"Entrando…");
+    try{ await entrar(email,$("lg_pass").value,$("lg_remember").checked); }
+    catch(e){ const m=e.message||""; err.textContent=/invalid login/i.test(m)?"Correo o contraseña incorrectos.":/banned/i.test(m)?"Tu cuenta está pendiente de aprobación por un administrador.":m; _cargando($("lg_btn"),false); }
+  };
+  $("lg_pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("lg_btn").click(); });
+
+  // recuperar contraseña
+  $("fg_btn").onclick=async()=>{
+    const err=$("fg_err"); err.className="lx-err bad"; err.textContent="";
+    const email=$("fg_email").value.trim();
+    if(!email){ err.textContent="Ingresa tu correo."; return; }
+    _cargando($("fg_btn"),true,"Enviando…");
+    try{ const {error}=await SUPA.auth.resetPasswordForEmail(email,{redirectTo:location.origin}); if(error) throw error;
+      err.className="lx-err ok"; err.textContent="Si el correo existe, te enviamos un enlace para restablecer tu contraseña."; }
+    catch(e){ err.textContent=e.message||"No se pudo enviar el enlace."; }
+    finally{ _cargando($("fg_btn"),false); }
+  };
+
+  // crear cuenta
+  $("rg_btn").onclick=async()=>{
+    const err=$("rg_err"); err.className="lx-err bad"; err.textContent="";
+    const email=$("rg_email").value.trim().toLowerCase(), p1=$("rg_pass").value, p2=$("rg_pass2").value;
+    if(p1.length<8){ err.textContent="La contraseña debe tener al menos 8 caracteres."; return; }
+    if(p1!==p2){ err.textContent="Las contraseñas no coinciden."; return; }
+    _cargando($("rg_btn"),true,"Creando…");
+    try{
+      const r=await fetch("/api/registro",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:p1})});
+      if(!r.ok){ const d=await r.json().catch(()=>({})); throw new Error(d.detail||"No se pudo crear la cuenta."); }
+      const d=await r.json();
+      if(d.estado==="pendiente"){
+        err.className="lx-err ok";
+        err.textContent="Solicitud enviada ✓ Un administrador de automatizaesto habilitará tu empresa; te avisaremos para que ingreses.";
+        ["rg_email","rg_pass","rg_pass2"].forEach(id=>$(id).value=""); _cargando($("rg_btn"),false);
+      } else { err.className="lx-err ok"; err.textContent="Cuenta creada, entrando…"; await entrar(email,p1,true); }
+    }catch(e){ err.className="lx-err bad"; err.textContent=e.message; _cargando($("rg_btn"),false); }
+  };
+}
+init().catch(e=>{document.getElementById("loader").textContent="Error: "+e.message;});
+</script>
+</body>
+</html>
