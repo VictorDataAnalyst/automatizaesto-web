@@ -1,0 +1,27 @@
+# Render Blueprint — backend de AgroQuality (FastAPI + frontend estático).
+# En Render: New → Blueprint → conecta este repo. Render lee este archivo,
+# crea el servicio y solo te pide los 4 secretos (sync:false) en el dashboard.
+# Doc: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: agroquality
+    runtime: docker
+    rootDir: agroquality/app
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /api/config
+    autoDeploy: true
+    envVars:
+      # Secretos: se cargan en el dashboard de Render (NO se versionan).
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      # No secreto: nombre del bucket de fotos.
+      - key: AGROQUALITY_BUCKET
+        value: agroquality-fotos
