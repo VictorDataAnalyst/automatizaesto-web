@@ -1,7 +1,7 @@
 # =====================================================================
-# Autenticación — valida el JWT que emite Supabase Auth.
-# En MODO_DEMO no hay login: usuario_actual() devuelve un usuario ficticio
-# para que la app siga corriendo en local sin Supabase.
+# AgroQuality — autenticación. Valida el JWT que emite Supabase Auth.
+# En MODO_DEMO no hay login: usuario_actual() devuelve un usuario ficticio.
+# Mismo patrón que forecast_nueva_version/app/auth.py.
 # =====================================================================
 import jwt
 from jwt import PyJWKClient
@@ -9,7 +9,6 @@ from fastapi import Header, HTTPException
 
 import config
 
-# Usuario de demo (sin login). org_id estable para que el flujo demo persista.
 DEMO_USER = {"user_id": "00000000-0000-0000-0000-000000000000",
              "email": "demo@local", "modo": "demo"}
 
@@ -28,8 +27,6 @@ def _token_de_header(authorization: str | None) -> str:
 
 
 def verificar_jwt(token: str) -> dict:
-    """Valida firma + expiración del JWT de Supabase. Soporta ES256/RS256 (JWKS)
-    y HS256 (JWT secret legacy). Devuelve {user_id, email}; 401 si inválido."""
     try:
         alg = jwt.get_unverified_header(token).get("alg", "HS256")
         if alg in _ASIMETRICOS:

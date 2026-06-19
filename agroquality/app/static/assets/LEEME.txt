@@ -1,0 +1,10 @@
+Imagen del login de AgroQuality
+================================
+Coloca aquí una foto y el login la usará automáticamente:
+
+  login.jpg  -> panel derecho del login (recomendado: vertical o apaisado,
+                ~1200x1600, < 600 KB). Ideal: un supervisor de calidad
+                revisando fruta (palta / arándano) en planta o frigorífico.
+
+Mientras no exista login.jpg, el panel muestra un degradado verde de marca
+con un patrón sutil (se ve bien igual). Apenas subas la foto, aparece sola.

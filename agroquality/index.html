@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroQuality · Auditoría e inspección de calidad post-cosecha</title>
+<meta name="description" content="AgroQuality: inspección y auditoría de calidad post-cosecha para agroexportadoras. Reportes por lote, pallet y muestra, con scoring y trazabilidad punta a punta." />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2327C26B'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%23ffffff'>&#955;</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1A13; --ink2:#33453B; --muted:#62756A; --line:#E6ECE8; --line2:#F0F4F2;
+  --bg:#FFFFFF; --soft:#F5F8F6; --soft2:#EEF4F0;
+  --emer:#1F9D57; --emer-d:#157F47; --lime:#27C26B; --deep:#0C5A33;
+  --shadow:0 1px 2px rgba(14,26,19,.04),0 10px 30px rgba(14,26,19,.07);
+  --shadow-lg:0 24px 60px rgba(14,26,19,.16);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.55;overflow-x:hidden}
+h1,h2,h3,h4,.dsp{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.08}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 28px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--emer);display:inline-flex;align-items:center;gap:9px}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--emer);border-radius:2px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:13px 24px;border-radius:100px;border:1.5px solid transparent;transition:.2s;cursor:pointer;font-family:inherit}
+.btn.primary{background:var(--emer);color:#fff}
+.btn.primary:hover{background:var(--emer-d);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.dark:hover{background:#000}
+.btn.line{border-color:var(--line);color:var(--ink);background:#fff}
+.btn.line:hover{border-color:var(--emer);color:var(--emer)}
+
+/* ===== Top bar ===== */
+.topbar{background:var(--ink);color:#B8CABF;font-size:12.5px}
+.topbar .container{display:flex;align-items:center;justify-content:flex-end;gap:22px;height:38px}
+.topbar a{color:#CFE0D6}.topbar a:hover{color:#fff}
+.topbar .sep{width:1px;height:14px;background:rgba(255,255,255,.15)}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:30px;height:72px}
+.logo{display:flex;align-items:center;gap:11px;font-family:'Sora';font-weight:700;font-size:20px}
+.logo .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#27C26B,#157F47);display:grid;place-items:center;color:#fff;font-family:monospace;font-size:22px;font-weight:700}
+.menu{display:flex;gap:6px;margin-left:8px}
+.menu>a{padding:9px 14px;border-radius:9px;font-size:14.5px;font-weight:500;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.menu>a:hover{background:var(--soft);color:var(--ink)}
+.menu .chev{width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);opacity:.5;margin-top:-3px}
+.nav .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}
+.burger span{width:24px;height:2px;background:var(--ink);border-radius:2px}
+
+/* ===== Hero with video ===== */
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;color:#fff;overflow:hidden;background:#06140C}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media video{width:100%;height:100%;object-fit:cover}
+/* fallback animado: malla verde en movimiento si no hay mp4 */
+.hero-fallback{position:absolute;inset:0;background:
+  radial-gradient(60% 70% at 20% 20%, rgba(39,194,107,.55), transparent 60%),
+  radial-gradient(50% 60% at 80% 30%, rgba(13,90,51,.7), transparent 60%),
+  radial-gradient(70% 80% at 60% 90%, rgba(31,157,87,.6), transparent 60%),
+  linear-gradient(135deg,#06140C,#0a2417 60%,#06140C);
+  animation:meshmove 18s ease-in-out infinite alternate;filter:saturate(1.1)}
+@keyframes meshmove{0%{transform:scale(1.05) translate(0,0)}50%{transform:scale(1.18) translate(-2%,1%)}100%{transform:scale(1.08) translate(1%,-1%)}}
+.hero-grain{position:absolute;inset:0;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,12,7,.86) 0%,rgba(4,12,7,.6) 45%,rgba(4,12,7,.25) 100%)}
+.hero .container{position:relative;z-index:2;padding-top:60px;padding-bottom:60px}
+.hero h1{font-size:clamp(40px,6.2vw,80px);font-weight:700;max-width:14ch}
+.hero h1 em{font-style:normal;color:#7DF38A}
+.hero p.lead{font-size:clamp(17px,2vw,21px);color:#D7E7DD;max-width:54ch;margin:26px 0 34px}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero .trust{margin-top:38px;display:flex;align-items:center;gap:18px;color:#AFC8BB;font-size:13.5px;flex-wrap:wrap}
+.hero .trust b{color:#fff}
+.hero .trust .dotsep{width:5px;height:5px;border-radius:50%;background:#3f8a5f}
+.scrolltag{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;color:#9fc0ae;font-size:12px;letter-spacing:.1em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:7px}
+.scrolltag .m{width:22px;height:34px;border:1.5px solid #4f8e6c;border-radius:12px;position:relative}
+.scrolltag .m::after{content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);width:3px;height:7px;background:#7DF38A;border-radius:2px;animation:scrolld 1.6s ease-in-out infinite}
+@keyframes scrolld{0%,100%{opacity:0;top:6px}50%{opacity:1;top:14px}}
+
+/* ===== Logos strip ===== */
+.logos{background:var(--soft);border-bottom:1px solid var(--line)}
+.logos .container{display:flex;align-items:center;gap:34px;height:78px;flex-wrap:wrap;justify-content:center}
+.logos span.lab{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.logos .lg{font-family:'Sora';font-weight:700;font-size:17px;color:#9aaaa1;opacity:.85}
+
+/* ===== Section base ===== */
+section{padding:88px 0}
+.sec-head{max-width:680px;margin-bottom:46px}
+.sec-head h2{font-size:clamp(30px,4vw,46px);font-weight:700;margin:16px 0 14px}
+.sec-head h2 em{font-style:italic;color:var(--emer);font-weight:600}
+.sec-head p{font-size:17px;color:var(--muted)}
+.sec-head.center{margin:0 auto 46px;text-align:center}
+
+/* ===== Industries cards ===== */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.icard{border-radius:var(--r);overflow:hidden;position:relative;min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;box-shadow:var(--shadow);isolation:isolate}
+.icard .ph{position:absolute;inset:0;z-index:-2}
+.icard .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(8,18,12,.85))}
+.icard .bd{padding:24px;position:relative}
+.icard h3{font-size:22px;margin-bottom:7px}
+.icard p{font-size:14px;color:#D7E7DD;margin-bottom:14px}
+.icard .more{font-weight:600;font-size:14px;color:#9DF2AE;display:inline-flex;align-items:center;gap:7px}
+.icard:hover .ph{transform:scale(1.06)}
+.icard .ph{transition:transform .6s cubic-bezier(.22,1,.36,1)}
+/* placeholders por gradiente (reemplazables por fotos) */
+.ph-avo{background:linear-gradient(135deg,#2e6b1f,#1f9d57 70%)}
+.ph-grape{background:linear-gradient(135deg,#5b2a6b,#7d3a8a 70%)}
+.ph-berry{background:linear-gradient(135deg,#7a1f3a,#b5294d 70%)}
+
+/* ===== Services ===== */
+.cards-srv{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.scard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px;transition:.25s;box-shadow:var(--shadow)}
+.scard:hover{border-color:#C8E2D2;transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.scard .ic{width:50px;height:50px;border-radius:13px;background:var(--soft2);display:grid;place-items:center;margin-bottom:16px;color:var(--emer)}
+.scard h3{font-size:18px;margin-bottom:8px}
+.scard p{font-size:14px;color:var(--muted);margin-bottom:14px}
+.scard a{font-weight:600;font-size:13.5px;color:var(--emer);display:inline-flex;gap:6px;align-items:center}
+
+/* ===== Video walkthrough ===== */
+.showcase{background:var(--ink);color:#fff}
+.showcase .grid{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:center}
+.showcase h2{font-size:clamp(28px,3.6vw,42px);font-weight:700;margin:16px 0 16px}
+.showcase h2 em{font-style:italic;color:#7DF38A;font-weight:600}
+.showcase p{color:#C3D6CB;font-size:16.5px;margin-bottom:22px}
+.showcase ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.showcase li{display:flex;gap:11px;font-size:15px;color:#DCEAE2}
+.showcase li svg{flex-shrink:0;color:#7DF38A;margin-top:3px}
+.player{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:#06140C;box-shadow:var(--shadow-lg);cursor:pointer}
+.player video{width:100%;height:100%;object-fit:cover;display:block}
+.player .poster{position:absolute;inset:0;background:
+  radial-gradient(60% 80% at 70% 30%,rgba(39,194,107,.45),transparent),
+  linear-gradient(135deg,#0a2417,#06140C);display:grid;place-items:center}
+.player .play{width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 10px 40px rgba(0,0,0,.4);transition:.25s}
+.player:hover .play{transform:scale(1.08)}
+.player .play::after{content:"";border-left:24px solid var(--emer);border-top:15px solid transparent;border-bottom:15px solid transparent;margin-left:6px}
+.player .badge{position:absolute;top:16px;left:16px;background:rgba(6,20,12,.7);color:#9DF2AE;font-size:12px;font-weight:600;padding:6px 12px;border-radius:100px;backdrop-filter:blur(6px)}
+
+/* ===== Difference ===== */
+.diff{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.dcol .n{font-family:'Sora';font-size:14px;font-weight:700;color:var(--emer);border-top:2px solid var(--emer);padding-top:14px;width:fit-content}
+.dcol h3{font-size:21px;margin:14px 0 10px}
+.dcol p{font-size:15px;color:var(--muted)}
+
+/* ===== Stats ===== */
+.stats{background:linear-gradient(135deg,#0C5A33,#157F47);color:#fff}
+.stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.stat .v{font-family:'Sora';font-size:clamp(34px,4.5vw,52px);font-weight:700;line-height:1}
+.stat .v small{font-size:.5em;opacity:.8}
+.stat .l{margin-top:10px;color:#C8EAD6;font-size:14px}
+
+/* ===== Insights ===== */
+.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.ncard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:.25s;display:flex;flex-direction:column}
+.ncard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.ncard .ph{height:140px}
+.ncard .bd{padding:18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.ncard .tag{font-size:11.5px;font-weight:700;color:var(--emer);text-transform:uppercase;letter-spacing:.05em}
+.ncard h4{font-size:16px;line-height:1.25}
+.ncard .lnk{margin-top:auto;font-weight:600;font-size:13px;color:var(--emer)}
+
+/* ===== CTA band ===== */
+.ctaband{background:var(--soft);text-align:center}
+.ctaband h2{font-size:clamp(30px,4vw,46px);font-weight:700;max-width:18ch;margin:0 auto 16px}
+.ctaband h2 em{font-style:italic;color:var(--emer);font-weight:600}
+.ctaband p{font-size:17px;color:var(--muted);max-width:52ch;margin:0 auto 28px}
+
+/* ===== Footer ===== */
+footer{background:var(--ink);color:#A9BFB2;padding:64px 0 30px;font-size:14px}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.1)}
+.fcol h5{color:#fff;font-family:'Sora';font-size:14px;margin-bottom:16px}
+.fcol a{display:block;color:#A9BFB2;padding:6px 0}.fcol a:hover{color:#fff}
+.fbrand .logo{color:#fff;margin-bottom:14px}
+.fbrand p{max-width:34ch;color:#8FA89B}
+.fbot{display:flex;justify-content:space-between;align-items:center;padding-top:24px;color:#7E978A;font-size:12.5px;flex-wrap:wrap;gap:12px}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:980px){
+  .cards3,.cards-srv,.diff,.cards4,.stats .grid{grid-template-columns:1fr 1fr}
+  .showcase .grid{grid-template-columns:1fr;gap:28px}
+  .fgrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+  .menu,.topbar,.nav .right .btn.line{display:none}
+  .burger{display:flex}
+  .cards3,.cards-srv,.cards4,.diff,.stats .grid,.fgrid{grid-template-columns:1fr}
+  section{padding:60px 0}
+  .hero{min-height:78vh}
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar"><div class="container">
+  <a href="#">Español ▾</a><span class="sep"></span>
+  <a href="mailto:hola@automatizaesto.com">Contacto</a><span class="sep"></span>
+  <a href="https://agroquality.onrender.com" target="_blank" rel="noopener">Acceder a la plataforma →</a>
+</div></div>
+
+<!-- Header -->
+<header><div class="container nav">
+  <a class="logo" href="#"><span class="mark">&#955;</span> AgroQuality</a>
+  <nav class="menu">
+    <a href="#servicios">Servicios <span class="chev"></span></a>
+    <a href="#industrias">Industrias <span class="chev"></span></a>
+    <a href="#recursos">Recursos <span class="chev"></span></a>
+    <a href="#nosotros">Nosotros</a>
+  </nav>
+  <div class="right">
+    <a class="btn line" href="https://agroquality.onrender.com" target="_blank" rel="noopener">Iniciar sesión</a>
+    <a class="btn primary" href="#contacto">Solicita una demo</a>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </div>
+</div></header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-media">
+    <div class="hero-fallback"></div>
+    <!-- Suelta tu video en assets/hero.mp4: aparecerá sobre el fondo animado.
+         Mientras no exista, queda oculto y se ve el fondo animado de respaldo. -->
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto" style="opacity:0;transition:opacity .8s ease">
+      <source src="assets/hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-grain"></div>
+    <div class="hero-scrim"></div>
+  </div>
+  <div class="container">
+    <span class="eyebrow" style="color:#7DF38A">Auditoría de calidad post-cosecha</span>
+    <h1>Calidad que <em>genera confianza</em> en cada lote.</h1>
+    <p class="lead">Inspección y auditoría de fruta de exportación — por lote, pallet y muestra. Capturamos defectos, scoring y trazabilidad, y tu gerencia extrae la información cuando la necesita.</p>
+    <div class="cta">
+      <a class="btn primary" href="#contacto">Solicita una demo →</a>
+      <a class="btn ghost" href="#showcase">▷ Ver en acción</a>
+    </div>
+    <div class="trust">
+      <span><b>+12.000</b> pallets auditados</span><span class="dotsep"></span>
+      <span><b>Punta a punta</b> con AgroField</span><span class="dotsep"></span>
+      <span>Paltas · Uva · Berries</span>
+    </div>
+  </div>
+  <div class="scrolltag"><span class="m"></span>Desplázate</div>
+</section>
+
+<!-- Logos -->
+<div class="logos"><div class="container">
+  <span class="lab">Construido para agroexportadoras como</span>
+  <span class="lg">Marand</span><span class="lg">Supafresh</span><span class="lg">Wonokoyo</span><span class="lg">automatizaesto</span>
+</div></div>
+
+<!-- Industrias -->
+<section id="industrias"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Industrias que auditamos</span>
+    <h2>Calidad para cada <em>fruta de exportación</em>.</h2>
+    <p>Protocolos de inspección adaptados a cada producto y a su comportamiento en frío, desde planta en origen hasta el arribo en destino.</p>
+  </div>
+  <div class="cards3">
+    <a class="icard reveal"><div class="ph ph-avo"></div><div class="bd"><h3>Paltas / Avocado</h3><p>Defectos de calidad y condición, calibre, materia seca y maduración en cámara.</p><span class="more">Descubre más →</span></div></a>
+    <a class="icard reveal"><div class="ph ph-grape"></div><div class="bd"><h3>Uva de mesa</h3><p>Desgrane, color, firmeza de baya y daños por frío en tránsito largo.</p><span class="more">Descubre más →</span></div></a>
+    <a class="icard reveal"><div class="ph ph-berry"></div><div class="bd"><h3>Arándanos / Berries</h3><p>Bloom, firmeza, pudriciones y trazabilidad por clamshell y pallet.</p><span class="more">Descubre más →</span></div></a>
+  </div>
+</div></section>
+
+<!-- Servicios -->
+<section id="servicios" style="background:var(--soft)"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Servicios de calidad</span>
+    <h2>Todo lo que <em>auditamos</em>, en una sola plataforma.</h2>
+    <p>Captura en planta o frigorífico — incluso sin señal — y un reporte exportable listo para tu cliente y tu gerencia.</p>
+  </div>
+  <div class="cards-srv">
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v6l9 4 9-4V7"/></svg></div><h3>Inspección pre-embarque</h3><p>Verifica el lote antes de embarcar y evita rechazos costosos en destino.</p><a href="#contacto">Conocer →</a></div>
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Auditoría en destino</h3><p>Reporte de arribo con scoring Good/Fair/Poor por pallet y muestra.</p><a href="#contacto">Conocer →</a></div>
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></div><h3>Control en planta</h3><p>Inspección de calidad durante el empaque, con fotos y termografía.</p><a href="#contacto">Conocer →</a></div>
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z"/></svg></div><h3>Monitoreo de temperatura</h3><p>Termografía y cadena de frío por contenedor, registrada y comparable.</p><a href="#contacto">Conocer →</a></div>
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Trazabilidad por lote</h3><p>Del campo (AgroField) al reporte de calidad: un mismo lote, una sola historia.</p><a href="#contacto">Conocer →</a></div>
+    <div class="scard reveal"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg></div><h3>Reportes para gerencia</h3><p>Extrae por período de ingreso: KPIs, Pareto de defectos y exportación a Excel.</p><a href="#contacto">Conocer →</a></div>
+  </div>
+</div></section>
+
+<!-- Showcase / video -->
+<section id="showcase" class="showcase"><div class="container">
+  <div class="grid">
+    <div class="reveal">
+      <span class="eyebrow" style="color:#7DF38A">AgroQuality en acción</span>
+      <h2>Mira cómo nace un <em>reporte de calidad</em>.</h2>
+      <p>Del registro del inspector en el frigorífico al panel del gerente, en minutos.</p>
+      <ul>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Captura jerárquica: lote → pallets → defectos</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Scoring automático Good / Fair / Poor</li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Panel del gerente con filtro por período</li>
+      </ul>
+      <a class="btn primary" href="prototipo.html">Probar el prototipo →</a>
+    </div>
+    <div class="player" id="player">
+      <span class="badge">● Demo · 1:24</span>
+      <video id="demoVideo" muted loop playsinline poster="">
+        <source src="assets/demo.mp4" type="video/mp4">
+      </video>
+      <div class="poster" id="poster"><div class="play"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- Diferencia -->
+<section id="nosotros"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">La diferencia AgroQuality</span>
+    <h2>No es genérico: está hecho <em>para tu fruta</em>.</h2>
+  </div>
+  <div class="diff">
+    <div class="dcol reveal"><div class="n">01</div><h3>Datos en tiempo real</h3><p>El inspector registra en planta o frigorífico, incluso offline, y todo se sincroniza al volver la señal.</p></div>
+    <div class="dcol reveal"><div class="n">02</div><h3>Trazabilidad punta a punta</h3><p>El lote que evaluaste en campo con AgroField se reencuentra con su reporte de calidad. Una sola historia.</p></div>
+    <div class="dcol reveal"><div class="n">03</div><h3>Pensado para gerencia</h3><p>Tu gerente extrae la información por período de ingreso, sin pedirle nada a nadie. Decisiones con evidencia.</p></div>
+  </div>
+</div></section>
+
+<style>
+.roi-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.roi-wrap{grid-template-columns:1fr}}
+.roi-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:24px}
+.roi-fld{margin-bottom:16px}.roi-fld:last-child{margin-bottom:0}
+.roi-fld label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.roi-fld input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:16px;font-family:inherit;background:#fff}
+.roi-fld input:focus{outline:none;border-color:var(--emer)}
+.roi-out{display:flex;flex-direction:column;gap:14px}
+.roi-metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.roi-metric .v{font-family:'Sora';font-size:32px;font-weight:700;color:var(--emer);line-height:1}
+.roi-metric .l{font-size:13px;color:var(--muted);margin-top:4px}
+.roi-note{font-size:12px;color:var(--muted)}
+.sec-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:860px){.sec-cards{grid-template-columns:1fr}}
+.sec-it{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.sec-it .ic{width:42px;height:42px;border-radius:11px;background:var(--soft2);display:grid;place-items:center;color:var(--emer);margin-bottom:12px}
+.sec-it h3{font-size:16px;margin-bottom:6px}.sec-it p{font-size:13.5px;color:var(--muted)}
+.ai-band{background:var(--ink);color:#fff;border-radius:20px;padding:38px;display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:center}
+@media(max-width:860px){.ai-band{grid-template-columns:1fr;padding:28px}}
+.ai-badge{display:inline-block;background:rgba(39,194,107,.18);color:#7DF38A;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:100px;margin-bottom:14px}
+.ai-band h2{font-size:28px;margin-bottom:10px}.ai-band p{color:#C3D6CB;font-size:15px}
+.ai-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.ai-list{grid-template-columns:1fr}}
+.ai-list li{display:flex;gap:9px;font-size:14px;color:#DCEAE2;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:12px}
+.ai-list li b{color:#7DF38A;font-weight:700}
+</style>
+
+<!-- ROI -->
+<section id="roi"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Calcula tu retorno</span>
+    <h2>¿Cuánto tiempo te <em>ahorra</em> AgroQuality?</h2>
+    <p>Una estimación rápida según tu operación — ajústala a tu realidad.</p>
+  </div>
+  <div class="roi-wrap">
+    <div class="roi-card reveal">
+      <div class="roi-fld"><label>Lotes que inspeccionas al mes</label><input id="roi_lotes" type="number" min="0" value="40"></div>
+      <div class="roi-fld"><label>Minutos en documentar cada inspección hoy (planilla, fotos, consolidar)</label><input id="roi_min" type="number" min="0" value="40"></div>
+      <div class="roi-fld"><label>Costo por hora del personal (S/)</label><input id="roi_costo" type="number" min="0" value="25"></div>
+    </div>
+    <div class="roi-out reveal">
+      <div class="roi-metric"><div class="v" id="roi_horas">0 h</div><div class="l">Horas ahorradas al mes</div></div>
+      <div class="roi-metric"><div class="v" id="roi_ahorro">S/ 0</div><div class="l">Ahorro operativo estimado al mes</div></div>
+      <p class="roi-note">Estimación asumiendo que la captura digital reduce ~50% el tiempo de documentación. Es un cálculo orientativo, no una promesa.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- Seguridad -->
+<section style="background:var(--soft)"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Seguridad empresarial</span>
+    <h2>Tus datos, <em>protegidos</em> de punta a punta.</h2>
+  </div>
+  <div class="sec-cards">
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3>Cifrado de datos</h3><p>En tránsito (HTTPS) y en reposo, sobre infraestructura de nube gestionada.</p></div>
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4-3 6.5-7 9-4-2.5-7-5-7-9V6z"/></svg></div><h3>Control de accesos por empresa</h3><p>Cada empresa ve solo sus inspecciones: aislamiento por organización a nivel de base de datos.</p></div>
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A3.5 3.5 0 0 1 18 18z"/></svg></div><h3>Nube escalable + respaldos</h3><p>Infraestructura que crece con tu operación, con respaldos automáticos.</p></div>
+  </div>
+</div></section>
+
+<!-- AgroQuality AI (roadmap) -->
+<section><div class="container">
+  <div class="ai-band reveal">
+    <div>
+      <span class="ai-badge">Próximamente · En el roadmap</span>
+      <h2>AgroQuality AI</h2>
+      <p>El siguiente paso: que la plataforma no solo registre la calidad, sino que te ayude a interpretarla.</p>
+    </div>
+    <ul class="ai-list">
+      <li><b>›</b> Resumen automático de inspecciones</li>
+      <li><b>›</b> Detección de anomalías por lote</li>
+      <li><b>›</b> Explicación de causas de rechazo</li>
+      <li><b>›</b> Recomendaciones de mejora</li>
+    </ul>
+  </div>
+</div></section>
+
+<script>
+(function(){
+  var f=function(n){return Math.round(n).toLocaleString('es-PE');};
+  function calc(){
+    var lotes=+(document.getElementById('roi_lotes')||{}).value||0;
+    var min=+(document.getElementById('roi_min')||{}).value||0;
+    var costo=+(document.getElementById('roi_costo')||{}).value||0;
+    var ahorradas=lotes*min/60*0.5;
+    var h=document.getElementById('roi_horas'), a=document.getElementById('roi_ahorro');
+    if(h) h.textContent=f(ahorradas)+' h';
+    if(a) a.textContent='S/ '+f(ahorradas*costo);
+  }
+  ['roi_lotes','roi_min','roi_costo'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',calc);});
+  calc();
+})();
+</script>
+
+<!-- Stats -->
+<section class="stats"><div class="container">
+  <div class="grid">
+    <div class="stat reveal"><div class="v" data-count="100" data-suffix="%">0</div><div class="l">Inspección digital, sin papel</div></div>
+    <div class="stat reveal"><div class="v" data-count="3">0</div><div class="l">Cultivos: paltas, uva, berries</div></div>
+    <div class="stat reveal"><div class="v" data-count="3">0</div><div class="l">Productos del ecosistema</div></div>
+    <div class="stat reveal"><div class="v" data-count="24" data-suffix="/7">0</div><div class="l">Datos en la nube</div></div>
+  </div>
+</div></section>
+
+<!-- Insights -->
+<section id="recursos"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Recursos</span>
+    <h2>Aprende a <em>controlar la calidad</em>.</h2>
+  </div>
+  <div class="cards4">
+    <a class="ncard reveal"><div class="ph ph-avo"></div><div class="bd"><span class="tag">Guía</span><h4>Defectos de condición en palta y cómo medirlos</h4><span class="lnk">Leer →</span></div></a>
+    <a class="ncard reveal"><div class="ph ph-grape"></div><div class="bd"><span class="tag">Whitepaper</span><h4>Cadena de frío: termografía que sí sirve</h4><span class="lnk">Descargar →</span></div></a>
+    <a class="ncard reveal"><div class="ph ph-berry"></div><div class="bd"><span class="tag">Checklist</span><h4>Inspección pre-embarque en 12 puntos</h4><span class="lnk">Ver →</span></div></a>
+    <a class="ncard reveal"><div class="ph" style="background:linear-gradient(135deg,#0C5A33,#27C26B)"></div><div class="bd"><span class="tag">Caso</span><h4>Trazabilidad de campo a destino con AgroField</h4><span class="lnk">Leer →</span></div></a>
+  </div>
+</div></section>
+
+<!-- CTA -->
+<section id="contacto" class="ctaband"><div class="container">
+  <div class="reveal">
+    <h2>Construyamos <em>confianza</em> en tu calidad.</h2>
+    <p>Agenda una demo y te mostramos AgroQuality con un lote real de tu operación.</p>
+    <a class="btn primary" href="mailto:hola@automatizaesto.com?subject=Demo%20AgroQuality">Solicita una demo →</a>
+  </div>
+</div></section>
+
+<!-- Footer -->
+<footer><div class="container">
+  <div class="fgrid">
+    <div class="fcol fbrand">
+      <a class="logo" href="#"><span class="mark">&#955;</span> AgroQuality</a>
+      <p>Auditoría e inspección de calidad post-cosecha para agroexportadoras. Un producto de automatizaesto.</p>
+    </div>
+    <div class="fcol"><h5>Producto</h5><a href="#servicios">Servicios</a><a href="#industrias">Industrias</a><a href="https://agroquality.onrender.com" target="_blank" rel="noopener">Plataforma</a><a href="#contacto">Demo</a></div>
+    <div class="fcol"><h5>Recursos</h5><a href="#recursos">Guías</a><a href="#recursos">Whitepapers</a><a href="#recursos">Casos</a></div>
+    <div class="fcol"><h5>Empresa</h5><a href="https://automatizaesto.com">automatizaesto</a><a href="mailto:hola@automatizaesto.com">Contacto</a><a href="/legal.html">Legal</a></div>
+  </div>
+  <div class="fbot">
+    <span>© <span id="yr">2026</span> automatizaesto.com · AgroQuality. Todos los derechos reservados.</span>
+    <span>Hecho en Perú 🇵🇪</span>
+  </div>
+</div></footer>
+
+<script>
+document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* El video del hero solo se muestra si el .mp4 existe y puede reproducirse */
+const heroVideo=document.getElementById("heroVideo");
+if(heroVideo){ heroVideo.addEventListener("canplay",()=>{heroVideo.style.opacity="1";});
+  heroVideo.addEventListener("error",()=>{heroVideo.style.display="none";}); }
+
+/* Reveal on scroll */
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+/* Contadores */
+function animar(el){const t=+el.dataset.count,suf=el.dataset.suffix||"";const dur=1400,t0=performance.now();
+  function step(now){const p=Math.min((now-t0)/dur,1);const e=1-Math.pow(1-p,3);
+    let val=Math.round(t*e); el.textContent=(val>=1000?val.toLocaleString("es-PE"):val)+(p===1?suf:(suf?"<small>"+suf+"</small>":""));
+    el.innerHTML=(val>=1000?val.toLocaleString("es-PE"):val)+"<small>"+suf+"</small>";
+    if(p<1)requestAnimationFrame(step);} requestAnimationFrame(step);}
+const ioc=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){animar(e.target.querySelector(".v"));ioc.unobserve(e.target);}}),{threshold:.4});
+document.querySelectorAll(".stat").forEach(s=>ioc.observe(s));
+
+/* Player: clic para reproducir el video de demo */
+const player=document.getElementById("player"),vid=document.getElementById("demoVideo"),poster=document.getElementById("poster");
+player.addEventListener("click",()=>{ if(vid.querySelector("source").getAttribute("src") && vid.readyState>0){ poster.style.display="none"; vid.play(); }
+  else { poster.innerHTML="<div style='color:#9DF2AE;font-size:13px;text-align:center;padding:0 24px'>Suelta tu video en <b>assets/demo.mp4</b><br>para activar la reproducción</div>"; } });
+
+/* Burger (móvil): scroll simple al menú */
+document.getElementById("burger").addEventListener("click",()=>{document.getElementById("servicios").scrollIntoView();});
+</script>
+</body>
+</html>

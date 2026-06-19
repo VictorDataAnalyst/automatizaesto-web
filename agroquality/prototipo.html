@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroQuality · Auditoría y Control de Calidad Post-cosecha</title>
+<meta name="description" content="AgroQuality: plataforma de auditoría e inspección de calidad post-cosecha. Captura por lote, pallet y muestra; el gerente extrae la información por período de ingreso." />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2327C26B'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%23ffffff'>&#955;</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F5; --panel:#FFFFFF; --ink:#0F1A14; --muted:#5C6B62;
+  --line:#E4E9E6; --line2:#EEF2F0;
+  --emer:#1F9D57; --emer-d:#157F47; --lime:#27C26B;
+  --good:#22A65A; --good-bg:#E4F6EC;
+  --fair:#E0B100; --fair-bg:#FBF4D6;
+  --poor:#E2602A; --poor-bg:#FBE7DC;
+  --shadow:0 1px 2px rgba(16,26,20,.04),0 8px 24px rgba(16,26,20,.06);
+  --shadow-lg:0 12px 40px rgba(16,26,20,.12);
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;font-size:14px}
+h1,h2,h3,h4,.dsp{font-family:'Sora',sans-serif;letter-spacing:-.02em}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+
+/* ── Layout ── */
+.app{display:flex;min-height:100vh}
+.side{width:230px;background:#0F1A14;color:#CFE6D8;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#27C26B,#157F47);display:grid;place-items:center;font-family:monospace;font-weight:700;color:#fff;font-size:20px}
+.brand b{font-family:'Sora';font-size:16px;color:#fff;display:block;line-height:1.1}
+.brand small{color:#7FA890;font-size:11px}
+.nav{padding:14px 10px;display:flex;flex-direction:column;gap:3px;flex:1}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:none;color:#9DBBA9;padding:10px 12px;border-radius:9px;font-size:13.5px;font-weight:500;transition:.15s}
+.nav button:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav button.on{background:rgba(39,194,107,.16);color:#fff}
+.nav .ic{width:18px;text-align:center;opacity:.9}
+.side .who{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:#7FA890}
+.side .who b{color:#fff;font-weight:600;display:block}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:20}
+.top h1{font-size:18px}
+.top .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
+.wrap{padding:24px 28px;max-width:1320px;width:100%}
+
+/* ── Buttons ── */
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 15px;border-radius:9px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.btn:hover{border-color:#C9D4CE;background:#FAFBFA}
+.btn.primary{background:var(--emer);border-color:var(--emer);color:#fff}
+.btn.primary:hover{background:var(--emer-d)}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:#EDF1EF}
+
+/* ── Cards / KPIs ── */
+.grid-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.kpi .val{font-family:'Sora';font-size:30px;font-weight:700;margin-top:6px;line-height:1}
+.kpi .delta{font-size:12px;margin-top:7px;color:var(--muted)}
+.kpi .val small{font-size:15px;color:var(--muted);font-weight:600}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.panel .hd{padding:15px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel .hd h3{font-size:14.5px}
+.panel .hd .mut{font-size:12px;color:var(--muted);font-weight:500}
+.panel .bd{padding:18px}
+
+.cols{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}}
+
+/* ── Filter bar ── */
+.filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow)}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.fld input,.fld select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);min-width:140px}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--emer)}
+.spacer{flex:1}
+
+/* ── Score chips ── */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.02em}
+.chip.good{background:var(--good-bg);color:#147A41}
+.chip.fair{background:var(--fair-bg);color:#8A6D00}
+.chip.poor{background:var(--poor-bg);color:#B5431A}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot.good{background:var(--good)}.dot.fair{background:var(--fair)}.dot.poor{background:var(--poor)}
+
+/* ── Tables ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:.12s}
+.tbl tbody tr:hover{background:#FAFBFA;cursor:pointer}
+.tbl td.mono,.mono{font-family:'Sora';font-variant-numeric:tabular-nums}
+.tbl .nowrap{white-space:nowrap}
+
+/* ── Bars (Pareto) ── */
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar-row{display:grid;grid-template-columns:170px 1fr 46px;align-items:center;gap:10px;font-size:12.5px}
+.bar-track{height:10px;background:var(--line2);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#27C26B,#157F47)}
+.bar-row b{font-variant-numeric:tabular-nums;text-align:right;font-family:'Sora';font-size:12px}
+
+/* ── Donut ── */
+.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+.legend{display:flex;flex-direction:column;gap:10px}
+.legend .li{display:flex;align-items:center;gap:9px;font-size:13px}
+.legend .li b{font-family:'Sora';margin-left:4px}
+
+/* ── Detail (QIMA-style) ── */
+.dt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:900px){.dt-grid{grid-template-columns:repeat(2,1fr)}}
+.dt-cell{background:#fff;padding:10px 12px}
+.dt-cell .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}
+.dt-cell .v{font-size:13.5px;font-weight:500;margin-top:2px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 0}
+.tabs button{border:none;background:none;padding:10px 14px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--emer);border-bottom-color:var(--emer)}
+
+/* ── Modal ── */
+.scrim{position:fixed;inset:0;background:rgba(15,26,20,.5);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;z-index:100;overflow-y:auto}
+.scrim.show{display:flex}
+.modal{background:var(--bg);width:100%;max-width:1060px;border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden}
+.modal .mhd{background:var(--panel);padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2}
+.modal .mbd{padding:22px}
+.x{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;color:var(--muted);line-height:1}
+
+/* ── Form ── */
+.frm{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.frm{grid-template-columns:repeat(2,1fr)}}
+.frm .ff{display:flex;flex-direction:column;gap:5px}
+.frm .ff.wide{grid-column:span 2}
+.frm label{font-size:11.5px;color:var(--muted);font-weight:600}
+.frm input,.frm select{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;background:#fff}
+.frm input:focus,.frm select:focus{outline:none;border-color:var(--emer)}
+.sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--emer);margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .big{font-size:34px;margin-bottom:8px}
+.pill{display:inline-block;background:var(--line2);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;color:var(--muted)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F1A14;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.25s;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.note{background:#F0F7F3;border:1px solid #D6EADD;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#2C5C42;display:flex;gap:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">&#955;</div>
+      <div><b>AgroQuality</b><small>by automatizaesto</small></div>
+    </div>
+    <nav class="nav">
+      <button class="on" data-view="gerencia"><span class="ic">▦</span> Panel del gerente</button>
+      <button data-view="inspecciones"><span class="ic">▤</span> Inspecciones</button>
+      <button data-view="nueva"><span class="ic">＋</span> Nueva inspección</button>
+    </nav>
+    <div class="who">
+      <b>Marand Company</b>
+      Auditoría de calidad · Paltas
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1 id="topTitle">Panel del gerente</h1>
+        <div class="sub" id="topSub">Extrae la información por período de ingreso</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="btnExport">⤓ Exportar CSV</button>
+        <button class="btn primary" id="btnNew">＋ Nueva inspección</button>
+      </div>
+    </header>
+    <div class="wrap" id="wrap"></div>
+  </main>
+</div>
+
+<!-- Detail modal -->
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   AgroQuality — prototipo funcional (persistencia en localStorage).
+   Modelo: Inspección (lote) → Pallets → score/defectos/medidas.
+   El gerente filtra por "período de ingreso" (fecha frigorífico).
+   ===================================================================== */
+const LS_KEY = "agroquality_v1";
+
+/* ---- Taxonomía de defectos (palta Hass) ---- */
+const DEF_CALIDAD = ["Misshapen","Sunburn / quemadura","Cicatriz / Scarring","Russeting","Sobrecalibre","Bajo calibre"];
+const DEF_CONDICION = ["Black Spots","Lenticelosis","Internal Breakdown","Black Color","Pudrición peduncular","Daño por frío","Antracnosis","Sobremadurez"];
+const PRODUCTORES = ["004-03006-03","016-42980-01","016-4726-01","010-62372-01","009-33744-02","016-40726-01"];
+
+/* ---- Scoring: a partir del % de defectos totales ---- */
+function scoreDe(pctTotal){ if(pctTotal < 12) return "good"; if(pctTotal <= 25) return "fair"; return "poor"; }
+const SCORE_LABEL = {good:"Good", fair:"Fair", poor:"Poor"};
+
+/* ---- Datos semilla (capturas Marand Company Asia · 13/06/2026) ---- */
+function seed(){
+  const palletsBase = [
+    {pallet:"R-MAR-10-EX08267", calibre:28, prod:"004-03006-03", temp:6.0, pcal:1.5, pcond:8.5, principal:"Sum of Condition Defects", muestra:69},
+    {pallet:"R-MAR-10-EX08142", calibre:30, prod:"016-42980-01", temp:6.5, pcal:3.2, pcond:11.0,principal:"Black Spots, Sum of Condition Defects", muestra:76},
+    {pallet:"R-MAR-10-EX08281", calibre:22, prod:"016-4726-01",  temp:6.2, pcal:6.1, pcond:24.4,principal:"Internal Breakdown, Lenticelosis", muestra:54},
+    {pallet:"S-MAR-10-EX08284", calibre:18, prod:"010-62372-01", temp:6.1, pcal:4.0, pcond:18.0,principal:"Sum of Total Defects", muestra:44},
+    {pallet:"S-MAR-10-EX08178", calibre:26, prod:"009-33744-02", temp:6.3, pcal:5.0, pcond:19.0,principal:"Lenticelosis, Sum of Condition Defects", muestra:66},
+    {pallet:"C-MAR-10-EX08274", calibre:22, prod:"016-40726-01", temp:6.0, pcal:6.0, pcond:22.0,principal:"Sum of Total Defects", muestra:54},
+    {pallet:"C-MAR-10-EX08296", calibre:20, prod:"016-42980-01", temp:5.9, pcal:2.0, pcond:6.0, principal:"Sum of Quality Defects", muestra:48},
+    {pallet:"C-MAR-10-EX08283", calibre:24, prod:"016-40726-01", temp:6.2, pcal:6.12,pcond:24.49,principal:"Sum of Total Defects", muestra:51},
+  ].map(p=>{ const tot=+(p.pcal+p.pcond).toFixed(2); return {...p, brix:0, peso:10, ptot:tot, score:scoreDe(tot)}; });
+
+  const insp1 = {
+    id:"INS-2606-0001", lote:"FBIU5628390", compania:"Marand Company Asia",
+    exportador:"Marand Company", consignatario:"Supafresh", locacion:"China, Shanghai", pais:"Peru",
+    producto:"Avocados", variedad:"Hass", embalaje:"Plastic Box 10Kg", tipoProducto:"CONV",
+    tipoInspeccion:"Normal Inspection", barco:"ORCA I 025W", tipoCarrier:"Ocean", container:"FBIU5628390",
+    frigorifico:"Supafresh DC", inspector:"Titus Song", cajas:2400, pallets:8, horaFrig:"4:00 PM",
+    fumigacion:"None", numFactura:"", fechaArribo:"2026-06-01", fechaFrigorifico:"2026-06-13",
+    fechaEmbalaje:"2026-04-30", palletsData:palletsBase
+  };
+
+  // Una segunda inspección (otro período) para que el filtro tenga sentido
+  const p2 = [
+    {pallet:"R-MAR-08-EX07710", calibre:24, prod:"004-03006-03", temp:5.8, pcal:1.0, pcond:5.0, principal:"Sum of Condition Defects", muestra:60},
+    {pallet:"R-MAR-08-EX07711", calibre:22, prod:"009-33744-02", temp:5.9, pcal:2.0, pcond:7.5, principal:"Lenticelosis", muestra:58},
+    {pallet:"S-MAR-08-EX07712", calibre:20, prod:"010-62372-01", temp:6.0, pcal:3.0, pcond:9.5, principal:"Black Spots", muestra:62},
+    {pallet:"C-MAR-08-EX07713", calibre:26, prod:"016-4726-01",  temp:6.1, pcal:5.5, pcond:21.0,principal:"Internal Breakdown", muestra:50},
+  ].map(p=>{ const tot=+(p.pcal+p.pcond).toFixed(2); return {...p, brix:0, peso:10, ptot:tot, score:scoreDe(tot)}; });
+
+  const insp2 = {...insp1, id:"INS-2605-0007", lote:"MNBU7781002", barco:"SANTA CRUZ 042W",
+    container:"MNBU7781002", consignatario:"Wonokoyo", locacion:"China, Ningbo", inspector:"Lia Chen",
+    cajas:1200, pallets:4, fechaArribo:"2026-05-20", fechaFrigorifico:"2026-05-22",
+    fechaEmbalaje:"2026-04-18", palletsData:p2 };
+
+  return [insp1, insp2];
+}
+
+/* ---- Store ---- */
+let DATA = load();
+function load(){ try{ const r=localStorage.getItem(LS_KEY); if(r) return JSON.parse(r);}catch(e){} const s=seed(); localStorage.setItem(LS_KEY,JSON.stringify(s)); return s; }
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(DATA)); }
+
+/* ---- Helpers de cálculo ---- */
+function resumenInsp(ins){
+  const ps=ins.palletsData, n=ps.length||1;
+  const cont={good:0,fair:0,poor:0}; let cal=0,cond=0,brix=0,brixN=0,temp=0,tempN=0,peso=0;
+  ps.forEach(p=>{ cont[p.score]++; cal+=p.pcal; cond+=p.pcond;
+    if(p.brix){brix+=p.brix;brixN++} if(p.temp){temp+=p.temp;tempN++} peso+=p.peso||0; });
+  const totProm=+((cal+cond)/n).toFixed(2);
+  return { n, cont, scoreGlobal: scoreDe(totProm),
+    calProm:+(cal/n).toFixed(2), condProm:+(cond/n).toFixed(2), totProm,
+    tempProm: tempN?+(temp/tempN).toFixed(1):null, brixProm: brixN?+(brix/brixN).toFixed(1):null,
+    pesoProm:+(peso/n).toFixed(1) };
+}
+function pctScore(cont,n){ return {good:Math.round(cont.good/n*100), fair:Math.round(cont.fair/n*100), poor:Math.round(cont.poor/n*100)}; }
+function fmtFecha(s){ if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; }
+function inRange(f,d1,d2){ if(!f) return false; if(d1 && f<d1) return false; if(d2 && f>d2) return false; return true; }
+
+/* ---- Estado UI ---- */
+let VIEW="gerencia";
+let FIL={d1:"",d2:"",score:"",consig:""};
+
+function inspeccionesFiltradas(){
+  return DATA.filter(i=>{
+    if((FIL.d1||FIL.d2) && !inRange(i.fechaFrigorifico,FIL.d1,FIL.d2)) return false;
+    if(FIL.consig && i.consignatario!==FIL.consig) return false;
+    if(FIL.score){ const r=resumenInsp(i); if(r.scoreGlobal!==FIL.score) return false; }
+    return true;
+  });
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+const wrap=document.getElementById("wrap");
+function setView(v){
+  VIEW=v;
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.view===v));
+  const T={gerencia:["Panel del gerente","Extrae la información por período de ingreso"],
+           inspecciones:["Inspecciones","Todos los reportes de auditoría guardados"],
+           nueva:["Nueva inspección","Captura de auditoría · lote → pallets"]};
+  document.getElementById("topTitle").textContent=T[v][0];
+  document.getElementById("topSub").textContent=T[v][1];
+  if(v==="gerencia") renderGerencia();
+  else if(v==="inspecciones") renderInspecciones();
+  else renderNueva();
+}
+
+/* ---------- PANEL DEL GERENTE ---------- */
+function renderGerencia(){
+  const list=inspeccionesFiltradas();
+  // Agregados
+  let totPallets=0, cont={good:0,fair:0,poor:0}, totCajas=0;
+  const defMap={}; const consigSet=new Set();
+  DATA.forEach(i=>consigSet.add(i.consignatario));
+  list.forEach(i=>{
+    totCajas+=i.cajas||0;
+    i.palletsData.forEach(p=>{
+      totPallets++; cont[p.score]++;
+      p.principal.split(",").map(s=>s.trim()).forEach(d=>{ if(!d) return; defMap[d]=(defMap[d]||0)+1; });
+    });
+  });
+  const pct=pctScore(cont, totPallets||1);
+  const defArr=Object.entries(defMap).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const maxDef=defArr.length?defArr[0][1]:1;
+
+  // Opciones de consignatario
+  const consigOpts=["<option value=''>Todos</option>"].concat([...consigSet].map(c=>`<option ${FIL.consig===c?"selected":""}>${c}</option>`)).join("");
+
+  wrap.innerHTML=`
+  <div class="filters">
+    <div class="fld"><label>Ingreso desde</label><input type="date" id="f_d1" value="${FIL.d1}"></div>
+    <div class="fld"><label>Ingreso hasta</label><input type="date" id="f_d2" value="${FIL.d2}"></div>
+    <div class="fld"><label>Score global</label>
+      <select id="f_score">
+        <option value="">Todos</option>
+        <option value="good" ${FIL.score==="good"?"selected":""}>Good</option>
+        <option value="fair" ${FIL.score==="fair"?"selected":""}>Fair</option>
+        <option value="poor" ${FIL.score==="poor"?"selected":""}>Poor</option>
+      </select></div>
+    <div class="fld"><label>Consignatario</label><select id="f_consig">${consigOpts}</select></div>
+    <button class="btn ghost sm" id="f_reset">↺ Limpiar</button>
+    <div class="spacer"></div>
+    <span class="pill">${list.length} inspección(es) · ${totPallets} pallets</span>
+  </div>
+
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lab">Inspecciones</div><div class="val">${list.length}</div><div class="delta">en el período seleccionado</div></div>
+    <div class="kpi"><div class="lab">Pallets auditados</div><div class="val">${totPallets}</div><div class="delta">${totCajas.toLocaleString("es-PE")} cajas</div></div>
+    <div class="kpi"><div class="lab">Aprobación (Good+Fair)</div><div class="val">${pct.good+pct.fair}<small>%</small></div><div class="delta">${pct.poor}% Poor (rechazo)</div></div>
+    <div class="kpi"><div class="lab">Defecto principal</div><div class="val" style="font-size:18px;line-height:1.2;font-family:'Sora'">${defArr.length?defArr[0][0]:"—"}</div><div class="delta">${defArr.length?defArr[0][1]+" pallets afectados":""}</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="hd"><h3>Distribución de scores</h3><span class="mut">${totPallets} pallets</span></div>
+      <div class="bd"><div class="donut-wrap">${donut(pct)}
+        <div class="legend">
+          <div class="li"><span class="dot good"></span> Good <b>${pct.good}%</b> <span class="mut" style="color:var(--muted)">(${cont.good})</span></div>
+          <div class="li"><span class="dot fair"></span> Fair <b>${pct.fair}%</b> <span class="mut" style="color:var(--muted)">(${cont.fair})</span></div>
+          <div class="li"><span class="dot poor"></span> Poor <b>${pct.poor}%</b> <span class="mut" style="color:var(--muted)">(${cont.poor})</span></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="hd"><h3>Pareto de defectos</h3><span class="mut">incidencia por pallet</span></div>
+      <div class="bd"><div class="bars">
+        ${defArr.map(([d,c])=>`<div class="bar-row"><span class="nowrap" title="${d}">${d.length>24?d.slice(0,23)+"…":d}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxDef*100)}%"></div></div><b>${c}</b></div>`).join("")||"<div class='empty'>Sin datos</div>"}
+      </div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="hd"><h3>Inspecciones del período</h3><span class="mut">clic para ver el reporte completo</span></div>
+    <div class="bd" style="padding:0;overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Inspección</th><th>Lote / Container</th><th>Consignatario</th><th>Locación</th><th>Ingreso frigorífico</th><th>Pallets</th><th>Score global</th><th>Defectos totales</th></tr></thead>
+        <tbody>${list.map(i=>{const r=resumenInsp(i);return `
+          <tr onclick="abrirDetalle('${i.id}')">
+            <td class="mono"><b>${i.id}</b></td>
+            <td><div class="mono">${i.lote}</div><div class="mut" style="color:var(--muted);font-size:11px">${i.barco}</div></td>
+            <td>${i.consignatario}</td>
+            <td>${i.locacion}</td>
+            <td class="nowrap">${fmtFecha(i.fechaFrigorifico)}</td>
+            <td class="mono">${r.n}</td>
+            <td>${chip(r.scoreGlobal)}</td>
+            <td class="mono">${r.totProm}%</td>
+          </tr>`;}).join("")||`<tr><td colspan="8"><div class="empty">No hay inspecciones en este período.</div></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  // listeners
+  const upd=()=>{FIL.d1=v("f_d1");FIL.d2=v("f_d2");FIL.score=v("f_score");FIL.consig=v("f_consig");renderGerencia();};
+  ["f_d1","f_d2","f_score","f_consig"].forEach(id=>document.getElementById(id).addEventListener("change",upd));
+  document.getElementById("f_reset").onclick=()=>{FIL={d1:"",d2:"",score:"",consig:""};renderGerencia();};
+}
+function v(id){return document.getElementById(id).value;}
+
+/* ---------- LISTA DE INSPECCIONES ---------- */
+function renderInspecciones(){
+  wrap.innerHTML=`<div class="panel"><div class="hd"><h3>Reportes de auditoría</h3><span class="mut">${DATA.length} guardados</span></div>
+    <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
+    <thead><tr><th>ID</th><th>Lote</th><th>Producto</th><th>Consignatario</th><th>Inspector</th><th>Ingreso</th><th>Pallets</th><th>Score</th><th></th></tr></thead>
+    <tbody>${DATA.map(i=>{const r=resumenInsp(i);return `<tr onclick="abrirDetalle('${i.id}')">
+      <td class="mono"><b>${i.id}</b></td><td class="mono">${i.lote}</td><td>${i.producto} · ${i.variedad}</td>
+      <td>${i.consignatario}</td><td>${i.inspector}</td><td class="nowrap">${fmtFecha(i.fechaFrigorifico)}</td>
+      <td class="mono">${r.n}</td><td>${chip(r.scoreGlobal)}</td><td style="text-align:right"><span class="btn sm">Ver ›</span></td></tr>`;}).join("")}
+    </tbody></table></div></div>`;
+}
+
+/* ---------- DETALLE (estilo QIMA) ---------- */
+function abrirDetalle(id){
+  const i=DATA.find(x=>x.id===id); if(!i) return;
+  const r=resumenInsp(i), pct=pctScore(r.cont,r.n);
+  const cell=(k,val)=>`<div class="dt-cell"><div class="k">${k}</div><div class="v">${val||"—"}</div></div>`;
+  const m=document.getElementById("modal");
+  m.innerHTML=`
+    <div class="mhd">
+      <div><div style="display:flex;align-items:center;gap:10px"><h2 style="font-size:18px">${i.id}</h2>${chip(r.scoreGlobal)}</div>
+      <div class="mut" style="color:var(--muted);font-size:12.5px;margin-top:2px">Lote ${i.lote} · ${i.compania}</div></div>
+      <div style="display:flex;gap:8px"><button class="btn sm" onclick="exportInsp('${i.id}')">⤓ CSV</button><button class="x" onclick="cerrar()">×</button></div>
+    </div>
+    <div class="mbd">
+      <div class="dt-grid">
+        ${cell("Lote",i.lote)}${cell("Compañía",i.compania)}${cell("Exportador",i.exportador)}${cell("Consignatario",i.consignatario)}
+        ${cell("Producto",i.producto)}${cell("Variedad",i.variedad)}${cell("Embalaje",i.embalaje)}${cell("Tipo producto",i.tipoProducto)}
+        ${cell("Locación",i.locacion)}${cell("País",i.pais)}${cell("Barco",i.barco)}${cell("Tipo carrier",i.tipoCarrier)}
+        ${cell("Container",i.container)}${cell("Frigorífico",i.frigorifico)}${cell("Inspector",i.inspector)}${cell("Tipo inspección",i.tipoInspeccion)}
+        ${cell("Fecha embalaje",fmtFecha(i.fechaEmbalaje))}${cell("Fecha arribo",fmtFecha(i.fechaArribo))}${cell("Ingreso frigorífico",fmtFecha(i.fechaFrigorifico)+" "+(i.horaFrig||""))}${cell("Fumigación",i.fumigacion)}
+        ${cell("Cajas",i.cajas)}${cell("# Pallets",i.pallets)}${cell("Nº Factura",i.numFactura)}${cell("Tamaño muestra Σ",i.palletsData.reduce((a,p)=>a+(p.muestra||0),0))}
+      </div>
+
+      <div class="cols" style="margin-top:18px">
+        <div class="panel"><div class="hd"><h3>Resumen del reporte</h3><span class="mut">Global</span></div>
+          <div class="bd"><div class="donut-wrap">${donut(pct)}
+            <div class="legend">
+              <div class="li"><span class="dot good"></span> Good <b>${pct.good}%</b></div>
+              <div class="li"><span class="dot fair"></span> Fair <b>${pct.fair}%</b></div>
+              <div class="li"><span class="dot poor"></span> Poor <b>${pct.poor}%</b></div>
+            </div></div></div></div>
+        <div class="panel"><div class="hd"><h3>Totales</h3><span class="mut">promedios</span></div>
+          <div class="bd">
+            <table class="tbl"><tbody>
+              <tr><td>Suma Defectos Calidad</td><td class="mono" style="text-align:right"><b>${r.calProm}%</b></td></tr>
+              <tr><td>Suma Defectos Condición</td><td class="mono" style="text-align:right"><b>${r.condProm}%</b></td></tr>
+              <tr><td>Suma Defectos Totales</td><td class="mono" style="text-align:right"><b>${r.totProm}%</b></td></tr>
+              <tr><td>Temp. promedio</td><td class="mono" style="text-align:right">${r.tempProm??"—"} °C</td></tr>
+              <tr><td>Peso neto promedio</td><td class="mono" style="text-align:right">${r.pesoProm} kg</td></tr>
+            </tbody></table>
+          </div></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px"><div class="hd"><h3>Pallets</h3><span class="mut">${r.n} evaluados</span></div>
+        <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
+          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Calidad</th><th>D. Condición</th><th>Total</th><th>Temp</th><th>Muestra</th></tr></thead>
+          <tbody>${i.palletsData.map(p=>`<tr>
+            <td class="mono">${p.pallet}</td><td>${chip(p.score)}</td><td class="mono">${p.calibre}</td><td class="mono">${p.prod}</td>
+            <td style="max-width:260px">${p.principal}</td><td class="mono">${p.pcal}%</td><td class="mono">${p.pcond}%</td>
+            <td class="mono"><b>${p.ptot}%</b></td><td class="mono">${p.temp||"—"}</td><td class="mono">${p.muestra}</td></tr>`).join("")}</tbody>
+        </table></div></div>
+    </div>`;
+  document.getElementById("scrim").classList.add("show");
+}
+function cerrar(){document.getElementById("scrim").classList.remove("show");}
+document.getElementById("scrim").addEventListener("click",e=>{if(e.target.id==="scrim")cerrar();});
+
+/* ---------- NUEVA INSPECCIÓN ---------- */
+let DRAFT=null;
+function nuevoDraft(){ return { id:"INS-"+nuevoCorrelativo(), lote:"",compania:"Marand Company Asia",exportador:"Marand Company",
+  consignatario:"",locacion:"",pais:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipoProducto:"CONV",
+  tipoInspeccion:"Normal Inspection",barco:"",tipoCarrier:"Ocean",container:"",frigorifico:"",inspector:"",cajas:"",pallets:"",
+  horaFrig:"",fumigacion:"None",numFactura:"",fechaArribo:"",fechaFrigorifico:"",fechaEmbalaje:"",palletsData:[] }; }
+function nuevoCorrelativo(){ const n=DATA.length+1; return "2606-"+String(n).padStart(4,"0"); }
+
+function renderNueva(){
+  if(!DRAFT) DRAFT=nuevoDraft();
+  const F=(k,lab,type="text",wide=false,opts=null)=>{
+    if(opts) return `<div class="ff ${wide?'wide':''}"><label>${lab}</label><select data-k="${k}">${opts.map(o=>`<option ${DRAFT[k]===o?"selected":""}>${o}</option>`).join("")}</select></div>`;
+    return `<div class="ff ${wide?'wide':''}"><label>${lab}</label><input type="${type}" data-k="${k}" value="${DRAFT[k]||""}" placeholder="—"></div>`;
+  };
+  wrap.innerHTML=`
+  <div class="note" style="margin-bottom:18px">⌬ Captura jerárquica: primero la cabecera del lote, luego agregas cada pallet con su score y defectos. Todo queda guardado y disponible para el gerente.</div>
+  <div class="panel"><div class="bd">
+    <div class="sec-title">Cabecera del lote</div>
+    <div class="frm">
+      ${F("lote","Lote")}${F("container","Container / Guía")}${F("compania","Compañía")}${F("consignatario","Consignatario")}
+      ${F("producto","Producto")}${F("variedad","Variedad")}${F("embalaje","Embalaje")}${F("tipoProducto","Tipo producto",null,false,["CONV","ORG"])}
+      ${F("locacion","Locación (destino)")}${F("pais","País origen")}${F("barco","Barco")}${F("tipoCarrier","Tipo carrier",null,false,["Ocean","Air"])}
+      ${F("frigorifico","Frigorífico")}${F("inspector","Inspector")}${F("tipoInspeccion","Tipo inspección",null,false,["Normal Inspection","Re-inspection","Pre-shipment"])}${F("fumigacion","Fumigación",null,false,["None","SO2","Otra"])}
+      ${F("cajas","Cajas","number")}${F("pallets","# Pallets","number")}${F("numFactura","Nº Factura")}${F("horaFrig","Hora frigorífico")}
+      ${F("fechaEmbalaje","Fecha embalaje","date")}${F("fechaArribo","Fecha arribo","date")}${F("fechaFrigorifico","Ingreso frigorífico ★","date")}<div class="ff"></div>
+    </div>
+
+    <div class="sec-title">Pallets <span class="pill" style="text-transform:none;letter-spacing:0">${DRAFT.palletsData.length} agregados</span></div>
+    <div id="palletRows"></div>
+    <button class="btn sm" id="addPallet" style="margin-top:6px">＋ Agregar pallet</button>
+
+    <div style="display:flex;gap:10px;margin-top:24px;border-top:1px solid var(--line);padding-top:18px">
+      <button class="btn primary" id="guardar">✓ Guardar inspección</button>
+      <button class="btn" id="descartar">Descartar</button>
+      <div class="spacer" style="flex:1"></div>
+      <span class="mut" style="color:var(--muted);align-self:center;font-size:12px">★ campo que usa el gerente para filtrar por período</span>
+    </div>
+  </div></div>`;
+
+  // cabecera bind
+  wrap.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",e=>DRAFT[e.target.dataset.k]=e.target.value));
+  renderPalletRows();
+  document.getElementById("addPallet").onclick=()=>{ DRAFT.palletsData.push({pallet:"",calibre:"",prod:PRODUCTORES[0],temp:"",peso:10,pcal:0,pcond:0,principal:"",muestra:""}); renderPalletRows(); };
+  document.getElementById("guardar").onclick=guardarDraft;
+  document.getElementById("descartar").onclick=()=>{DRAFT=null;setView("inspecciones");};
+}
+function renderPalletRows(){
+  const host=document.getElementById("palletRows"); if(!host) return;
+  if(!DRAFT.palletsData.length){ host.innerHTML=`<div class="empty" style="padding:24px"><div class="pill">Aún no agregas pallets</div></div>`; return; }
+  host.innerHTML=DRAFT.palletsData.map((p,idx)=>{
+    const tot=(+p.pcal||0)+(+p.pcond||0); const sc=scoreDe(tot);
+    return `<div style="display:grid;grid-template-columns:1.3fr .7fr 1fr .8fr .8fr 2fr 70px 38px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)" data-row="${idx}">
+      <input data-pk="pallet" value="${p.pallet}" placeholder="R-MAR-…" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px;font-family:'Sora'">
+      <input data-pk="calibre" value="${p.calibre}" placeholder="Calibre" type="number" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px">
+      <select data-pk="prod" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12px">${PRODUCTORES.map(o=>`<option ${p.prod===o?"selected":""}>${o}</option>`).join("")}</select>
+      <input data-pk="pcal" value="${p.pcal}" type="number" step="0.1" title="% Defectos calidad" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px">
+      <input data-pk="pcond" value="${p.pcond}" type="number" step="0.1" title="% Defectos condición" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px">
+      <input data-pk="principal" value="${p.principal}" placeholder="Defecto principal" style="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px">
+      <span style="text-align:center">${chip(sc)}</span>
+      <button class="btn ghost sm" data-del="${idx}" title="Quitar">✕</button>
+    </div>`;
+  }).join("");
+  host.querySelectorAll("[data-row]").forEach(row=>{
+    const idx=+row.dataset.row;
+    row.querySelectorAll("[data-pk]").forEach(el=>el.addEventListener("input",e=>{
+      DRAFT.palletsData[idx][e.target.dataset.pk]=e.target.value;
+      if(["pcal","pcond"].includes(e.target.dataset.pk)) renderPalletRows();
+    }));
+    row.querySelector("[data-del]").onclick=()=>{DRAFT.palletsData.splice(idx,1);renderPalletRows();};
+  });
+}
+function guardarDraft(){
+  if(!DRAFT.lote){ toast("Falta el Lote"); return; }
+  if(!DRAFT.fechaFrigorifico){ toast("Falta la fecha de ingreso al frigorífico"); return; }
+  if(!DRAFT.palletsData.length){ toast("Agrega al menos un pallet"); return; }
+  DRAFT.palletsData=DRAFT.palletsData.map(p=>{ const ptot=+((+p.pcal||0)+(+p.pcond||0)).toFixed(2);
+    return {...p,calibre:+p.calibre||0,temp:+p.temp||0,peso:+p.peso||10,pcal:+p.pcal||0,pcond:+p.pcond||0,muestra:+p.muestra||0,brix:0,ptot,score:scoreDe(ptot)}; });
+  DATA.unshift(DRAFT); save(); const id=DRAFT.id; DRAFT=null;
+  toast("Inspección guardada ✓"); setView("gerencia");
+}
+
+/* ---------- Componentes ---------- */
+function chip(s){ return `<span class="chip ${s}">${SCORE_LABEL[s]}</span>`; }
+function donut(pct){
+  const seg=[["good","#22A65A",pct.good],["fair","#E0B100",pct.fair],["poor","#E2602A",pct.poor]];
+  const tot=pct.good+pct.fair+pct.poor||1; let acc=0; const R=54,C=2*Math.PI*R;
+  const arcs=seg.map(([k,col,val])=>{ const frac=val/tot; const dash=`${frac*C} ${C}`; const off=-acc*C; acc+=frac;
+    return `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${col}" stroke-width="20" stroke-dasharray="${dash}" stroke-dashoffset="${off}" transform="rotate(-90 70 70)"/>`; }).join("");
+  return `<svg width="140" height="140" viewBox="0 0 140 140">${arcs}<circle r="40" cx="70" cy="70" fill="#fff"/>
+    <text x="70" y="66" text-anchor="middle" font-family="Sora" font-weight="700" font-size="20" fill="#0F1A14">${pct.good+pct.fair}%</text>
+    <text x="70" y="84" text-anchor="middle" font-family="Inter" font-size="10" fill="#5C6B62">aprobado</text></svg>`;
+}
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+
+/* ---------- Export CSV ---------- */
+function exportCSV(){
+  const list=inspeccionesFiltradas(); const rows=[["Inspeccion","Lote","Consignatario","Locacion","Ingreso_frigorifico","Pallet","Score","Calibre","Productor","Pct_Calidad","Pct_Condicion","Pct_Total","Defecto_principal","Muestra"]];
+  list.forEach(i=>i.palletsData.forEach(p=>rows.push([i.id,i.lote,i.consignatario,i.locacion,i.fechaFrigorifico,p.pallet,SCORE_LABEL[p.score],p.calibre,p.prod,p.pcal,p.pcond,p.ptot,'"'+p.principal+'"',p.muestra])));
+  bajar(rows,`agroquality_${FIL.d1||"todo"}_${FIL.d2||""}.csv`);
+}
+function exportInsp(id){ const i=DATA.find(x=>x.id===id); const rows=[["Pallet","Score","Calibre","Productor","Pct_Calidad","Pct_Condicion","Pct_Total","Defecto_principal","Temp","Muestra"]];
+  i.palletsData.forEach(p=>rows.push([p.pallet,SCORE_LABEL[p.score],p.calibre,p.prod,p.pcal,p.pcond,p.ptot,'"'+p.principal+'"',p.temp,p.muestra])); bajar(rows,`${id}.csv`); }
+function bajar(rows,name){ const csv=rows.map(r=>r.join(",")).join("\n"); const b=new Blob(["﻿"+csv],{type:"text/csv"}); const u=URL.createObjectURL(b);
+  const a=document.createElement("a"); a.href=u; a.download=name; a.click(); URL.revokeObjectURL(u); toast("CSV descargado ✓"); }
+
+/* ---------- Wire ---------- */
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setView(b.dataset.view));
+document.getElementById("btnNew").onclick=()=>setView("nueva");
+document.getElementById("btnExport").onclick=exportCSV;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrar();});
+setView("gerencia");
+</script>
+</body>
+</html>
