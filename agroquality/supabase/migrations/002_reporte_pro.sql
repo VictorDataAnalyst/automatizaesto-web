@@ -34,22 +34,5 @@ alter table aq_pallet add column if not exists qc_embalaje         text;
 alter table aq_pallet add column if not exists defectos            jsonb;
 
 -- ---------- Fase C: termografía por contenedor ----------
-create table if not exists aq_termografia (
-  id            uuid primary key default gen_random_uuid(),
-  org_id        uuid not null references orgs(id) on delete cascade,
-  inspeccion_id uuid not null references aq_inspeccion(id) on delete cascade,
-  serial        text,
-  trip_length_dias int,
-  temp_min      numeric(6,2),
-  temp_max      numeric(6,2),
-  temp_avg      numeric(6,2),
-  archivo_path  text,
-  creado_en     timestamptz not null default now()
-);
-create index if not exists idx_aq_termo_insp on aq_termografia(inspeccion_id);
-create index if not exists idx_aq_termo_org  on aq_termografia(org_id);
-
-alter table aq_termografia enable row level security;
-drop policy if exists "aq_termo de mi org" on aq_termografia;
-create policy "aq_termo de mi org" on aq_termografia for all to authenticated
-  using (org_id in (select mis_orgs())) with check (org_id in (select mis_orgs()));
+-- Lista de mediciones por contenedor: [{serial, trip_length_dias, temp_min, temp_max, temp_avg}]
+alter table aq_inspeccion add column if not exists termografia jsonb;

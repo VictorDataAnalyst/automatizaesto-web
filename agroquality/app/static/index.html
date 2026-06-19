@@ -480,6 +480,8 @@ function abrir(id){
         ${cell("Container",i.container)}${cell("Frigorífico",i.frigorifico)}${cell("Inspector",i.inspector)}${cell("Tipo inspección",i.tipo_inspeccion)}
         ${cell("Fecha embalaje",fmtFecha(i.fecha_embalaje))}${cell("Fecha arribo",fmtFecha(i.fecha_arribo))}${cell("Ingreso frigorífico",fmtFecha(i.fecha_frigorifico)+" "+(i.hora_frigorifico||""))}${cell("Fumigación",i.fumigacion)}
         ${cell("Cajas",i.cajas)}${cell("# Pallets",i.total_pallets)}${cell("Nº Factura",i.num_factura)}${cell("Muestra Σ",(i.pallets||[]).reduce((a,p)=>a+(p.tamano_muestra||0),0))}
+        ${cell("Tec. postcosecha",i.tecnologia_postcosecha)}${cell("Tipo atmósfera",i.tipo_atmosfera)}${cell("Tipo bolsa",i.tipo_bolsa)}${cell("UPC",i.upc)}
+        ${cell("Nº reporte",i.numero_reporte)}
       </div>
       <div class="cols" style="margin-top:18px">
         <div class="panel"><div class="hd"><h3>Resumen del reporte</h3><span class="mut">Global</span></div>
@@ -504,6 +506,9 @@ function abrir(id){
             <td class="mono"><b>${p.pct_total}%</b></td><td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.brix_prom??"—"}</td><td class="mono">${firm}</td><td>${p.golpe_vista?chip(p.golpe_vista):"—"}</td><td class="mono">${p.tamano_muestra??"—"}</td>
             <td><div style="display:flex;flex-direction:column;gap:3px">${tp?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">P</span>${tp}</div>`:""}${tm?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">M</span>${tm}</div>`:""}${(!tp&&!tm)?"<span style='color:var(--muted)'>—</span>":""}</div></td></tr>`;}).join("")}</tbody>
         </table></div></div>
+      ${(i.termografia&&i.termografia.length)?`<div class="panel" style="margin-top:16px"><div class="hd"><h3>Termografía</h3><span class="mut">${i.termografia.length} serial(es)</span></div>
+        <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl"><thead><tr><th>Serial</th><th>Días de viaje</th><th>Temp. Min</th><th>Temp. Max</th><th>Temp. Avg</th></tr></thead>
+        <tbody>${i.termografia.map(t=>`<tr><td class="mono">${t.serial||"—"}</td><td class="mono">${t.trip_length_dias??"—"}</td><td class="mono">${t.temp_min??"—"} °C</td><td class="mono">${t.temp_max??"—"} °C</td><td class="mono">${t.temp_avg??"—"} °C</td></tr>`).join("")}</tbody></table></div></div>`:""}
       ${(i.notas_calidad||i.notas_inspector||i.digitado_por)?`<div class="panel" style="margin-top:16px"><div class="hd"><h3>Notas</h3></div><div class="bd">
         ${i.notas_calidad?`<div style="margin-bottom:10px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600">Quality &amp; Condition</div><div style="font-size:13.5px;margin-top:3px">${i.notas_calidad}</div></div>`:""}
         ${i.notas_inspector?`<div style="margin-bottom:10px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600">Inspector Notes</div><div style="font-size:13.5px;margin-top:3px">${i.notas_inspector}</div></div>`:""}
@@ -524,7 +529,9 @@ function nuevoDraft(){return {codigo:"",lote:"",container:"",compania:"Marand Co
   consignatario:"",locacion:"",pais_origen:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipo_producto:"CONV",
   tipo_inspeccion:"Normal Inspection",barco:"",tipo_carrier:"Ocean",frigorifico:"",inspector:"",cajas:"",total_pallets:"",
   hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",
-  notas_calidad:"",notas_inspector:"",digitado_por:"",fotos:[],pallets:[]};}
+  notas_calidad:"",notas_inspector:"",digitado_por:"",
+  numero_reporte:"",tecnologia_postcosecha:"",tipo_atmosfera:"",tipo_bolsa:"",upc:"",termografia:[],
+  fotos:[],pallets:[]};}
 
 const DEFECTOS_COMUNES=["Black Spots","Lenticelosis","Internal Breakdown","Black Color","Misshapen","Russet Severe","Russet Slight","Deformes","Cuerpos Extraños","Sucio","Cicatrices Severas","Fruta Virada","Pudrición","Daño por frío"];
 const MAX_FOTOS=15;
@@ -556,12 +563,16 @@ function renderNueva(){
       ${F("locacion","Locación (destino)")}${F("pais_origen","País origen")}${F("barco","Barco")}${F("tipo_carrier","Tipo carrier",null,false,["Ocean","Air"])}
       ${F("frigorifico","Frigorífico")}${F("inspector","Inspector")}${F("tipo_inspeccion","Tipo inspección",null,false,["Normal Inspection","Re-inspection","Pre-shipment"])}${F("fumigacion","Fumigación",null,false,["None","SO2","Otra"])}
       ${F("cajas","Cajas","number")}${F("total_pallets","# Pallets","number")}${F("num_factura","Nº Factura")}${F("hora_frigorifico","Hora frigorífico")}
-      ${F("fecha_embalaje","Fecha embalaje","date")}${F("fecha_arribo","Fecha arribo","date")}${F("fecha_frigorifico","Ingreso frigorífico ★","date")}<div class="ff"></div>
+      ${F("fecha_embalaje","Fecha embalaje","date")}${F("fecha_arribo","Fecha arribo","date")}${F("fecha_frigorifico","Ingreso frigorífico ★","date")}${F("numero_reporte","Nº reporte")}
+      ${F("tecnologia_postcosecha","Tec. postcosecha")}${F("tipo_atmosfera","Tipo atmósfera")}${F("tipo_bolsa","Tipo bolsa")}${F("upc","UPC")}
     </div>
     <div class="sec-title">Fotos del contenedor <span class="pill" id="contCount" style="text-transform:none;letter-spacing:0">${(DRAFT.fotos||[]).filter(f=>f.tipo==='contenedor').length}/15</span></div>
     <div id="contFotos" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:40px"></div>
     <input type="file" accept="image/*" multiple id="contFile" style="display:none">
     <button class="btn sm" id="contAdd" style="margin-top:8px">📷 Agregar fotos del contenedor</button>
+    <div class="sec-title">Termografía del contenedor <span class="pill" style="text-transform:none;letter-spacing:0">${(DRAFT.termografia||[]).length}</span></div>
+    <div id="termoRows"></div>
+    <button class="btn sm" id="addTermo" style="margin-top:6px">＋ Agregar serial</button>
     <div class="sec-title">Pallets <span class="pill" style="text-transform:none;letter-spacing:0">${DRAFT.pallets.length} agregados</span></div>
     <div id="palletRows"></div>
     <button class="btn sm" id="addPallet" style="margin-top:6px">＋ Agregar pallet</button>
@@ -584,6 +595,8 @@ function renderNueva(){
   const cf=document.getElementById("contFile");
   document.getElementById("contAdd").onclick=()=>cf.click();
   cf.onchange=async()=>{ DRAFT.fotos=DRAFT.fotos||[]; await subirFotos(cf.files, DRAFT.fotos, "contenedor"); renderContFotos(); };
+  renderTermoRows();
+  document.getElementById("addTermo").onclick=()=>{(DRAFT.termografia=DRAFT.termografia||[]).push({serial:"",trip_length_dias:"",temp_min:"",temp_max:"",temp_avg:""});renderTermoRows();};
   document.getElementById("addPallet").onclick=()=>{DRAFT.pallets.push({codigo:"",calibre:"",productor:PRODUCTORES[0],temp_prom:"",peso_neto_prom:10,pct_calidad:0,pct_condicion:0,defecto_principal:"",tamano_muestra:"",fotos:[],defectos:[],_open:false});renderPalletRows();};
   document.getElementById("guardar").onclick=guardarDraft;
   document.getElementById("descartar").onclick=()=>{DRAFT=null;setView("inspecciones");};
@@ -656,6 +669,22 @@ function renderContFotos(){
   const c=document.getElementById("contCount"); if(c)c.textContent=arr.filter(f=>f.tipo==='contenedor').length+"/15";
   host.querySelectorAll("[data-delfoto]").forEach(b=>b.onclick=()=>{const ref=b.dataset.delfoto.split(":").slice(1).join(":");DRAFT.fotos=(DRAFT.fotos||[]).filter(f=>f.ref!==ref);renderContFotos();});
 }
+function renderTermoRows(){
+  const host=document.getElementById("termoRows"); if(!host) return;
+  const arr=DRAFT.termografia||[];
+  const inp="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px;width:100%";
+  if(!arr.length){host.innerHTML='<div style="color:var(--muted);font-size:12px;padding:4px 0">Sin termografía aún</div>';return;}
+  host.innerHTML=arr.map((t,ti)=>`<div style="display:grid;grid-template-columns:1.4fr .9fr .7fr .7fr .7fr 28px;gap:6px;margin-bottom:5px" data-trow="${ti}">
+    <input data-tf="serial" value="${t.serial||''}" placeholder="Serial (ej. U1085015)" style="${inp};font-family:'Sora'">
+    <input data-tf="trip_length_dias" type="number" value="${t.trip_length_dias??''}" placeholder="Días viaje" style="${inp}">
+    <input data-tf="temp_min" type="number" step="0.1" value="${t.temp_min??''}" placeholder="Min" style="${inp}">
+    <input data-tf="temp_max" type="number" step="0.1" value="${t.temp_max??''}" placeholder="Max" style="${inp}">
+    <input data-tf="temp_avg" type="number" step="0.1" value="${t.temp_avg??''}" placeholder="Avg" style="${inp}">
+    <button class="btn ghost sm" data-deltermo="${ti}" style="padding:4px 6px">×</button></div>`).join("");
+  host.querySelectorAll("[data-trow]").forEach(row=>{const ti=+row.dataset.trow;
+    row.querySelectorAll("[data-tf]").forEach(el=>el.addEventListener("input",e=>{DRAFT.termografia[ti][e.target.dataset.tf]=e.target.value;}));
+    row.querySelector("[data-deltermo]").onclick=()=>{DRAFT.termografia.splice(ti,1);renderTermoRows();};});
+}
 async function guardarDraft(){
   if(!DRAFT.lote) return toast("Falta el Lote");
   if(!DRAFT.fecha_frigorifico) return toast("Falta la fecha de ingreso al frigorífico");
@@ -664,6 +693,7 @@ async function guardarDraft(){
     cajas:DRAFT.cajas?+DRAFT.cajas:null, total_pallets:DRAFT.total_pallets?+DRAFT.total_pallets:null,
     codigo:DRAFT.codigo||null,
     fotos:(DRAFT.fotos&&DRAFT.fotos.length)?DRAFT.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null,
+    termografia:(DRAFT.termografia&&DRAFT.termografia.length)?DRAFT.termografia.filter(t=>t.serial||t.temp_avg||t.temp_min||t.temp_max).map(t=>{const n=v=>v===""||v==null?null:+v;return {serial:t.serial||null,trip_length_dias:n(t.trip_length_dias),temp_min:n(t.temp_min),temp_max:n(t.temp_max),temp_avg:n(t.temp_avg)};}):null,
     pallets:DRAFT.pallets.map(p=>{const num=v=>v===""||v==null?null:+v;return {
       codigo:p.codigo,productor:p.productor||null,clase:p.clase||null,calibre:num(p.calibre),
       temp_prom:num(p.temp_prom),peso_neto_prom:+p.peso_neto_prom||10,brix_prom:num(p.brix_prom),

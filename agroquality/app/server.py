@@ -32,7 +32,7 @@ CABECERA = [
     "estado", "fotos",
     # Fase B/C — notas y extras de cabecera
     "notas_calidad", "notas_inspector", "digitado_por", "tecnologia_postcosecha",
-    "tipo_atmosfera", "tipo_bolsa", "upc", "numero_reporte",
+    "tipo_atmosfera", "tipo_bolsa", "upc", "numero_reporte", "termografia",
 ]
 MAX_FOTOS = 15  # por galería (pallet / muestra / contenedor), igual que el formato QIMA
 
@@ -161,6 +161,13 @@ class InspeccionIn(BaseModel):
     notas_calidad: str | None = None
     notas_inspector: str | None = None
     digitado_por: str | None = None
+    # Fase C — extras de cabecera + termografía
+    tecnologia_postcosecha: str | None = None
+    tipo_atmosfera: str | None = None
+    tipo_bolsa: str | None = None
+    upc: str | None = None
+    numero_reporte: str | None = None
+    termografia: list[dict] | None = None   # [{serial, trip_length_dias, temp_min, temp_max, temp_avg}]
     pallets: list[PalletIn] = []
 
 

@@ -34,10 +34,10 @@ def verificar_jwt(token: str) -> dict:
                 raise HTTPException(500, "Falta SUPABASE_URL para validar el token (JWKS).")
             clave = _jwks_client.get_signing_key_from_jwt(token).key
             payload = jwt.decode(token, clave, algorithms=list(_ASIMETRICOS),
-                                 audience="authenticated")
+                                 audience="authenticated", leeway=60)
         else:
             payload = jwt.decode(token, config.SUPABASE_JWT_SECRET,
-                                 algorithms=["HS256"], audience="authenticated")
+                                 algorithms=["HS256"], audience="authenticated", leeway=60)
     except jwt.ExpiredSignatureError:
         raise HTTPException(401, "Tu sesión expiró. Vuelve a iniciar sesión.")
     except jwt.InvalidTokenError as e:
