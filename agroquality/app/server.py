@@ -30,6 +30,9 @@ CABECERA = [
     "fumigacion", "tipo_inspeccion", "inspector", "cajas", "total_pallets",
     "hora_frigorifico", "fecha_embalaje", "fecha_arribo", "fecha_frigorifico",
     "estado", "fotos",
+    # Fase B/C — notas y extras de cabecera
+    "notas_calidad", "notas_inspector", "digitado_por", "tecnologia_postcosecha",
+    "tipo_atmosfera", "tipo_bolsa", "upc", "numero_reporte",
 ]
 MAX_FOTOS = 15  # por galería (pallet / muestra / contenedor), igual que el formato QIMA
 
@@ -49,6 +52,10 @@ PALLET = [
     "codigo", "productor", "clase", "calibre", "temp_prom", "peso_neto_prom",
     "brix_prom", "cajas_muestra", "tamano_muestra", "pct_calidad",
     "pct_condicion", "defecto_principal", "fotos",
+    # Fase B
+    "variedad", "fecha_embalaje", "etiqueta", "embalaje", "firmeza_psi_min",
+    "firmeza_psi_max", "plu_pct", "golpe_vista", "trazabilidad", "pti",
+    "base_pallet_danado", "qc_embalaje", "defectos",
 ]
 EXT_OK = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/heic": "heic"}
 
@@ -107,7 +114,21 @@ class PalletIn(BaseModel):
     pct_calidad: float = 0
     pct_condicion: float = 0
     defecto_principal: str | None = None
-    fotos: list[dict] | None = None   # [{tipo, ref}]
+    # Fase B — ficha completa de pallet
+    variedad: str | None = None
+    fecha_embalaje: str | None = None
+    etiqueta: str | None = None
+    embalaje: str | None = None
+    firmeza_psi_min: float | None = None
+    firmeza_psi_max: float | None = None
+    plu_pct: float | None = None
+    golpe_vista: str | None = None          # good | fair | poor
+    trazabilidad: bool | None = None
+    pti: bool | None = None
+    base_pallet_danado: bool | None = None
+    qc_embalaje: str | None = None
+    defectos: list[dict] | None = None      # [{nombre, categoria, pct}]
+    fotos: list[dict] | None = None         # [{tipo, ref}]
 
 
 class InspeccionIn(BaseModel):
@@ -137,6 +158,9 @@ class InspeccionIn(BaseModel):
     fecha_arribo: str | None = None
     fecha_frigorifico: str | None = None
     fotos: list[dict] | None = None   # galería del contenedor [{tipo:'contenedor', ref}]
+    notas_calidad: str | None = None
+    notas_inspector: str | None = None
+    digitado_por: str | None = None
     pallets: list[PalletIn] = []
 
 

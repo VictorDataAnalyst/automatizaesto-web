@@ -498,12 +498,17 @@ function abrir(id){
       </div>
       <div class="panel" style="margin-top:16px"><div class="hd"><h3>Pallets</h3><span class="mut">${r.n} evaluados</span></div>
         <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
-          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Calidad</th><th>D. Condición</th><th>Total</th><th>Temp</th><th>Muestra</th><th>Fotos (Pallet / Muestra)</th></tr></thead>
-          <tbody>${(i.pallets||[]).map(p=>{const tp=thumbsRO(p.fotos,'pallet'),tm=thumbsRO(p.fotos,'muestra');return `<tr><td class="mono">${p.codigo}</td><td>${chip(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
-            <td style="max-width:240px">${p.defecto_principal||"—"}</td><td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td>
-            <td class="mono"><b>${p.pct_total}%</b></td><td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.tamano_muestra??"—"}</td>
+          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Cal.</th><th>D. Cond.</th><th>Total</th><th>Temp</th><th>Brix</th><th>Firmeza PSI</th><th>Golpe</th><th>Muestra</th><th>Fotos (P / M)</th></tr></thead>
+          <tbody>${(i.pallets||[]).map(p=>{const tp=thumbsRO(p.fotos,'pallet'),tm=thumbsRO(p.fotos,'muestra');const firm=(p.firmeza_psi_min||p.firmeza_psi_max)?`${p.firmeza_psi_min??"—"}–${p.firmeza_psi_max??"—"}`:"—";const defs=(p.defectos&&p.defectos.length)?`<div style="font-size:10.5px;color:var(--muted);margin-top:2px">${p.defectos.map(d=>d.nombre+" "+d.pct+"%").join(" · ")}</div>`:"";return `<tr><td class="mono">${p.codigo}</td><td>${chip(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
+            <td style="max-width:240px">${p.defecto_principal||"—"}${defs}</td><td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td>
+            <td class="mono"><b>${p.pct_total}%</b></td><td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.brix_prom??"—"}</td><td class="mono">${firm}</td><td>${p.golpe_vista?chip(p.golpe_vista):"—"}</td><td class="mono">${p.tamano_muestra??"—"}</td>
             <td><div style="display:flex;flex-direction:column;gap:3px">${tp?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">P</span>${tp}</div>`:""}${tm?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">M</span>${tm}</div>`:""}${(!tp&&!tm)?"<span style='color:var(--muted)'>—</span>":""}</div></td></tr>`;}).join("")}</tbody>
         </table></div></div>
+      ${(i.notas_calidad||i.notas_inspector||i.digitado_por)?`<div class="panel" style="margin-top:16px"><div class="hd"><h3>Notas</h3></div><div class="bd">
+        ${i.notas_calidad?`<div style="margin-bottom:10px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600">Quality &amp; Condition</div><div style="font-size:13.5px;margin-top:3px">${i.notas_calidad}</div></div>`:""}
+        ${i.notas_inspector?`<div style="margin-bottom:10px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600">Inspector Notes</div><div style="font-size:13.5px;margin-top:3px">${i.notas_inspector}</div></div>`:""}
+        ${i.digitado_por?`<div style="font-size:12.5px;color:var(--muted)">Digitado por: <b style="color:var(--ink)">${i.digitado_por}</b></div>`:""}
+      </div></div>`:""}
       ${(i.fotos&&i.fotos.filter(f=>f.tipo==='contenedor').length)?`<div class="panel" style="margin-top:16px"><div class="hd"><h3>Fotos del contenedor</h3><span class="mut">${i.fotos.filter(f=>f.tipo==='contenedor').length}</span></div>
         <div class="bd" style="display:flex;gap:8px;flex-wrap:wrap">${thumbsRO(i.fotos,'contenedor')}</div></div>`:""}
     </div>`;
@@ -518,8 +523,10 @@ let DRAFT=null;
 function nuevoDraft(){return {codigo:"",lote:"",container:"",compania:"Marand Company Asia",exportador:"Marand Company",
   consignatario:"",locacion:"",pais_origen:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipo_producto:"CONV",
   tipo_inspeccion:"Normal Inspection",barco:"",tipo_carrier:"Ocean",frigorifico:"",inspector:"",cajas:"",total_pallets:"",
-  hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",fotos:[],pallets:[]};}
+  hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",
+  notas_calidad:"",notas_inspector:"",digitado_por:"",fotos:[],pallets:[]};}
 
+const DEFECTOS_COMUNES=["Black Spots","Lenticelosis","Internal Breakdown","Black Color","Misshapen","Russet Severe","Russet Slight","Deformes","Cuerpos Extraños","Sucio","Cicatrices Severas","Fruta Virada","Pudrición","Daño por frío"];
 const MAX_FOTOS=15;
 async function subirFotos(files, arr, tipo){
   const ya=arr.filter(f=>f.tipo===tipo).length; let n=0;
@@ -558,6 +565,12 @@ function renderNueva(){
     <div class="sec-title">Pallets <span class="pill" style="text-transform:none;letter-spacing:0">${DRAFT.pallets.length} agregados</span></div>
     <div id="palletRows"></div>
     <button class="btn sm" id="addPallet" style="margin-top:6px">＋ Agregar pallet</button>
+    <div class="sec-title">Notas del reporte</div>
+    <div class="frm" style="grid-template-columns:2fr 1fr 1fr">
+      <div class="ff"><label>Quality &amp; Condition</label><textarea data-k="notas_calidad" rows="3" placeholder="Resumen de calidad y condición…" style="border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical">${DRAFT.notas_calidad||""}</textarea></div>
+      <div class="ff"><label>Inspector Notes</label><textarea data-k="notas_inspector" rows="3" placeholder="Notas del inspector…" style="border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical">${DRAFT.notas_inspector||""}</textarea></div>
+      <div class="ff"><label>Digitado por</label><input data-k="digitado_por" value="${DRAFT.digitado_por||""}" placeholder="Nombre" style="border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit"></div>
+    </div>
     <div style="display:flex;gap:10px;margin-top:24px;border-top:1px solid var(--line);padding-top:18px">
       <button class="btn primary" id="guardar">✓ Guardar inspección</button>
       <button class="btn" id="descartar">Descartar</button>
@@ -571,17 +584,22 @@ function renderNueva(){
   const cf=document.getElementById("contFile");
   document.getElementById("contAdd").onclick=()=>cf.click();
   cf.onchange=async()=>{ DRAFT.fotos=DRAFT.fotos||[]; await subirFotos(cf.files, DRAFT.fotos, "contenedor"); renderContFotos(); };
-  document.getElementById("addPallet").onclick=()=>{DRAFT.pallets.push({codigo:"",calibre:"",productor:PRODUCTORES[0],temp_prom:"",peso_neto_prom:10,pct_calidad:0,pct_condicion:0,defecto_principal:"",tamano_muestra:"",fotos:[]});renderPalletRows();};
+  document.getElementById("addPallet").onclick=()=>{DRAFT.pallets.push({codigo:"",calibre:"",productor:PRODUCTORES[0],temp_prom:"",peso_neto_prom:10,pct_calidad:0,pct_condicion:0,defecto_principal:"",tamano_muestra:"",fotos:[],defectos:[],_open:false});renderPalletRows();};
   document.getElementById("guardar").onclick=guardarDraft;
   document.getElementById("descartar").onclick=()=>{DRAFT=null;setView("inspecciones");};
 }
 function renderPalletRows(){
   const host=document.getElementById("palletRows"); if(!host) return;
   if(!DRAFT.pallets.length){host.innerHTML=`<div class="empty" style="padding:24px"><div class="pill">Aún no agregas pallets</div></div>`;return;}
-  const inp="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px";
+  const inp="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px;width:100%";
   const cnt=(p,t)=>(p.fotos||[]).filter(f=>f.tipo===t).length;
-  host.innerHTML=DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');
-    return `<div style="display:grid;grid-template-columns:1.3fr .55fr 1fr .65fr .65fr 1.5fr 50px 108px 26px;gap:7px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)" data-row="${idx}">
+  const PF=(idx,k,lab,type="text",opts=null)=>{const p=DRAFT.pallets[idx];
+    if(opts) return `<div class="ff"><label>${lab}</label><select data-pk="${k}" style="${inp}">${opts.map(o=>`<option value="${o[0]}" ${p[k]===o[0]?"selected":""}>${o[1]}</option>`).join("")}</select></div>`;
+    if(type==="check") return `<label class="ff" style="flex-direction:row;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" data-pk="${k}" ${p[k]?"checked":""} style="width:16px;height:16px;accent-color:var(--emer)"> ${lab}</label>`;
+    return `<div class="ff"><label>${lab}</label><input data-pk="${k}" type="${type}" value="${p[k]??""}" style="${inp}"></div>`;};
+  host.innerHTML=`<datalist id="defOpts">${DEFECTOS_COMUNES.map(d=>`<option value="${d}">`).join("")}</datalist>`+DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');const nd=(p.defectos||[]).length;
+    return `<div data-row="${idx}" style="border-bottom:1px solid var(--line2)">
+     <div style="display:grid;grid-template-columns:1.25fr .5fr .9fr .6fr .6fr 1.4fr 46px 100px 26px 26px;gap:6px;align-items:center;padding:8px 0">
       <input data-pk="codigo" value="${p.codigo}" placeholder="R-MAR-…" style="${inp};font-family:'Sora'">
       <input data-pk="calibre" value="${p.calibre}" placeholder="Cal." type="number" style="${inp}">
       <select data-pk="productor" style="${inp};font-size:12px">${PRODUCTORES.map(o=>`<option ${p.productor===o?"selected":""}>${o}</option>`).join("")}</select>
@@ -590,16 +608,40 @@ function renderPalletRows(){
       <input data-pk="defecto_principal" value="${p.defecto_principal}" placeholder="Defecto principal" style="${inp}">
       <span style="text-align:center">${chip(sc)}</span>
       <div style="display:flex;gap:4px">
-        <button class="btn ghost sm" data-fp="${idx}" title="Fotos de pallet (máx 15)" style="white-space:nowrap;padding:6px 6px">📷P${np?'·'+np:''}</button>
-        <button class="btn ghost sm" data-fm="${idx}" title="Fotos de muestra (máx 15)" style="white-space:nowrap;padding:6px 6px">📷M${nm?'·'+nm:''}</button>
+        <button class="btn ghost sm" data-fp="${idx}" title="Fotos de pallet (máx 15)" style="white-space:nowrap;padding:6px 5px">📷P${np?'·'+np:''}</button>
+        <button class="btn ghost sm" data-fm="${idx}" title="Fotos de muestra (máx 15)" style="white-space:nowrap;padding:6px 5px">📷M${nm?'·'+nm:''}</button>
       </div>
+      <button class="btn ghost sm" data-toggle="${idx}" title="Más detalles" style="padding:6px 7px">${p._open?'▾':'⋯'}${nd?'·'+nd:''}</button>
       <button class="btn ghost sm" data-del="${idx}" style="padding:6px 7px">✕</button>
       <input type="file" accept="image/*" multiple data-filep="${idx}" style="display:none">
-      <input type="file" accept="image/*" multiple data-filem="${idx}" style="display:none"></div>`;}).join("");
+      <input type="file" accept="image/*" multiple data-filem="${idx}" style="display:none"></div>
+     ${p._open?`<div style="background:var(--soft);border-radius:10px;padding:14px;margin:2px 0 12px">
+       <div class="frm" style="grid-template-columns:repeat(4,1fr);gap:10px">
+        ${PF(idx,"variedad","Variedad")}${PF(idx,"fecha_embalaje","Fecha embalaje","date")}${PF(idx,"etiqueta","Etiqueta")}${PF(idx,"embalaje","Embalaje")}
+        ${PF(idx,"firmeza_psi_min","Firmeza PSI Min","number")}${PF(idx,"firmeza_psi_max","Firmeza PSI Max","number")}${PF(idx,"brix_prom","Brix","number")}${PF(idx,"plu_pct","PLU %","number")}
+        ${PF(idx,"golpe_vista","Golpe de vista",null,[["","—"],["good","Good"],["fair","Fair"],["poor","Poor"]])}${PF(idx,"qc_embalaje","QC embalaje")}${PF(idx,"clase","Clase")}${PF(idx,"cajas_muestra","Cajas muestra","number")}
+       </div>
+       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px">
+        ${PF(idx,"trazabilidad","Trazabilidad","check")}${PF(idx,"pti","PTI","check")}${PF(idx,"base_pallet_danado","Base pallet dañado","check")}
+       </div>
+       <div class="sec-title" style="font-size:11px;margin:14px 0 8px">Defectos por nombre (%)</div>
+       ${(p.defectos||[]).map((d,di)=>`<div style="display:grid;grid-template-columns:1.6fr .9fr .6fr 28px;gap:6px;margin-bottom:5px">
+         <input list="defOpts" data-di="${di}" data-df="nombre" value="${d.nombre||''}" placeholder="Defecto" style="${inp}">
+         <select data-di="${di}" data-df="categoria" style="${inp}"><option value="condicion" ${d.categoria!=='calidad'?'selected':''}>Condición</option><option value="calidad" ${d.categoria==='calidad'?'selected':''}>Calidad</option></select>
+         <input data-di="${di}" data-df="pct" type="number" step="0.01" value="${d.pct??''}" placeholder="%" style="${inp}">
+         <button class="btn ghost sm" data-deldef="${idx}:${di}" style="padding:4px 6px">×</button></div>`).join("")}
+       <button class="btn ghost sm" data-adddef="${idx}" style="margin-top:4px">＋ Agregar defecto</button>
+     </div>`:""}
+    </div>`;}).join("");
   host.querySelectorAll("[data-row]").forEach(row=>{const idx=+row.dataset.row;
-    row.querySelectorAll("[data-pk]").forEach(el=>el.addEventListener("input",e=>{DRAFT.pallets[idx][e.target.dataset.pk]=e.target.value;
-      if(["pct_calidad","pct_condicion"].includes(e.target.dataset.pk))renderPalletRows();}));
+    row.querySelectorAll("[data-pk]").forEach(el=>el.addEventListener("input",e=>{const t=e.target;
+      DRAFT.pallets[idx][t.dataset.pk]= t.type==="checkbox"? t.checked : t.value;
+      if(["pct_calidad","pct_condicion"].includes(t.dataset.pk))renderPalletRows();}));
+    row.querySelectorAll("[data-di]").forEach(el=>el.addEventListener("input",e=>{const di=+e.target.dataset.di;DRAFT.pallets[idx].defectos[di][e.target.dataset.df]=e.target.value;}));
     row.querySelector("[data-del]").onclick=()=>{DRAFT.pallets.splice(idx,1);renderPalletRows();};
+    row.querySelector("[data-toggle]").onclick=()=>{DRAFT.pallets[idx]._open=!DRAFT.pallets[idx]._open;renderPalletRows();};
+    const ad=row.querySelector("[data-adddef]"); if(ad) ad.onclick=()=>{(DRAFT.pallets[idx].defectos=DRAFT.pallets[idx].defectos||[]).push({nombre:"",categoria:"condicion",pct:""});renderPalletRows();};
+    row.querySelectorAll("[data-deldef]").forEach(b=>b.onclick=()=>{const di=+b.dataset.deldef.split(":")[1];DRAFT.pallets[idx].defectos.splice(di,1);renderPalletRows();});
     const fp=row.querySelector("[data-filep]"), fm=row.querySelector("[data-filem]");
     row.querySelector("[data-fp]").onclick=()=>fp.click();
     row.querySelector("[data-fm]").onclick=()=>fm.click();
@@ -622,11 +664,18 @@ async function guardarDraft(){
     cajas:DRAFT.cajas?+DRAFT.cajas:null, total_pallets:DRAFT.total_pallets?+DRAFT.total_pallets:null,
     codigo:DRAFT.codigo||null,
     fotos:(DRAFT.fotos&&DRAFT.fotos.length)?DRAFT.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null,
-    pallets:DRAFT.pallets.map(p=>({codigo:p.codigo,productor:p.productor,calibre:p.calibre?+p.calibre:null,
-      temp_prom:p.temp_prom?+p.temp_prom:null,peso_neto_prom:+p.peso_neto_prom||10,
-      tamano_muestra:p.tamano_muestra?+p.tamano_muestra:null,
+    pallets:DRAFT.pallets.map(p=>{const num=v=>v===""||v==null?null:+v;return {
+      codigo:p.codigo,productor:p.productor||null,clase:p.clase||null,calibre:num(p.calibre),
+      temp_prom:num(p.temp_prom),peso_neto_prom:+p.peso_neto_prom||10,brix_prom:num(p.brix_prom),
+      cajas_muestra:num(p.cajas_muestra),tamano_muestra:num(p.tamano_muestra),
       pct_calidad:+p.pct_calidad||0,pct_condicion:+p.pct_condicion||0,defecto_principal:p.defecto_principal||null,
-      fotos:(p.fotos&&p.fotos.length)?p.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null}))};
+      variedad:p.variedad||null,fecha_embalaje:p.fecha_embalaje||null,etiqueta:p.etiqueta||null,embalaje:p.embalaje||null,
+      firmeza_psi_min:num(p.firmeza_psi_min),firmeza_psi_max:num(p.firmeza_psi_max),plu_pct:num(p.plu_pct),
+      golpe_vista:p.golpe_vista||null,qc_embalaje:p.qc_embalaje||null,
+      trazabilidad:typeof p.trazabilidad==="boolean"?p.trazabilidad:null,pti:typeof p.pti==="boolean"?p.pti:null,
+      base_pallet_danado:typeof p.base_pallet_danado==="boolean"?p.base_pallet_danado:null,
+      defectos:(p.defectos&&p.defectos.length)?p.defectos.filter(d=>d.nombre).map(d=>({nombre:d.nombre,categoria:d.categoria||"condicion",pct:+d.pct||0})):null,
+      fotos:(p.fotos&&p.fotos.length)?p.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null};})};
   // limpia strings vacíos
   Object.keys(body).forEach(k=>{if(body[k]==="")body[k]=null;});
   try{ await api("/api/inspecciones",{method:"POST",body}); DRAFT=null; toast("Inspección guardada ✓"); await cargar(); setView("gerencia"); }

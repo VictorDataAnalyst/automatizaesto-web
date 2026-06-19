@@ -30,8 +30,8 @@ alter table aq_pallet add column if not exists trazabilidad        boolean;
 alter table aq_pallet add column if not exists pti                 boolean;
 alter table aq_pallet add column if not exists base_pallet_danado  boolean;
 alter table aq_pallet add column if not exists qc_embalaje         text;
-
--- (aq_pallet_defecto ya existe en 001 — sirve para "defectos por nombre con %")
+-- Desglose de defectos por nombre con %: [{nombre, categoria:'calidad|condicion', pct}]
+alter table aq_pallet add column if not exists defectos            jsonb;
 
 -- ---------- Fase C: termografía por contenedor ----------
 create table if not exists aq_termografia (
