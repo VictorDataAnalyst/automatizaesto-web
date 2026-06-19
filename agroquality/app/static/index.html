@@ -461,6 +461,9 @@ async function renderSolicitudes(){
     catch(e){ toast("Error: "+e.message); } });
 }
 
+function thumbsRO(arr,tipo){
+  return (arr||[]).filter(f=>f.tipo===tipo&&f._url).map(f=>`<img src="${f._url}" onclick="window.open('${f._url}')" style="width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:pointer" title="Ver foto">`).join("");
+}
 function abrir(id){
   const i=DATA.find(x=>x.id===id); if(!i) return;
   const r=resumen(i), pct=pctScore(r.cont,r.n);
@@ -495,12 +498,14 @@ function abrir(id){
       </div>
       <div class="panel" style="margin-top:16px"><div class="hd"><h3>Pallets</h3><span class="mut">${r.n} evaluados</span></div>
         <div class="bd" style="padding:0;overflow-x:auto"><table class="tbl">
-          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Calidad</th><th>D. Condición</th><th>Total</th><th>Temp</th><th>Muestra</th><th>Fotos</th></tr></thead>
-          <tbody>${(i.pallets||[]).map(p=>`<tr><td class="mono">${p.codigo}</td><td>${chip(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
-            <td style="max-width:260px">${p.defecto_principal||"—"}</td><td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td>
+          <thead><tr><th>Pallet</th><th>Score</th><th>Calibre</th><th>Productor</th><th>Defecto principal</th><th>D. Calidad</th><th>D. Condición</th><th>Total</th><th>Temp</th><th>Muestra</th><th>Fotos (Pallet / Muestra)</th></tr></thead>
+          <tbody>${(i.pallets||[]).map(p=>{const tp=thumbsRO(p.fotos,'pallet'),tm=thumbsRO(p.fotos,'muestra');return `<tr><td class="mono">${p.codigo}</td><td>${chip(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
+            <td style="max-width:240px">${p.defecto_principal||"—"}</td><td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td>
             <td class="mono"><b>${p.pct_total}%</b></td><td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.tamano_muestra??"—"}</td>
-            <td><div style="display:flex;gap:4px">${(p.fotos||[]).map(f=>f._url?`<img src="${f._url}" onclick="window.open('${f._url}')" style="width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:pointer" title="Ver foto">`:"").join("")||"<span style='color:var(--muted)'>—</span>"}</div></td></tr>`).join("")}</tbody>
+            <td><div style="display:flex;flex-direction:column;gap:3px">${tp?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">P</span>${tp}</div>`:""}${tm?`<div style="display:flex;gap:3px;align-items:center"><span style="font-size:9px;color:var(--muted);width:13px">M</span>${tm}</div>`:""}${(!tp&&!tm)?"<span style='color:var(--muted)'>—</span>":""}</div></td></tr>`;}).join("")}</tbody>
         </table></div></div>
+      ${(i.fotos&&i.fotos.filter(f=>f.tipo==='contenedor').length)?`<div class="panel" style="margin-top:16px"><div class="hd"><h3>Fotos del contenedor</h3><span class="mut">${i.fotos.filter(f=>f.tipo==='contenedor').length}</span></div>
+        <div class="bd" style="display:flex;gap:8px;flex-wrap:wrap">${thumbsRO(i.fotos,'contenedor')}</div></div>`:""}
     </div>`;
   document.getElementById("scrim").classList.add("show");
 }
@@ -513,7 +518,20 @@ let DRAFT=null;
 function nuevoDraft(){return {codigo:"",lote:"",container:"",compania:"Marand Company Asia",exportador:"Marand Company",
   consignatario:"",locacion:"",pais_origen:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipo_producto:"CONV",
   tipo_inspeccion:"Normal Inspection",barco:"",tipo_carrier:"Ocean",frigorifico:"",inspector:"",cajas:"",total_pallets:"",
-  hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",pallets:[]};}
+  hora_frigorifico:"",fumigacion:"None",num_factura:"",fecha_arribo:"",fecha_frigorifico:"",fecha_embalaje:"",fotos:[],pallets:[]};}
+
+const MAX_FOTOS=15;
+async function subirFotos(files, arr, tipo){
+  const ya=arr.filter(f=>f.tipo===tipo).length; let n=0;
+  for(const f of files){
+    if(ya+n>=MAX_FOTOS){ toast("Máximo "+MAX_FOTOS+" fotos por galería"); break; }
+    try{ const r=await uploadFoto(f,tipo); arr.push({tipo,ref:r.ref,_url:r.url}); n++; }catch(e){ toast("Error al subir foto"); }
+  }
+  if(n) toast(n+" foto(s) ✓");
+}
+function thumbs(arr,tipo,onDel){
+  return (arr||[]).filter(f=>f.tipo===tipo).map((f,i)=>`<span style="position:relative;display:inline-block"><img src="${f._url}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid var(--line)"><button data-delfoto="${tipo}:${f.ref}" style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;border:none;background:#0F1A14;color:#fff;font-size:10px;line-height:1;cursor:pointer">×</button></span>`).join("");
+}
 
 function renderNueva(){
   if(!DRAFT) DRAFT=nuevoDraft();
@@ -533,6 +551,10 @@ function renderNueva(){
       ${F("cajas","Cajas","number")}${F("total_pallets","# Pallets","number")}${F("num_factura","Nº Factura")}${F("hora_frigorifico","Hora frigorífico")}
       ${F("fecha_embalaje","Fecha embalaje","date")}${F("fecha_arribo","Fecha arribo","date")}${F("fecha_frigorifico","Ingreso frigorífico ★","date")}<div class="ff"></div>
     </div>
+    <div class="sec-title">Fotos del contenedor <span class="pill" id="contCount" style="text-transform:none;letter-spacing:0">${(DRAFT.fotos||[]).filter(f=>f.tipo==='contenedor').length}/15</span></div>
+    <div id="contFotos" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:40px"></div>
+    <input type="file" accept="image/*" multiple id="contFile" style="display:none">
+    <button class="btn sm" id="contAdd" style="margin-top:8px">📷 Agregar fotos del contenedor</button>
     <div class="sec-title">Pallets <span class="pill" style="text-transform:none;letter-spacing:0">${DRAFT.pallets.length} agregados</span></div>
     <div id="palletRows"></div>
     <button class="btn sm" id="addPallet" style="margin-top:6px">＋ Agregar pallet</button>
@@ -545,6 +567,10 @@ function renderNueva(){
   </div></div>`;
   wrap.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",e=>DRAFT[e.target.dataset.k]=e.target.value));
   renderPalletRows();
+  renderContFotos();
+  const cf=document.getElementById("contFile");
+  document.getElementById("contAdd").onclick=()=>cf.click();
+  cf.onchange=async()=>{ DRAFT.fotos=DRAFT.fotos||[]; await subirFotos(cf.files, DRAFT.fotos, "contenedor"); renderContFotos(); };
   document.getElementById("addPallet").onclick=()=>{DRAFT.pallets.push({codigo:"",calibre:"",productor:PRODUCTORES[0],temp_prom:"",peso_neto_prom:10,pct_calidad:0,pct_condicion:0,defecto_principal:"",tamano_muestra:"",fotos:[]});renderPalletRows();};
   document.getElementById("guardar").onclick=guardarDraft;
   document.getElementById("descartar").onclick=()=>{DRAFT=null;setView("inspecciones");};
@@ -553,28 +579,40 @@ function renderPalletRows(){
   const host=document.getElementById("palletRows"); if(!host) return;
   if(!DRAFT.pallets.length){host.innerHTML=`<div class="empty" style="padding:24px"><div class="pill">Aún no agregas pallets</div></div>`;return;}
   const inp="border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px";
-  host.innerHTML=DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const nf=(p.fotos||[]).length;
-    return `<div style="display:grid;grid-template-columns:1.3fr .7fr 1fr .75fr .75fr 1.8fr 64px 60px 34px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)" data-row="${idx}">
+  const cnt=(p,t)=>(p.fotos||[]).filter(f=>f.tipo===t).length;
+  host.innerHTML=DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');
+    return `<div style="display:grid;grid-template-columns:1.3fr .55fr 1fr .65fr .65fr 1.5fr 50px 108px 26px;gap:7px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line2)" data-row="${idx}">
       <input data-pk="codigo" value="${p.codigo}" placeholder="R-MAR-…" style="${inp};font-family:'Sora'">
-      <input data-pk="calibre" value="${p.calibre}" placeholder="Calibre" type="number" style="${inp}">
+      <input data-pk="calibre" value="${p.calibre}" placeholder="Cal." type="number" style="${inp}">
       <select data-pk="productor" style="${inp};font-size:12px">${PRODUCTORES.map(o=>`<option ${p.productor===o?"selected":""}>${o}</option>`).join("")}</select>
       <input data-pk="pct_calidad" value="${p.pct_calidad}" type="number" step="0.1" title="% Calidad" style="${inp}">
       <input data-pk="pct_condicion" value="${p.pct_condicion}" type="number" step="0.1" title="% Condición" style="${inp}">
       <input data-pk="defecto_principal" value="${p.defecto_principal}" placeholder="Defecto principal" style="${inp}">
       <span style="text-align:center">${chip(sc)}</span>
-      <button class="btn ghost sm" data-foto="${idx}" title="Adjuntar fotos" style="white-space:nowrap">📷${nf?" "+nf:""}</button>
-      <button class="btn ghost sm" data-del="${idx}">✕</button>
-      <input type="file" accept="image/*" multiple data-file="${idx}" style="display:none"></div>`;}).join("");
+      <div style="display:flex;gap:4px">
+        <button class="btn ghost sm" data-fp="${idx}" title="Fotos de pallet (máx 15)" style="white-space:nowrap;padding:6px 6px">📷P${np?'·'+np:''}</button>
+        <button class="btn ghost sm" data-fm="${idx}" title="Fotos de muestra (máx 15)" style="white-space:nowrap;padding:6px 6px">📷M${nm?'·'+nm:''}</button>
+      </div>
+      <button class="btn ghost sm" data-del="${idx}" style="padding:6px 7px">✕</button>
+      <input type="file" accept="image/*" multiple data-filep="${idx}" style="display:none">
+      <input type="file" accept="image/*" multiple data-filem="${idx}" style="display:none"></div>`;}).join("");
   host.querySelectorAll("[data-row]").forEach(row=>{const idx=+row.dataset.row;
     row.querySelectorAll("[data-pk]").forEach(el=>el.addEventListener("input",e=>{DRAFT.pallets[idx][e.target.dataset.pk]=e.target.value;
       if(["pct_calidad","pct_condicion"].includes(e.target.dataset.pk))renderPalletRows();}));
     row.querySelector("[data-del]").onclick=()=>{DRAFT.pallets.splice(idx,1);renderPalletRows();};
-    const file=row.querySelector("[data-file]");
-    row.querySelector("[data-foto]").onclick=()=>file.click();
-    file.onchange=async()=>{ if(!file.files.length) return;
-      try{ for(const f of file.files){ const r=await uploadFoto(f,"pallet"); (DRAFT.pallets[idx].fotos=DRAFT.pallets[idx].fotos||[]).push({tipo:"pallet",ref:r.ref,_url:r.url}); }
-        toast("Foto(s) adjuntada(s) ✓"); renderPalletRows(); }
-      catch(e){ toast("Error al subir foto"); } };});
+    const fp=row.querySelector("[data-filep]"), fm=row.querySelector("[data-filem]");
+    row.querySelector("[data-fp]").onclick=()=>fp.click();
+    row.querySelector("[data-fm]").onclick=()=>fm.click();
+    fp.onchange=async()=>{ DRAFT.pallets[idx].fotos=DRAFT.pallets[idx].fotos||[]; await subirFotos(fp.files, DRAFT.pallets[idx].fotos, "pallet"); renderPalletRows(); };
+    fm.onchange=async()=>{ DRAFT.pallets[idx].fotos=DRAFT.pallets[idx].fotos||[]; await subirFotos(fm.files, DRAFT.pallets[idx].fotos, "muestra"); renderPalletRows(); };
+  });
+}
+function renderContFotos(){
+  const host=document.getElementById("contFotos"); if(!host) return;
+  const arr=DRAFT.fotos||[];
+  host.innerHTML=thumbs(arr,"contenedor")||'<span style="color:var(--muted);font-size:12px">Sin fotos aún</span>';
+  const c=document.getElementById("contCount"); if(c)c.textContent=arr.filter(f=>f.tipo==='contenedor').length+"/15";
+  host.querySelectorAll("[data-delfoto]").forEach(b=>b.onclick=()=>{const ref=b.dataset.delfoto.split(":").slice(1).join(":");DRAFT.fotos=(DRAFT.fotos||[]).filter(f=>f.ref!==ref);renderContFotos();});
 }
 async function guardarDraft(){
   if(!DRAFT.lote) return toast("Falta el Lote");
@@ -583,6 +621,7 @@ async function guardarDraft(){
   const body={...DRAFT,
     cajas:DRAFT.cajas?+DRAFT.cajas:null, total_pallets:DRAFT.total_pallets?+DRAFT.total_pallets:null,
     codigo:DRAFT.codigo||null,
+    fotos:(DRAFT.fotos&&DRAFT.fotos.length)?DRAFT.fotos.map(f=>({tipo:f.tipo,ref:f.ref})):null,
     pallets:DRAFT.pallets.map(p=>({codigo:p.codigo,productor:p.productor,calibre:p.calibre?+p.calibre:null,
       temp_prom:p.temp_prom?+p.temp_prom:null,peso_neto_prom:+p.peso_neto_prom||10,
       tamano_muestra:p.tamano_muestra?+p.tamano_muestra:null,
@@ -627,12 +666,16 @@ async function uploadFoto(file,tipo){
   if(!r.ok) throw new Error((await r.text())||"upload");
   return r.json();
 }
+async function _resolverUrl(f){
+  if(f._url) return;
+  if(MODO==="demo"){ f._url="/api/fotos/"+f.ref; }
+  else { try{ f._url=(await api("/api/fotos-url?ref="+encodeURIComponent(f.ref))).url; }catch(e){} }
+}
 async function resolverFotos(){
-  for(const i of DATA){ for(const p of (i.pallets||[])){ for(const f of (p.fotos||[])){
-    if(f._url) continue;
-    if(MODO==="demo"){ f._url="/api/fotos/"+f.ref; }
-    else { try{ f._url=(await api("/api/fotos-url?ref="+encodeURIComponent(f.ref))).url; }catch(e){} }
-  }}}
+  for(const i of DATA){
+    for(const f of (i.fotos||[])) await _resolverUrl(f);        // galería del contenedor
+    for(const p of (i.pallets||[])) for(const f of (p.fotos||[])) await _resolverUrl(f);
+  }
 }
 
 /* ===== Carga / arranque ===== */

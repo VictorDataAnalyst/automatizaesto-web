@@ -29,8 +29,22 @@ CABECERA = [
     "locacion", "pais_origen", "barco", "tipo_carrier", "frigorifico",
     "fumigacion", "tipo_inspeccion", "inspector", "cajas", "total_pallets",
     "hora_frigorifico", "fecha_embalaje", "fecha_arribo", "fecha_frigorifico",
-    "estado",
+    "estado", "fotos",
 ]
+MAX_FOTOS = 15  # por galería (pallet / muestra / contenedor), igual que el formato QIMA
+
+
+def _cap_fotos(fotos):
+    """Limita a 15 fotos por tipo de galería."""
+    if not fotos:
+        return None
+    por_tipo, out = {}, []
+    for f in fotos:
+        t = (f or {}).get("tipo", "pallet")
+        por_tipo[t] = por_tipo.get(t, 0) + 1
+        if por_tipo[t] <= MAX_FOTOS:
+            out.append(f)
+    return out or None
 PALLET = [
     "codigo", "productor", "clase", "calibre", "temp_prom", "peso_neto_prom",
     "brix_prom", "cajas_muestra", "tamano_muestra", "pct_calidad",
@@ -122,6 +136,7 @@ class InspeccionIn(BaseModel):
     fecha_embalaje: str | None = None
     fecha_arribo: str | None = None
     fecha_frigorifico: str | None = None
+    fotos: list[dict] | None = None   # galería del contenedor [{tipo:'contenedor', ref}]
     pallets: list[PalletIn] = []
 
 
@@ -135,6 +150,8 @@ def _preparar(body: InspeccionIn) -> tuple[dict, list]:
 
     cab = {k: getattr(body, k) for k in CABECERA if getattr(body, k, None) is not None}
     cab.setdefault("estado", "cerrada")
+    if cab.get("fotos"):
+        cab["fotos"] = _cap_fotos(cab["fotos"])
 
     pallets, cont = [], {"good": 0, "fair": 0, "poor": 0}
     suma_tot = 0.0
@@ -148,6 +165,8 @@ def _preparar(body: InspeccionIn) -> tuple[dict, list]:
         row = {k: getattr(p, k) for k in PALLET if getattr(p, k, None) is not None}
         row.update(pct_calidad=pcal, pct_condicion=pcond, pct_total=ptot,
                    pallet_score=sc, sample_score=sc)
+        if row.get("fotos"):
+            row["fotos"] = _cap_fotos(row["fotos"])
         pallets.append(row)
 
     n = len(pallets)
