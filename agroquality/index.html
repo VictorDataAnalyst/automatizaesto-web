@@ -324,13 +324,109 @@ footer{background:var(--ink);color:#A9BFB2;padding:64px 0 30px;font-size:14px}
   </div>
 </div></section>
 
+<style>
+.roi-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.roi-wrap{grid-template-columns:1fr}}
+.roi-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:24px}
+.roi-fld{margin-bottom:16px}.roi-fld:last-child{margin-bottom:0}
+.roi-fld label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.roi-fld input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:16px;font-family:inherit;background:#fff}
+.roi-fld input:focus{outline:none;border-color:var(--emer)}
+.roi-out{display:flex;flex-direction:column;gap:14px}
+.roi-metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.roi-metric .v{font-family:'Sora';font-size:32px;font-weight:700;color:var(--emer);line-height:1}
+.roi-metric .l{font-size:13px;color:var(--muted);margin-top:4px}
+.roi-note{font-size:12px;color:var(--muted)}
+.sec-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:860px){.sec-cards{grid-template-columns:1fr}}
+.sec-it{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.sec-it .ic{width:42px;height:42px;border-radius:11px;background:var(--soft2);display:grid;place-items:center;color:var(--emer);margin-bottom:12px}
+.sec-it h3{font-size:16px;margin-bottom:6px}.sec-it p{font-size:13.5px;color:var(--muted)}
+.ai-band{background:var(--ink);color:#fff;border-radius:20px;padding:38px;display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:center}
+@media(max-width:860px){.ai-band{grid-template-columns:1fr;padding:28px}}
+.ai-badge{display:inline-block;background:rgba(39,194,107,.18);color:#7DF38A;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:100px;margin-bottom:14px}
+.ai-band h2{font-size:28px;margin-bottom:10px}.ai-band p{color:#C3D6CB;font-size:15px}
+.ai-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.ai-list{grid-template-columns:1fr}}
+.ai-list li{display:flex;gap:9px;font-size:14px;color:#DCEAE2;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:11px;padding:12px}
+.ai-list li b{color:#7DF38A;font-weight:700}
+</style>
+
+<!-- ROI -->
+<section id="roi"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Calcula tu retorno</span>
+    <h2>¿Cuánto tiempo te <em>ahorra</em> AgroQuality?</h2>
+    <p>Una estimación rápida según tu operación — ajústala a tu realidad.</p>
+  </div>
+  <div class="roi-wrap">
+    <div class="roi-card reveal">
+      <div class="roi-fld"><label>Lotes que inspeccionas al mes</label><input id="roi_lotes" type="number" min="0" value="40"></div>
+      <div class="roi-fld"><label>Minutos en documentar cada inspección hoy (planilla, fotos, consolidar)</label><input id="roi_min" type="number" min="0" value="40"></div>
+      <div class="roi-fld"><label>Costo por hora del personal (S/)</label><input id="roi_costo" type="number" min="0" value="25"></div>
+    </div>
+    <div class="roi-out reveal">
+      <div class="roi-metric"><div class="v" id="roi_horas">0 h</div><div class="l">Horas ahorradas al mes</div></div>
+      <div class="roi-metric"><div class="v" id="roi_ahorro">S/ 0</div><div class="l">Ahorro operativo estimado al mes</div></div>
+      <p class="roi-note">Estimación asumiendo que la captura digital reduce ~50% el tiempo de documentación. Es un cálculo orientativo, no una promesa.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- Seguridad -->
+<section style="background:var(--soft)"><div class="container">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Seguridad empresarial</span>
+    <h2>Tus datos, <em>protegidos</em> de punta a punta.</h2>
+  </div>
+  <div class="sec-cards">
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3>Cifrado de datos</h3><p>En tránsito (HTTPS) y en reposo, sobre infraestructura de nube gestionada.</p></div>
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4-3 6.5-7 9-4-2.5-7-5-7-9V6z"/></svg></div><h3>Control de accesos por empresa</h3><p>Cada empresa ve solo sus inspecciones: aislamiento por organización a nivel de base de datos.</p></div>
+    <div class="sec-it reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A3.5 3.5 0 0 1 18 18z"/></svg></div><h3>Nube escalable + respaldos</h3><p>Infraestructura que crece con tu operación, con respaldos automáticos.</p></div>
+  </div>
+</div></section>
+
+<!-- AgroQuality AI (roadmap) -->
+<section><div class="container">
+  <div class="ai-band reveal">
+    <div>
+      <span class="ai-badge">Próximamente · En el roadmap</span>
+      <h2>AgroQuality AI</h2>
+      <p>El siguiente paso: que la plataforma no solo registre la calidad, sino que te ayude a interpretarla.</p>
+    </div>
+    <ul class="ai-list">
+      <li><b>›</b> Resumen automático de inspecciones</li>
+      <li><b>›</b> Detección de anomalías por lote</li>
+      <li><b>›</b> Explicación de causas de rechazo</li>
+      <li><b>›</b> Recomendaciones de mejora</li>
+    </ul>
+  </div>
+</div></section>
+
+<script>
+(function(){
+  var f=function(n){return Math.round(n).toLocaleString('es-PE');};
+  function calc(){
+    var lotes=+(document.getElementById('roi_lotes')||{}).value||0;
+    var min=+(document.getElementById('roi_min')||{}).value||0;
+    var costo=+(document.getElementById('roi_costo')||{}).value||0;
+    var ahorradas=lotes*min/60*0.5;
+    var h=document.getElementById('roi_horas'), a=document.getElementById('roi_ahorro');
+    if(h) h.textContent=f(ahorradas)+' h';
+    if(a) a.textContent='S/ '+f(ahorradas*costo);
+  }
+  ['roi_lotes','roi_min','roi_costo'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',calc);});
+  calc();
+})();
+</script>
+
 <!-- Stats -->
 <section class="stats"><div class="container">
   <div class="grid">
-    <div class="stat reveal"><div class="v" data-count="12000" data-suffix="+">0</div><div class="l">Pallets auditados</div></div>
-    <div class="stat reveal"><div class="v" data-count="98" data-suffix="%">0</div><div class="l">Trazabilidad por lote</div></div>
-    <div class="stat reveal"><div class="v" data-count="3">0</div><div class="l">Productos integrados</div></div>
-    <div class="stat reveal"><div class="v" data-count="24" data-suffix="/7">0</div><div class="l">Datos disponibles</div></div>
+    <div class="stat reveal"><div class="v" data-count="100" data-suffix="%">0</div><div class="l">Inspección digital, sin papel</div></div>
+    <div class="stat reveal"><div class="v" data-count="3">0</div><div class="l">Cultivos: paltas, uva, berries</div></div>
+    <div class="stat reveal"><div class="v" data-count="3">0</div><div class="l">Productos del ecosistema</div></div>
+    <div class="stat reveal"><div class="v" data-count="24" data-suffix="/7">0</div><div class="l">Datos en la nube</div></div>
   </div>
 </div></section>
 
