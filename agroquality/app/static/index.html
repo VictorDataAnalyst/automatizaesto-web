@@ -296,7 +296,9 @@ button{font-family:inherit;cursor:pointer}
       <button data-view="nueva"><span class="ic">＋</span> Nueva inspección</button>
       <button data-view="solicitudes" id="navAdmin" style="display:none"><span class="ic">✓</span> Solicitudes</button>
     </nav>
-    <div class="who"><b id="whoOrg">Marand Company</b>Auditoría de calidad · Paltas<span class="modo" id="whoModo">demo</span></div>
+    <div class="who"><b id="whoOrg">Marand Company</b>Auditoría de calidad · Paltas<span class="modo" id="whoModo">demo</span>
+      <button id="whoPass" style="display:none;margin-top:10px;background:none;border:1px solid rgba(255,255,255,.15);color:#CFE6D8;font-size:11.5px;padding:6px 9px;border-radius:7px;cursor:pointer;width:100%">🔑 Cambiar contraseña</button>
+      <button id="whoOut" style="display:none;margin-top:6px;background:none;border:none;color:#7FA890;font-size:11.5px;padding:4px;cursor:pointer;width:100%;text-align:left">Cerrar sesión</button></div>
   </aside>
   <main class="main">
     <header class="top">
@@ -471,7 +473,9 @@ function abrir(id){
   document.getElementById("modal").innerHTML=`
     <div class="mhd"><div><div style="display:flex;align-items:center;gap:10px"><h2 style="font-size:18px">${i.codigo||i.id}</h2>${chip(r.scoreGlobal)}</div>
       <div style="color:var(--muted);font-size:12.5px;margin-top:2px">Lote ${i.lote||""} · ${i.compania||""}</div></div>
-      <button class="x" onclick="cerrar()">×</button></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn sm" onclick="borrarInspeccion('${i.id}')" title="Eliminar inspección" style="color:#B5431A;border-color:#F0D6CC">🗑 Eliminar</button>
+        <button class="x" onclick="cerrar()">×</button></div></div>
     <div class="mbd">
       <div class="dt-grid">
         ${cell("Lote",i.lote)}${cell("Compañía",i.compania)}${cell("Exportador",i.exportador)}${cell("Consignatario",i.consignatario)}
@@ -521,6 +525,35 @@ function abrir(id){
 }
 function cerrar(){document.getElementById("scrim").classList.remove("show");}
 document.getElementById("scrim").addEventListener("click",e=>{if(e.target.id==="scrim")cerrar();});
+
+async function borrarInspeccion(id){
+  if(!confirm("¿Eliminar esta inspección? Esta acción no se puede deshacer.")) return;
+  try{ await api("/api/inspecciones/"+id,{method:"DELETE"}); cerrar(); toast("Inspección eliminada"); await cargar(); setView(VIEW); }
+  catch(e){ toast("Error: "+e.message); }
+}
+function cambiarPass(){
+  document.getElementById("modal").innerHTML=`
+    <div class="mhd"><h2 style="font-size:18px">Cambiar contraseña</h2><button class="x" onclick="cerrar()">×</button></div>
+    <div class="mbd" style="max-width:440px">
+      <div class="frm" style="grid-template-columns:1fr">
+        <div class="ff"><label>Nueva contraseña</label><input id="np1" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password"></div>
+        <div class="ff"><label>Repite la contraseña</label><input id="np2" type="password" autocomplete="new-password"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px"><button class="btn primary" id="npBtn">Guardar</button><button class="btn" onclick="cerrar()">Cancelar</button></div>
+      <div id="npErr" style="font-size:12.5px;margin-top:10px;color:#B5431A;min-height:16px"></div>
+    </div>`;
+  document.getElementById("scrim").classList.add("show");
+  document.getElementById("npBtn").onclick=async()=>{
+    const err=document.getElementById("npErr"); err.style.color="#B5431A"; err.textContent="";
+    const p1=document.getElementById("np1").value, p2=document.getElementById("np2").value;
+    if(p1.length<8){err.textContent="La contraseña debe tener al menos 8 caracteres.";return;}
+    if(p1!==p2){err.textContent="Las contraseñas no coinciden.";return;}
+    const b=document.getElementById("npBtn"); b.disabled=true; b.textContent="Guardando…";
+    try{ const {error}=await SUPA.auth.updateUser({password:p1}); if(error) throw error;
+      err.style.color="#147A41"; err.textContent="Contraseña actualizada ✓"; toast("Contraseña actualizada ✓"); setTimeout(cerrar,1200); }
+    catch(e){ err.textContent=e.message||"No se pudo actualizar la contraseña."; b.disabled=false; b.textContent="Guardar"; }
+  };
+}
 
 /* ===== Nueva inspección ===== */
 const PRODUCTORES=["004-03006-03","016-42980-01","016-4726-01","010-62372-01","009-33744-02","016-40726-01"];
@@ -768,6 +801,10 @@ async function arrancarApp(){
   try{ const st=await api("/api/estado"); ES_ADMIN=!!st.es_admin;
     if(st.usuario) document.getElementById("whoOrg").textContent=st.usuario; }catch(e){}
   document.getElementById("navAdmin").style.display=ES_ADMIN?"":"none";
+  const esSaas=MODO==="saas", wp=document.getElementById("whoPass"), wo=document.getElementById("whoOut");
+  wp.style.display=esSaas?"":"none"; wo.style.display=esSaas?"":"none";
+  wp.onclick=cambiarPass;
+  wo.onclick=async()=>{ try{ if(SUPA) await SUPA.auth.signOut(); }catch(e){} location.reload(); };
   document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setView(b.dataset.view));
   document.getElementById("btnNew").onclick=()=>setView("nueva");
   document.getElementById("btnExport").onclick=exportCSV;
