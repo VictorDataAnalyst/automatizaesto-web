@@ -256,10 +256,10 @@
     transform: translate(-50%, -40%);
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(var(--accent-rgb),0.12) 0%, rgba(var(--accent-rgb),0.04) 30%, transparent 60%);
+    background: radial-gradient(circle, rgba(var(--accent-rgb),0.07) 0%, rgba(var(--accent-rgb),0.02) 35%, transparent 62%);
     pointer-events: none;
     z-index: 0;
-    animation: breathe 8s ease-in-out infinite;
+    animation: breathe 12s ease-in-out infinite;
   }
 
   @keyframes breathe {
@@ -1085,8 +1085,8 @@
   /* ========= PRODUCTOS ========= */
   .products-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
   }
 
   @media (max-width: 1100px) {
@@ -1102,8 +1102,8 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 32px;
-    min-height: 360px;
+    padding: 30px;
+    min-height: 290px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2310,7 +2310,7 @@
     <div class="hero-stat"><span class="hs-num">1–4<em> sem</em></span><span class="hs-label">De idea a producción</span></div>
     <div class="hero-stat"><span class="hs-num">24/7</span><span class="hs-label">Operación continua</span></div>
     <div class="hero-stat"><span class="hs-num">+100</span><span class="hs-label">Apps integrables</span></div>
-    <div class="hero-stat"><span class="hs-num">2</span><span class="hs-label">Productos propios</span></div>
+    <div class="hero-stat"><span class="hs-num">3</span><span class="hs-label">Productos propios</span></div>
   </div>
 
   <!-- Hero visual: flow diagram -->
@@ -2370,29 +2370,7 @@
             <span>React Native</span>
             <span>Supabase</span>
             <span>Offline-first</span>
-            <span>GPS + Fotos</span>
-            <span>Agritech</span>
           </div>
-
-          <!-- Mini-estado del producto → roadmap -->
-          <a class="agro-progress" href="agrofield/roadmap.html" target="_blank" rel="noopener" style="--fill:48%" aria-label="AgroField está en la Fase 2 de 4 del roadmap, ~48% de avance: backend en la nube y modo offline ya en producción. Ver roadmap completo (abre en nueva pestaña)">
-            <div class="agro-progress-head">
-              <span><span class="agro-dot" aria-hidden="true"></span>Roadmap del producto</span>
-              <b>Fase 2 de 4 · ~48%</b>
-            </div>
-            <div class="agro-steps" aria-hidden="true">
-              <span class="agro-track"></span>
-              <span class="agro-track-fill"></span>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Validación</em></div>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Nube + Offline</em></div>
-              <div class="agro-step current"><span class="agro-node">◐</span><em>Multi-empresa</em></div>
-              <div class="agro-step"><span class="agro-node"></span><em>Escala</em></div>
-            </div>
-            <span class="agro-progress-link">
-              Ver roadmap del producto
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </span>
-          </a>
         </div>
         <a class="product-cta" href="agrofield/index.html" target="_blank" rel="noopener">
           Ver prototipo interactivo
@@ -2421,26 +2399,6 @@
             <span>Series de tiempo</span>
             <span>Dashboards</span>
           </div>
-
-          <!-- Mini-estado del producto → acceso anticipado (pricing) -->
-          <a class="agro-progress" href="forecast/index.html#pricing" target="_blank" rel="noopener" style="--fill:50%" aria-label="Forecast MYPE está en Beta (Fase 3 de 4). Solicitar acceso anticipado.">
-            <div class="agro-progress-head">
-              <span><span class="agro-dot" aria-hidden="true"></span>Roadmap del producto</span>
-              <b>Fase 3 de 4 · Beta</b>
-            </div>
-            <div class="agro-steps" aria-hidden="true">
-              <span class="agro-track"></span>
-              <span class="agro-track-fill"></span>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Investigación</em></div>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Modelado</em></div>
-              <div class="agro-step current"><span class="agro-node">◐</span><em>Beta</em></div>
-              <div class="agro-step"><span class="agro-node"></span><em>Lanzamiento</em></div>
-            </div>
-            <span class="agro-progress-link">
-              Quiero acceso anticipado
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </span>
-          </a>
         </div>
         <a class="product-cta" href="forecast/index.html" target="_blank" rel="noopener">
           Ver Forecast MYPE
@@ -2468,30 +2426,8 @@
           <div class="product-tags">
             <span>Inspección</span>
             <span>Calidad</span>
-            <span>Supabase</span>
             <span>Trazabilidad</span>
-            <span>Agritech</span>
           </div>
-
-          <!-- Mini-estado del producto -->
-          <a class="agro-progress" href="roadmap/index.html" target="_blank" rel="noopener" style="--fill:70%" aria-label="AgroQuality está en producción, Fase 3 de 4 (piloto con Marand). Ver el roadmap de productos.">
-            <div class="agro-progress-head">
-              <span><span class="agro-dot" aria-hidden="true"></span>Roadmap del producto</span>
-              <b>Fase 3 de 4 · Piloto</b>
-            </div>
-            <div class="agro-steps" aria-hidden="true">
-              <span class="agro-track"></span>
-              <span class="agro-track-fill"></span>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Prototipo</em></div>
-              <div class="agro-step done"><span class="agro-node">✓</span><em>Backend</em></div>
-              <div class="agro-step current"><span class="agro-node">◐</span><em>Piloto</em></div>
-              <div class="agro-step"><span class="agro-node"></span><em>Escala</em></div>
-            </div>
-            <span class="agro-progress-link">
-              Ver roadmap del producto
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </span>
-          </a>
         </div>
         <a class="product-cta" href="agroquality/index.html" target="_blank" rel="noopener">
           Conoce AgroQuality
