@@ -344,7 +344,17 @@ function resumen(ins){
     condProm:+(cond/n).toFixed(2),totProm,
     tempProm:tempN?+(temp/tempN).toFixed(1):null,pesoProm:+(peso/n).toFixed(1)};
 }
-function pctScore(c,n){return {good:Math.round((c.good||0)/n*100),fair:Math.round((c.fair||0)/n*100),poor:Math.round((c.poor||0)/n*100)};}
+function pctScore(c){
+  // Redondeo por mayor resto: good+fair+poor SIEMPRE suma 100 (nunca 101).
+  const tot=(c.good||0)+(c.fair||0)+(c.poor||0);
+  if(!tot) return {good:0,fair:0,poor:0};
+  const raw={good:(c.good||0)/tot*100,fair:(c.fair||0)/tot*100,poor:(c.poor||0)/tot*100};
+  const r={good:Math.floor(raw.good),fair:Math.floor(raw.fair),poor:Math.floor(raw.poor)};
+  let resto=100-(r.good+r.fair+r.poor);
+  const ord=["good","fair","poor"].sort((a,b)=>(raw[b]%1)-(raw[a]%1));
+  for(let i=0;i<resto;i++) r[ord[i%3]]++;
+  return r;
+}
 function fmtFecha(s){ if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; }
 function inRango(f,d1,d2){ if(!f) return false; if(d1&&f<d1) return false; if(d2&&f>d2) return false; return true; }
 function chip(s){return `<span class="chip ${s}">${SCORE_LABEL[s]||s}</span>`;}
@@ -474,6 +484,7 @@ function abrir(id){
     <div class="mhd"><div><div style="display:flex;align-items:center;gap:10px"><h2 style="font-size:18px">${i.codigo||i.id}</h2>${chip(r.scoreGlobal)}</div>
       <div style="color:var(--muted);font-size:12.5px;margin-top:2px">Lote ${i.lote||""} · ${i.compania||""}</div></div>
       <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn sm" onclick="imprimirPDF('${i.id}')" title="Descargar PDF">⤓ PDF</button>
         <button class="btn sm" onclick="borrarInspeccion('${i.id}')" title="Eliminar inspección" style="color:#B5431A;border-color:#F0D6CC">🗑 Eliminar</button>
         <button class="x" onclick="cerrar()">×</button></div></div>
     <div class="mbd">
@@ -531,6 +542,73 @@ async function borrarInspeccion(id){
   try{ await api("/api/inspecciones/"+id,{method:"DELETE"}); cerrar(); toast("Inspección eliminada"); await cargar(); setView(VIEW); }
   catch(e){ toast("Error: "+e.message); }
 }
+function imprimirPDF(id){
+  const i=DATA.find(x=>x.id===id); if(!i) return;
+  const r=resumen(i), pct=pctScore(r.cont,r.n);
+  const SC={good:["Good","#147A41","#E4F6EC"],fair:["Fair","#8A6D00","#FBF4D6"],poor:["Poor","#B5431A","#FBE7DC"]};
+  const chipP=s=>{const c=SC[s]||["—","#555","#eee"];return `<span style="background:${c[2]};color:${c[1]};padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700">${c[0]}</span>`;};
+  const C=(k,v)=>`<div class="cell"><div class="k">${k}</div><div class="v">${(v===null||v===undefined||v==="")?"—":v}</div></div>`;
+  const firm=p=>(p.firmeza_psi_min||p.firmeza_psi_max)?`${p.firmeza_psi_min??"—"}–${p.firmeza_psi_max??"—"}`:"—";
+  const defs=p=>(p.defectos&&p.defectos.length)?p.defectos.map(d=>d.nombre+" "+d.pct+"%").join(" · "):"";
+  const filas=(i.pallets||[]).map(p=>`<tr>
+    <td class="mono">${p.codigo}</td><td>${chipP(p.pallet_score)}</td><td class="mono">${p.calibre??"—"}</td><td class="mono">${p.productor||"—"}</td>
+    <td>${p.defecto_principal||"—"}${defs(p)?`<div class="sub">${defs(p)}</div>`:""}</td>
+    <td class="mono">${p.pct_calidad}%</td><td class="mono">${p.pct_condicion}%</td><td class="mono"><b>${p.pct_total}%</b></td>
+    <td class="mono">${p.temp_prom||"—"}</td><td class="mono">${p.brix_prom??"—"}</td><td class="mono">${firm(p)}</td><td class="mono">${p.tamano_muestra??"—"}</td></tr>`).join("");
+  const termo=(i.termografia&&i.termografia.length)?`<h2>Termografía</h2><table><thead><tr><th>Serial</th><th>Días viaje</th><th>Min</th><th>Max</th><th>Avg</th></tr></thead><tbody>${i.termografia.map(t=>`<tr><td class="mono">${t.serial||"—"}</td><td class="mono">${t.trip_length_dias??"—"}</td><td class="mono">${t.temp_min??"—"} °C</td><td class="mono">${t.temp_max??"—"} °C</td><td class="mono">${t.temp_avg??"—"} °C</td></tr>`).join("")}</tbody></table>`:"";
+  const notas=(i.notas_calidad||i.notas_inspector||i.digitado_por)?`<h2>Notas</h2>${i.notas_calidad?`<p><b>Quality &amp; Condition:</b> ${i.notas_calidad}</p>`:""}${i.notas_inspector?`<p><b>Inspector Notes:</b> ${i.notas_inspector}</p>`:""}${i.digitado_por?`<p class="muted">Digitado por: ${i.digitado_por}</p>`:""}`:"";
+  const fecha=new Date().toLocaleDateString("es-PE");
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Reporte ${i.codigo||i.lote||""}</title>
+  <style>
+    @page{size:A4;margin:13mm}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',Arial,sans-serif;color:#11201a;font-size:11px;line-height:1.4}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1F9D57;padding-bottom:10px;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:9px}
+    .logo{width:30px;height:30px;border-radius:7px;background:#1F9D57;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:monospace;font-size:18px}
+    .brand b{font-size:16px}.brand small{color:#5C6B62;font-size:9px}
+    .rpt{text-align:right;font-size:10px;color:#5C6B62}.rpt b{color:#11201a;font-size:12px}
+    h2{font-size:12px;margin:16px 0 7px;color:#157F47;border-bottom:1px solid #E4E9E6;padding-bottom:3px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#E4E9E6;border:1px solid #E4E9E6;border-radius:5px;overflow:hidden}
+    .cell{background:#fff;padding:5px 7px}.cell .k{font-size:8px;text-transform:uppercase;letter-spacing:.04em;color:#5C6B62;font-weight:600}.cell .v{font-size:10.5px;margin-top:1px}
+    .res{display:flex;gap:12px;margin:6px 0}.res .box{flex:1;border:1px solid #E4E9E6;border-radius:6px;padding:8px 10px}.res .n{font-size:18px;font-weight:700}
+    table{width:100%;border-collapse:collapse;font-size:9.5px;margin-top:4px}
+    th{text-align:left;background:#F5F8F6;border-bottom:1px solid #E4E9E6;padding:5px 6px;font-size:8px;text-transform:uppercase;letter-spacing:.03em;color:#5C6B62}
+    td{padding:5px 6px;border-bottom:1px solid #EEF2F0;vertical-align:top}
+    .mono{font-variant-numeric:tabular-nums}.sub{font-size:8.5px;color:#5C6B62;margin-top:1px}.muted{color:#5C6B62}
+    tr{page-break-inside:avoid}p{margin:3px 0}
+    .foot{margin-top:18px;border-top:1px solid #E4E9E6;padding-top:8px;font-size:8.5px;color:#5C6B62;display:flex;justify-content:space-between}
+  </style></head><body>
+  <div class="top">
+    <div class="brand"><div class="logo">&#955;</div><div><b>AgroQuality</b><br><small>Auditoría de calidad post-cosecha</small></div></div>
+    <div class="rpt"><b>Reporte de inspección</b><br>${i.codigo||""}<br>Nº ${i.numero_reporte||"—"}<br>${fecha}</div>
+  </div>
+  <div class="grid">
+    ${C("Lote",i.lote)}${C("Compañía",i.compania)}${C("Exportador",i.exportador)}${C("Consignatario",i.consignatario)}
+    ${C("Producto",i.producto)}${C("Variedad",i.variedad)}${C("Embalaje",i.embalaje)}${C("Tipo producto",i.tipo_producto)}
+    ${C("Locación",i.locacion)}${C("País",i.pais_origen)}${C("Barco",i.barco)}${C("Tipo carrier",i.tipo_carrier)}
+    ${C("Container",i.container)}${C("Frigorífico",i.frigorifico)}${C("Inspector",i.inspector)}${C("Tipo inspección",i.tipo_inspeccion)}
+    ${C("Fecha embalaje",fmtFecha(i.fecha_embalaje))}${C("Fecha arribo",fmtFecha(i.fecha_arribo))}${C("Ingreso frigorífico",fmtFecha(i.fecha_frigorifico)+" "+(i.hora_frigorifico||""))}${C("Fumigación",i.fumigacion)}
+    ${C("Cajas",i.cajas)}${C("# Pallets",i.total_pallets)}${C("Tec. postcosecha",i.tecnologia_postcosecha)}${C("Tipo atmósfera",i.tipo_atmosfera)}
+  </div>
+  <h2>Resumen</h2>
+  <div class="res">
+    <div class="box"><div class="n" style="color:#1F9D57">${pct.good+pct.fair}%</div><div class="muted">Aprobación (Good+Fair)</div></div>
+    <div class="box"><div class="muted">Distribución</div>Good ${pct.good}% · Fair ${pct.fair}% · Poor ${pct.poor}%</div>
+    <div class="box"><div class="muted">Defectos prom.</div>Calidad ${r.calProm}% · Condición ${r.condProm}% · <b>Total ${r.totProm}%</b></div>
+    <div class="box"><div class="muted">Temp. prom.</div>${r.tempProm??"—"} °C</div>
+  </div>
+  <h2>Pallets (${r.n})</h2>
+  <table><thead><tr><th>Pallet</th><th>Score</th><th>Cal.</th><th>Productor</th><th>Defecto principal</th><th>D.Cal</th><th>D.Cond</th><th>Total</th><th>Temp</th><th>Brix</th><th>Firmeza PSI</th><th>Muestra</th></tr></thead><tbody>${filas}</tbody></table>
+  ${termo}
+  ${notas}
+  <div class="foot"><span>Generado por AgroQuality · automatizaesto</span><span>${fecha}</span></div>
+  <script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script>
+  </body></html>`;
+  const w=window.open("","_blank");
+  if(!w){ toast("Permite las ventanas emergentes para generar el PDF"); return; }
+  w.document.write(html); w.document.close();
+}
 function cambiarPass(){
   document.getElementById("modal").innerHTML=`
     <div class="mhd"><h2 style="font-size:18px">Cambiar contraseña</h2><button class="x" onclick="cerrar()">×</button></div>
@@ -569,12 +647,20 @@ function nuevoDraft(){return {codigo:"",lote:"",container:"",compania:"Marand Co
 const DEFECTOS_COMUNES=["Black Spots","Lenticelosis","Internal Breakdown","Black Color","Misshapen","Russet Severe","Russet Slight","Deformes","Cuerpos Extraños","Sucio","Cicatrices Severas","Fruta Virada","Pudrición","Daño por frío"];
 const MAX_FOTOS=15;
 async function subirFotos(files, arr, tipo){
-  const ya=arr.filter(f=>f.tipo===tipo).length; let n=0;
+  const ya=arr.filter(f=>f.tipo===tipo).length;
+  const disp=Math.max(0, MAX_FOTOS-ya);
+  const sel=files.length;
+  // Aviso explícito ANTES de subir: el usuario sabe exactamente qué se omite.
+  if(sel>disp){
+    const om=sel-disp;
+    toast(`Has excedido el límite de ${MAX_FOTOS} fotos por galería. Ya tienes ${ya}; se omitirán ${om} de las ${sel} seleccionadas.`, 5200);
+  }
+  let n=0;
   for(const f of files){
-    if(ya+n>=MAX_FOTOS){ toast("Máximo "+MAX_FOTOS+" fotos por galería"); break; }
+    if(ya+n>=MAX_FOTOS) break;
     try{ const r=await uploadFoto(f,tipo); arr.push({tipo,ref:r.ref,_url:r.url}); n++; }catch(e){ toast("Error al subir foto"); }
   }
-  if(n) toast(n+" foto(s) ✓");
+  if(n && sel<=disp) toast(n+" foto(s) ✓");
 }
 function thumbs(arr,tipo,onDel){
   return (arr||[]).filter(f=>f.tipo===tipo).map((f,i)=>`<span style="position:relative;display:inline-block"><img src="${f._url}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid var(--line)"><button data-delfoto="${tipo}:${f.ref}" style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;border:none;background:#0F1A14;color:#fff;font-size:10px;line-height:1;cursor:pointer">×</button></span>`).join("");
@@ -643,9 +729,13 @@ function renderPalletRows(){
     if(opts) return `<div class="ff"><label>${lab}</label><select data-pk="${k}" style="${inp}">${opts.map(o=>`<option value="${o[0]}" ${p[k]===o[0]?"selected":""}>${o[1]}</option>`).join("")}</select></div>`;
     if(type==="check") return `<label class="ff" style="flex-direction:row;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" data-pk="${k}" ${p[k]?"checked":""} style="width:16px;height:16px;accent-color:var(--emer)"> ${lab}</label>`;
     return `<div class="ff"><label>${lab}</label><input data-pk="${k}" type="${type}" value="${p[k]??""}" style="${inp}"></div>`;};
-  host.innerHTML=`<datalist id="defOpts">${DEFECTOS_COMUNES.map(d=>`<option value="${d}">`).join("")}</datalist>`+DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');const nd=(p.defectos||[]).length;
+  const COLS="1.25fr .5fr .9fr .6fr .6fr 1.4fr 46px 100px 26px 26px";
+  host.innerHTML=`<datalist id="defOpts">${DEFECTOS_COMUNES.map(d=>`<option value="${d}">`).join("")}</datalist>`
+    +`<div style="display:grid;grid-template-columns:${COLS};gap:6px;padding:4px 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:1px solid var(--line)">`
+    +`<span>Código</span><span>Calibre</span><span>Productor</span><span>% Calidad</span><span>% Condición</span><span>Defecto principal</span><span style="text-align:center">Score</span><span>Fotos</span><span></span><span></span></div>`
+    +DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');const nd=(p.defectos||[]).length;
     return `<div data-row="${idx}" style="border-bottom:1px solid var(--line2)">
-     <div style="display:grid;grid-template-columns:1.25fr .5fr .9fr .6fr .6fr 1.4fr 46px 100px 26px 26px;gap:6px;align-items:center;padding:8px 0">
+     <div style="display:grid;grid-template-columns:${COLS};gap:6px;align-items:center;padding:8px 0">
       <input data-pk="codigo" value="${p.codigo}" placeholder="R-MAR-…" style="${inp};font-family:'Sora'">
       <input data-pk="calibre" value="${p.calibre}" placeholder="Cal." type="number" style="${inp}">
       <select data-pk="productor" style="${inp};font-size:12px">${PRODUCTORES.map(o=>`<option ${p.productor===o?"selected":""}>${o}</option>`).join("")}</select>
@@ -755,7 +845,8 @@ function donut(pct){
     <text x="70" y="66" text-anchor="middle" font-family="Sora" font-weight="700" font-size="20" fill="#0F1A14">${pct.good+pct.fair}%</text>
     <text x="70" y="84" text-anchor="middle" font-family="Inter" font-size="10" fill="#5C6B62">aprobado</text></svg>`;
 }
-function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
+let _toastT=null;
+function toast(m,ms=2200){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");if(_toastT)clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove("show"),ms);}
 
 async function exportCSV(){
   const qs=new URLSearchParams();
