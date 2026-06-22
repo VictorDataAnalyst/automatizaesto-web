@@ -172,6 +172,28 @@ button{font-family:inherit;cursor:pointer}
 .lx-proof .logos{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
 .lx-proof .logos span{font-size:11px;font-weight:600;color:#CFE6D8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:4px 9px;border-radius:7px}
 .loader{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:250;color:var(--muted);font-size:13px}
+/* ===== Móvil: app usable en celular (inspector en campo) ===== */
+@media(max-width:760px){
+  .app{flex-direction:column}
+  .side{width:100%;height:auto;position:sticky;top:0;flex-direction:row;align-items:center;gap:4px;padding:0;overflow-x:auto;z-index:30}
+  .brand{padding:11px 13px;border-bottom:none;flex-shrink:0}
+  .brand b{font-size:15px}.brand small{display:none}
+  .nav{flex-direction:row;padding:7px 4px;gap:4px;flex:1;overflow-x:auto}
+  .nav button{white-space:nowrap;padding:8px 11px}
+  .side .who{border-top:none;padding:8px 10px;flex-shrink:0;display:flex;gap:6px;align-items:center;font-size:0}
+  .side .who .modo{display:none}
+  .side .who button{margin-top:0 !important;width:auto !important;flex-shrink:0}
+  .main{min-height:auto}
+  .top{padding:12px 16px;flex-wrap:wrap}
+  .top h1{font-size:16px}
+  .wrap{padding:16px 13px}
+  .frm{grid-template-columns:1fr}
+  #palletRows{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .prow{min-width:660px}
+  .scrim{padding:14px 8px}
+  .modal .mbd{padding:14px}
+  .dt-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
@@ -735,12 +757,12 @@ function renderPalletRows(){
     +`<span>Código</span><span>Calibre</span><span>Productor</span><span>% Calidad</span><span>% Condición</span><span>Defecto principal</span><span style="text-align:center">Score</span><span>Fotos</span><span></span><span></span></div>`
     +DRAFT.pallets.map((p,idx)=>{const tot=(+p.pct_calidad||0)+(+p.pct_condicion||0);const sc=scoreDe(tot);const np=cnt(p,'pallet'),nm=cnt(p,'muestra');const nd=(p.defectos||[]).length;
     return `<div data-row="${idx}" style="border-bottom:1px solid var(--line2)">
-     <div style="display:grid;grid-template-columns:${COLS};gap:6px;align-items:center;padding:8px 0">
-      <input data-pk="codigo" value="${p.codigo}" placeholder="R-MAR-…" style="${inp};font-family:'Sora'">
+     <div class="prow" style="display:grid;grid-template-columns:${COLS};gap:6px;align-items:center;padding:8px 0">
+      <input data-pk="codigo" value="${p.codigo}" placeholder="Pallet (R-MAR-…)" style="${inp};font-family:'Sora'">
       <input data-pk="calibre" value="${p.calibre}" placeholder="Cal." type="number" style="${inp}">
       <select data-pk="productor" style="${inp};font-size:12px">${PRODUCTORES.map(o=>`<option ${p.productor===o?"selected":""}>${o}</option>`).join("")}</select>
-      <input data-pk="pct_calidad" value="${p.pct_calidad}" type="number" step="0.1" title="% Calidad" style="${inp}">
-      <input data-pk="pct_condicion" value="${p.pct_condicion}" type="number" step="0.1" title="% Condición" style="${inp}">
+      <input data-pk="pct_calidad" value="${p.pct_calidad}" type="number" step="0.1" title="% Calidad" placeholder="% Cal" style="${inp}">
+      <input data-pk="pct_condicion" value="${p.pct_condicion}" type="number" step="0.1" title="% Condición" placeholder="% Cond" style="${inp}">
       <input data-pk="defecto_principal" value="${p.defecto_principal}" placeholder="Defecto principal" style="${inp}">
       <span style="text-align:center">${chip(sc)}</span>
       <div style="display:flex;gap:4px">
