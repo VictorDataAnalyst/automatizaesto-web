@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Ping health endpoint
         run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" -m 60 https://agroquality.onrender.com/api/config)
+          code=$(curl -s -o /dev/null -w "%{http_code}" -m 60 https://agroquality.automatizaesto.com/api/config)
           echo "HTTP $code"
           # 200 = despierto. No fallamos el job por un cold-start ocasional.
           if [ "$code" != "200" ]; then

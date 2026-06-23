@@ -1,7 +1,7 @@
 # AgroQuality · Operaciones (runbook)
 
 Auditoría e inspección de calidad post-cosecha. Backend FastAPI + frontend
-estático, sobre Supabase. **En producción:** https://agroquality.onrender.com
+estático, sobre Supabase. **En producción:** https://agroquality.automatizaesto.com (dominio propio; CNAME → agroquality.onrender.com)
 
 ## Arquitectura
 - `agroquality/app/` — backend FastAPI + frontend (`static/index.html`).
