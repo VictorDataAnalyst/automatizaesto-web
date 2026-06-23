@@ -483,11 +483,48 @@
     box-shadow: 0 0 8px var(--accent);
   }
 
-  .flow-node.active .node-dot { animation: nodeBlink 2s infinite; }
-
-  @keyframes nodeBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  /* Pipeline animado: los nodos se activan en secuencia y una señal viaja por la línea */
+  .flow-node { animation: nodeGlow 4.5s ease-in-out infinite; }
+  .flow-grid > .flow-node:nth-child(1) { animation-delay: 0s; }
+  .flow-grid > .flow-node:nth-child(3) { animation-delay: 1.5s; }
+  .flow-grid > .flow-node:nth-child(5) { animation-delay: 3s; }
+  .flow-node .node-dot { animation: dotGlow 4.5s ease-in-out infinite; }
+  .flow-grid > .flow-node:nth-child(3) .node-dot { animation-delay: 1.5s; }
+  .flow-grid > .flow-node:nth-child(5) .node-dot { animation-delay: 3s; }
+  @keyframes nodeGlow {
+    0%   { border-color: var(--border); box-shadow: none; }
+    8%   { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 12px 36px rgba(var(--accent-rgb),0.28); }
+    26%  { border-color: rgba(var(--accent-rgb),0.45); box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.4), 0 6px 18px rgba(var(--accent-rgb),0.1); }
+    42%, 100% { border-color: var(--border); box-shadow: none; }
+  }
+  @keyframes dotGlow {
+    0%, 42%, 100% { background: var(--ink-mute); box-shadow: none; }
+    8%  { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+    26% { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  }
+  /* Señal que viaja por la línea entre nodos */
+  .flow-arrow::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: -18px;
+    width: 7px; height: 7px; margin-top: -3.5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    opacity: 0;
+    animation: signal 4.5s linear infinite;
+    z-index: 2;
+  }
+  .flow-grid > .flow-arrow:nth-child(2)::before { animation-delay: 0.5s; }
+  .flow-grid > .flow-arrow:nth-child(4)::before { animation-delay: 2s; }
+  @keyframes signal {
+    0%, 8%  { left: -18px; opacity: 0; }
+    14%     { opacity: 1; }
+    28%     { left: calc(100% + 18px); opacity: 1; }
+    33%, 100% { left: calc(100% + 18px); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-node, .flow-node .node-dot, .flow-arrow::before { animation: none; }
   }
 
   .flow-arrow {
@@ -2467,59 +2504,13 @@
             <input id="f-nombre" type="text" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
           </div>
           <div class="form-field">
-            <label for="f-empresa">Empresa</label>
-            <input id="f-empresa" type="text" name="empresa" placeholder="Tu empresa" autocomplete="organization" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
             <label for="f-email">Email</label>
             <input id="f-email" type="email" name="email" placeholder="tu@empresa.com" autocomplete="email" inputmode="email" required>
           </div>
-          <div class="form-field">
-            <label for="f-telefono">Teléfono / WhatsApp</label>
-            <input id="f-telefono" type="tel" name="telefono" placeholder="+51 999 999 999" autocomplete="tel" inputmode="tel">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label for="f-servicio">¿Qué te interesa?</label>
-            <select id="f-servicio" name="servicio" required>
-              <option value="">Elige un servicio...</option>
-              <option>Automatización de leads / ventas</option>
-              <option>Soporte con IA / base de conocimiento</option>
-              <option>Flujos documentales</option>
-              <option>AgroField (gestión de campo)</option>
-              <option>Forecast MYPE (acceso anticipado)</option>
-              <option>Producto / desarrollo a medida</option>
-              <option>Aún no lo sé, quiero asesoría</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="f-presupuesto">¿Cómo prefieres avanzar? <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
-            <select id="f-presupuesto" name="presupuesto">
-              <option value="">Selecciona una opción...</option>
-              <option>Quiero una propuesta a medida</option>
-              <option>Es un proyecto puntual / pequeño</option>
-              <option>Es un proyecto en varias fases</option>
-              <option>Aún explorando, necesito asesoría</option>
-            </select>
-          </div>
         </div>
         <div class="form-field">
-          <label for="f-origen">¿Cómo nos conociste?</label>
-          <select id="f-origen" name="origen">
-            <option value="">Opcional...</option>
-            <option>Búsqueda en Google</option>
-            <option>Redes sociales</option>
-            <option>Recomendación</option>
-            <option>Evento / feria</option>
-            <option>Otro</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label for="f-mensaje">Cuéntanos sobre tu proyecto</label>
-          <textarea id="f-mensaje" name="mensaje" placeholder="¿Qué proceso quieres automatizar?" required></textarea>
+          <label for="f-mensaje">¿Qué proceso quieres automatizar?</label>
+          <textarea id="f-mensaje" name="mensaje" placeholder="Cuéntanos en una o dos líneas…" required></textarea>
         </div>
         <button type="submit" class="form-submit">Enviar solicitud →</button>
       </form>
