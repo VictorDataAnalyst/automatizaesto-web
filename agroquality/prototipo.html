@@ -164,7 +164,7 @@ a{color:inherit}
       <button data-view="nueva"><span class="ic">＋</span> Nueva inspección</button>
     </nav>
     <div class="who">
-      <b>Marand Company</b>
+      <b>AgroDemo Export</b>
       Auditoría de calidad · Paltas
     </div>
   </aside>
@@ -195,7 +195,7 @@ a{color:inherit}
    Modelo: Inspección (lote) → Pallets → score/defectos/medidas.
    El gerente filtra por "período de ingreso" (fecha frigorífico).
    ===================================================================== */
-const LS_KEY = "agroquality_v1";
+const LS_KEY = "agroquality_v2";
 
 /* ---- Taxonomía de defectos (palta Hass) ---- */
 const DEF_CALIDAD = ["Misshapen","Sunburn / quemadura","Cicatriz / Scarring","Russeting","Sobrecalibre","Bajo calibre"];
@@ -206,39 +206,39 @@ const PRODUCTORES = ["004-03006-03","016-42980-01","016-4726-01","010-62372-01",
 function scoreDe(pctTotal){ if(pctTotal < 12) return "good"; if(pctTotal <= 25) return "fair"; return "poor"; }
 const SCORE_LABEL = {good:"Good", fair:"Fair", poor:"Poor"};
 
-/* ---- Datos semilla (capturas Marand Company Asia · 13/06/2026) ---- */
+/* ---- Datos semilla (demo ficticio · estructura tipo reporte QIMA) ---- */
 function seed(){
   const palletsBase = [
-    {pallet:"R-MAR-10-EX08267", calibre:28, prod:"004-03006-03", temp:6.0, pcal:1.5, pcond:8.5, principal:"Sum of Condition Defects", muestra:69},
-    {pallet:"R-MAR-10-EX08142", calibre:30, prod:"016-42980-01", temp:6.5, pcal:3.2, pcond:11.0,principal:"Black Spots, Sum of Condition Defects", muestra:76},
-    {pallet:"R-MAR-10-EX08281", calibre:22, prod:"016-4726-01",  temp:6.2, pcal:6.1, pcond:24.4,principal:"Internal Breakdown, Lenticelosis", muestra:54},
-    {pallet:"S-MAR-10-EX08284", calibre:18, prod:"010-62372-01", temp:6.1, pcal:4.0, pcond:18.0,principal:"Sum of Total Defects", muestra:44},
-    {pallet:"S-MAR-10-EX08178", calibre:26, prod:"009-33744-02", temp:6.3, pcal:5.0, pcond:19.0,principal:"Lenticelosis, Sum of Condition Defects", muestra:66},
-    {pallet:"C-MAR-10-EX08274", calibre:22, prod:"016-40726-01", temp:6.0, pcal:6.0, pcond:22.0,principal:"Sum of Total Defects", muestra:54},
-    {pallet:"C-MAR-10-EX08296", calibre:20, prod:"016-42980-01", temp:5.9, pcal:2.0, pcond:6.0, principal:"Sum of Quality Defects", muestra:48},
-    {pallet:"C-MAR-10-EX08283", calibre:24, prod:"016-40726-01", temp:6.2, pcal:6.12,pcond:24.49,principal:"Sum of Total Defects", muestra:51},
+    {pallet:"R-DMO-10-EX08267", calibre:28, prod:"100-20010-03", temp:6.0, pcal:1.5, pcond:8.5, principal:"Sum of Condition Defects", muestra:69},
+    {pallet:"R-DMO-10-EX08142", calibre:30, prod:"100-20011-01", temp:6.5, pcal:3.2, pcond:11.0,principal:"Black Spots, Sum of Condition Defects", muestra:76},
+    {pallet:"R-DMO-10-EX08281", calibre:22, prod:"100-20012-01", temp:6.2, pcal:6.1, pcond:24.4,principal:"Internal Breakdown, Lenticelosis", muestra:54},
+    {pallet:"S-DMO-10-EX08284", calibre:18, prod:"100-20013-01", temp:6.1, pcal:4.0, pcond:18.0,principal:"Sum of Total Defects", muestra:44},
+    {pallet:"S-DMO-10-EX08178", calibre:26, prod:"100-20014-02", temp:6.3, pcal:5.0, pcond:19.0,principal:"Lenticelosis, Sum of Condition Defects", muestra:66},
+    {pallet:"C-DMO-10-EX08274", calibre:22, prod:"100-20015-01", temp:6.0, pcal:6.0, pcond:22.0,principal:"Sum of Total Defects", muestra:54},
+    {pallet:"C-DMO-10-EX08296", calibre:20, prod:"100-20011-01", temp:5.9, pcal:2.0, pcond:6.0, principal:"Sum of Quality Defects", muestra:48},
+    {pallet:"C-DMO-10-EX08283", calibre:24, prod:"100-20015-01", temp:6.2, pcal:6.12,pcond:24.49,principal:"Sum of Total Defects", muestra:51},
   ].map(p=>{ const tot=+(p.pcal+p.pcond).toFixed(2); return {...p, brix:0, peso:10, ptot:tot, score:scoreDe(tot)}; });
 
   const insp1 = {
-    id:"INS-2606-0001", lote:"FBIU5628390", compania:"Marand Company Asia",
-    exportador:"Marand Company", consignatario:"Supafresh", locacion:"China, Shanghai", pais:"Peru",
+    id:"INS-2606-0001", lote:"AGDU5628390", compania:"AgroDemo Export Asia",
+    exportador:"AgroDemo Export", consignatario:"Fresh Pacific DC", locacion:"China, Shanghai", pais:"Peru",
     producto:"Avocados", variedad:"Hass", embalaje:"Plastic Box 10Kg", tipoProducto:"CONV",
-    tipoInspeccion:"Normal Inspection", barco:"ORCA I 025W", tipoCarrier:"Ocean", container:"FBIU5628390",
-    frigorifico:"Supafresh DC", inspector:"Titus Song", cajas:2400, pallets:8, horaFrig:"4:00 PM",
+    tipoInspeccion:"Normal Inspection", barco:"DEMO STAR 025W", tipoCarrier:"Ocean", container:"AGDU5628390",
+    frigorifico:"Fresh Pacific DC", inspector:"J. Pérez", cajas:2400, pallets:8, horaFrig:"4:00 PM",
     fumigacion:"None", numFactura:"", fechaArribo:"2026-06-01", fechaFrigorifico:"2026-06-13",
     fechaEmbalaje:"2026-04-30", palletsData:palletsBase
   };
 
   // Una segunda inspección (otro período) para que el filtro tenga sentido
   const p2 = [
-    {pallet:"R-MAR-08-EX07710", calibre:24, prod:"004-03006-03", temp:5.8, pcal:1.0, pcond:5.0, principal:"Sum of Condition Defects", muestra:60},
-    {pallet:"R-MAR-08-EX07711", calibre:22, prod:"009-33744-02", temp:5.9, pcal:2.0, pcond:7.5, principal:"Lenticelosis", muestra:58},
-    {pallet:"S-MAR-08-EX07712", calibre:20, prod:"010-62372-01", temp:6.0, pcal:3.0, pcond:9.5, principal:"Black Spots", muestra:62},
-    {pallet:"C-MAR-08-EX07713", calibre:26, prod:"016-4726-01",  temp:6.1, pcal:5.5, pcond:21.0,principal:"Internal Breakdown", muestra:50},
+    {pallet:"R-DMO-08-EX07710", calibre:24, prod:"100-20010-03", temp:5.8, pcal:1.0, pcond:5.0, principal:"Sum of Condition Defects", muestra:60},
+    {pallet:"R-DMO-08-EX07711", calibre:22, prod:"100-20014-02", temp:5.9, pcal:2.0, pcond:7.5, principal:"Lenticelosis", muestra:58},
+    {pallet:"S-DMO-08-EX07712", calibre:20, prod:"100-20013-01", temp:6.0, pcal:3.0, pcond:9.5, principal:"Black Spots", muestra:62},
+    {pallet:"C-DMO-08-EX07713", calibre:26, prod:"100-20012-01", temp:6.1, pcal:5.5, pcond:21.0,principal:"Internal Breakdown", muestra:50},
   ].map(p=>{ const tot=+(p.pcal+p.pcond).toFixed(2); return {...p, brix:0, peso:10, ptot:tot, score:scoreDe(tot)}; });
 
-  const insp2 = {...insp1, id:"INS-2605-0007", lote:"MNBU7781002", barco:"SANTA CRUZ 042W",
-    container:"MNBU7781002", consignatario:"Wonokoyo", locacion:"China, Ningbo", inspector:"Lia Chen",
+  const insp2 = {...insp1, id:"INS-2605-0007", lote:"AGDU7781002", barco:"DEMO STAR 042W",
+    container:"AGDU7781002", consignatario:"Asia Fresh Co.", locacion:"China, Ningbo", inspector:"M. Rojas",
     cajas:1200, pallets:4, fechaArribo:"2026-05-20", fechaFrigorifico:"2026-05-22",
     fechaEmbalaje:"2026-04-18", palletsData:p2 };
 
@@ -458,7 +458,7 @@ document.getElementById("scrim").addEventListener("click",e=>{if(e.target.id==="
 
 /* ---------- NUEVA INSPECCIÓN ---------- */
 let DRAFT=null;
-function nuevoDraft(){ return { id:"INS-"+nuevoCorrelativo(), lote:"",compania:"Marand Company Asia",exportador:"Marand Company",
+function nuevoDraft(){ return { id:"INS-"+nuevoCorrelativo(), lote:"",compania:"AgroDemo Export Asia",exportador:"AgroDemo Export",
   consignatario:"",locacion:"",pais:"Peru",producto:"Avocados",variedad:"Hass",embalaje:"Plastic Box 10Kg",tipoProducto:"CONV",
   tipoInspeccion:"Normal Inspection",barco:"",tipoCarrier:"Ocean",container:"",frigorifico:"",inspector:"",cajas:"",pallets:"",
   horaFrig:"",fumigacion:"None",numFactura:"",fechaArribo:"",fechaFrigorifico:"",fechaEmbalaje:"",palletsData:[] }; }
