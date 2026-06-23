@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Página privada: enlace compartido con el cliente. No indexar. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Estado del piloto · AgroQuality</title>
+<style>
+  :root{
+    --bg:#0a0f0c; --bg2:#0e1611; --card:#111b15; --line:rgba(255,255,255,.08);
+    --line2:rgba(255,255,255,.14); --tx:#eaf3ee; --mut:#8fb0a0; --mut2:#6f9082;
+    --grn:#34d399; --grn2:#10b981; --amber:#fbbf24; --slate:#5b7a6c;
+    --ring:#1c2a22;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 600px at 70% -10%,#10231a 0,var(--bg) 55%);
+    color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 22px 80px}
+  /* Header */
+  .brand{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut);letter-spacing:.04em;text-transform:uppercase}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 12px var(--grn)}
+  .eyebrow{margin-top:26px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grn);font-weight:600}
+  h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em;margin:10px 0 6px;line-height:1.1}
+  h1 em{font-style:normal;color:var(--grn)}
+  .lead{color:var(--mut);font-size:16px;max-width:60ch}
+  .updated{margin-top:14px;font-size:12.5px;color:var(--mut2)}
+  /* Hero progreso */
+  .hero{display:grid;grid-template-columns:200px 1fr;gap:34px;align-items:center;
+    background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:20px;padding:30px 32px;margin:30px 0 12px}
+  .ring{position:relative;width:184px;height:184px;justify-self:center}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .pct b{font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .ring .pct span{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+  .hero-info h2{font-size:19px;font-weight:700;margin-bottom:6px}
+  .hero-info p{color:var(--mut);font-size:14.5px;margin-bottom:14px}
+  .phase-rail{display:flex;gap:6px}
+  .phase{flex:1;text-align:center;font-size:11px;color:var(--mut2);padding-top:8px;position:relative}
+  .phase .bar{height:6px;border-radius:4px;background:var(--ring);margin-bottom:8px}
+  .phase.done .bar{background:linear-gradient(90deg,var(--grn2),var(--grn))}
+  .phase.curso .bar{background:linear-gradient(90deg,var(--grn2) 60%,var(--ring) 60%)}
+  .phase.done,.phase.curso{color:var(--tx)}
+  .phase b{display:block;font-weight:600;font-size:11.5px}
+  /* Secciones */
+  .sec-title{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--mut);
+    margin:38px 0 16px;font-weight:600}
+  /* Checklist */
+  .mlist{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .mi{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;background:var(--card)}
+  .mi .ic{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;margin-top:1px}
+  .mi.done .ic{background:rgba(52,211,153,.16);color:var(--grn)}
+  .mi.curso .ic{background:rgba(251,191,36,.16);color:var(--amber)}
+  .mi.pend .ic{background:rgba(120,140,130,.14);color:var(--slate)}
+  .mi .tx b{font-size:14.5px;font-weight:600;display:block}
+  .mi .tx span{font-size:13px;color:var(--mut)}
+  .mi .tag{margin-left:auto;flex:none;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--mut2);border:1px solid var(--line2);border-radius:20px;padding:3px 9px;align-self:center}
+  .mi.done .st{color:var(--grn)} .mi.curso .st{color:var(--amber)} .mi.pend .st{color:var(--slate)}
+  /* Próximos pasos */
+  .steps{display:grid;gap:12px}
+  .step{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .step .n{flex:none;width:26px;height:26px;border-radius:8px;background:rgba(52,211,153,.14);color:var(--grn);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .step b{font-size:14.5px} .step p{font-size:13px;color:var(--mut);margin-top:2px}
+  /* CTA / footer */
+  .cta{margin-top:34px;background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:18px;padding:26px 28px;text-align:center}
+  .cta h3{font-size:18px;margin-bottom:6px}
+  .cta p{color:var(--mut);font-size:14px;margin-bottom:16px}
+  .btn{display:inline-block;background:linear-gradient(90deg,var(--grn2),var(--grn));color:#06231a;
+    font-weight:700;font-size:14px;text-decoration:none;padding:11px 22px;border-radius:10px}
+  .btn.line{background:none;border:1px solid var(--line2);color:var(--tx);margin-left:8px}
+  .foot{margin-top:42px;text-align:center;color:var(--mut2);font-size:12.5px}
+  .foot a{color:var(--mut);text-decoration:none}
+  @media(max-width:680px){
+    .hero{grid-template-columns:1fr;gap:22px;text-align:center}
+    .phase-rail{max-width:340px;margin:0 auto}
+    .mi .tag{display:none}
+    .btn.line{margin:8px 0 0;display:block}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand"><span class="dot"></span> automatizaesto · plataforma</div>
+
+  <div class="eyebrow">Estado del piloto</div>
+  <h1>AgroQuality para <em id="orgName">tu organización</em></h1>
+  <p class="lead">Resumen del avance de la puesta en marcha: auditoría de calidad
+    post-cosecha por lote, pallet y muestra, con reporte profesional y trazabilidad.</p>
+  <div class="updated">Última actualización: <b>23 de junio de 2026</b> · Fase <b>3 de 4</b></div>
+
+  <!-- Progreso -->
+  <div class="hero">
+    <div class="ring">
+      <svg width="184" height="184" viewBox="0 0 184 184">
+        <circle cx="92" cy="92" r="80" fill="none" stroke="var(--ring)" stroke-width="13"/>
+        <circle id="prog" cx="92" cy="92" r="80" fill="none" stroke="url(#g)" stroke-width="13"
+                stroke-linecap="round" stroke-dasharray="502.6" stroke-dashoffset="502.6"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#34d399"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="pct"><b id="pctNum">0%</b><span>completado</span></div>
+    </div>
+    <div class="hero-info">
+      <h2>En producción · piloto en curso</h2>
+      <p>La plataforma está desplegada, segura y lista. El piloto avanza hacia el
+        uso real en campo y la validación con tu equipo.</p>
+      <div class="phase-rail">
+        <div class="phase done"><div class="bar"></div><b>1 · Definición</b></div>
+        <div class="phase done"><div class="bar"></div><b>2 · Plataforma</b></div>
+        <div class="phase curso"><div class="bar"></div><b>3 · Piloto</b></div>
+        <div class="phase"><div class="bar"></div><b>4 · Adopción</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checklist -->
+  <div class="sec-title">Hitos del piloto</div>
+  <div class="mlist" id="mlist"></div>
+
+  <!-- Próximos pasos -->
+  <div class="sec-title">Próximos pasos</div>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div>
+      <b>Activar el acceso de tu equipo</b>
+      <p>Creamos los usuarios de tu organización y validamos el ingreso con tu correo institucional.</p></div></div>
+    <div class="step"><div class="n">2</div><div>
+      <b>Primeras inspecciones reales</b>
+      <p>Tu equipo carga inspecciones de campo reales; acompañamos los primeros lotes.</p></div></div>
+    <div class="step"><div class="n">3</div><div>
+      <b>Validación y ajustes</b>
+      <p>Recogemos tu feedback y afinamos el flujo antes de la adopción plena.</p></div></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>¿Listos para activar tu acceso?</h3>
+    <p>La plataforma ya está en producción. Coordinamos el alta de tu equipo cuando quieras.</p>
+    <a class="btn" href="https://agroquality.automatizaesto.com" target="_blank" rel="noopener">Abrir la plataforma →</a>
+    <a class="btn line" href="mailto:hola@automatizaesto.com">Escríbenos</a>
+  </div>
+
+  <div class="foot">
+    Preparado por <a href="https://automatizaesto.com" target="_blank" rel="noopener">automatizaesto.com</a>
+    · Este enlace es privado para tu organización.
+  </div>
+
+</div>
+
+<script>
+  // --- Personalización por parámetro (?org=...) — el repo queda genérico ---
+  (function(){
+    var p = new URLSearchParams(location.search);
+    var org = (p.get('org') || p.get('c') || '').trim();
+    if(org){
+      document.getElementById('orgName').textContent = org;     // textContent: sin riesgo XSS
+      document.title = 'Estado del piloto · AgroQuality · ' + org;
+    }
+  })();
+
+  // --- Hitos del piloto. El % se CALCULA de aquí (done=1, curso=0.5, pend=0) ---
+  var HITOS = [
+    {st:'done',  fase:'F1', t:'Modelo de inspección definido', d:'Lote → pallet → muestra con scoring Good/Fair/Poor estilo QIMA.'},
+    {st:'done',  fase:'F2', t:'Plataforma multi-empresa construida', d:'App web SaaS con captura, panel de gerencia y extracción por período.'},
+    {st:'done',  fase:'F2', t:'Reporte profesional', d:'Galerías de fotos, firmeza, defectos por nombre, termografía y exportación a PDF.'},
+    {st:'done',  fase:'F3', t:'Infraestructura en producción', d:'Desplegada sobre Supabase y Render, operando de forma continua.'},
+    {st:'done',  fase:'F3', t:'Dominio propio con SSL', d:'agroquality.automatizaesto.com con certificado seguro.'},
+    {st:'done',  fase:'F3', t:'Aislamiento de datos por empresa', d:'Cada organización ve únicamente su propia información. Auditado.'},
+    {st:'curso', fase:'F3', t:'Acceso de tu equipo (onboarding)', d:'Sistema de registro listo; coordinamos el alta de tus usuarios.'},
+    {st:'pend',  fase:'F4', t:'Inspecciones reales en campo', d:'Carga y uso del producto con lotes reales de tu operación.'},
+    {st:'pend',  fase:'F4', t:'Recuperación de contraseña autoservicio', d:'Para que tu equipo gestione sus accesos de forma autónoma.'},
+    {st:'pend',  fase:'F4', t:'Validación y feedback del piloto', d:'Ajustes finales con base en el uso real antes de la adopción plena.'}
+  ];
+  var ICO = {done:'✓', curso:'◐', pend:'○'}, LBL = {done:'Hecho', curso:'En curso', pend:'Pendiente'};
+  var W = {done:1, curso:0.5, pend:0};
+
+  var html = HITOS.map(function(h){
+    return '<div class="mi '+h.st+'">'+
+      '<div class="ic">'+ICO[h.st]+'</div>'+
+      '<div class="tx"><b>'+h.t+'</b><span>'+h.d+'</span></div>'+
+      '<div class="tag st">'+LBL[h.st]+'</div></div>';
+  }).join('');
+  document.getElementById('mlist').innerHTML = html;
+
+  // Porcentaje real derivado del checklist
+  var suma = HITOS.reduce(function(a,h){return a + W[h.st];}, 0);
+  var pct = Math.round(suma / HITOS.length * 100);
+
+  // Animación del anillo + número
+  var C = 2 * Math.PI * 80; // 502.6
+  var prog = document.getElementById('prog'), num = document.getElementById('pctNum');
+  setTimeout(function(){
+    prog.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)';
+    prog.style.strokeDashoffset = C * (1 - pct/100);
+    var t0 = null, dur = 1400;
+    function tick(ts){ if(!t0) t0 = ts; var k = Math.min((ts-t0)/dur, 1);
+      num.textContent = Math.round(pct*k) + '%'; if(k<1) requestAnimationFrame(tick); }
+    requestAnimationFrame(tick);
+  }, 250);
+</script>
+</body>
+</html>
