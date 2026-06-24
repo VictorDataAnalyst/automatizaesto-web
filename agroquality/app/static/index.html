@@ -330,6 +330,7 @@ button{font-family:inherit;cursor:pointer}
         <button class="btn primary" id="btnNew">＋ Nueva inspección</button>
       </div>
     </header>
+    <div id="welcome" style="display:none"></div>
     <div class="wrap" id="wrap"></div>
   </main>
 </div>
@@ -339,7 +340,7 @@ button{font-family:inherit;cursor:pointer}
 
 <script>
 /* ===== Estado / API ===== */
-let TOKEN=null, MODO="demo", DATA=[], SUPA=null, ES_ADMIN=false, CREATE_CLIENT=null, SUPA_URL="", SUPA_ANON="";
+let TOKEN=null, MODO="demo", DATA=[], SUPA=null, ES_ADMIN=false, CREATE_CLIENT=null, SUPA_URL="", SUPA_ANON="", USUARIO="";
 let VIEW="gerencia", FIL={d1:"",d2:"",score:"",consig:""};
 
 async function api(path,opts={}){
@@ -402,6 +403,7 @@ function setView(vw){
            solicitudes:["Solicitudes de acceso","Aprueba o rechaza nuevos registros por empresa"]};
   document.getElementById("topTitle").textContent=T[vw][0];
   document.getElementById("topSub").textContent=T[vw][1];
+  const _w=document.getElementById("welcome"); if(_w) _w.style.display="none";
   if(vw==="gerencia") renderGerencia();
   else if(vw==="inspecciones") renderInspecciones();
   else if(vw==="solicitudes") renderSolicitudes();
@@ -911,7 +913,7 @@ async function arrancarApp(){
   document.getElementById("login").classList.remove("show");
   document.getElementById("appRoot").style.display="flex";
   document.getElementById("whoModo").textContent=MODO;
-  try{ const st=await api("/api/estado"); ES_ADMIN=!!st.es_admin;
+  try{ const st=await api("/api/estado"); ES_ADMIN=!!st.es_admin; USUARIO=st.usuario||"";
     if(st.usuario) document.getElementById("whoOrg").textContent=st.usuario; }catch(e){}
   document.getElementById("navAdmin").style.display=ES_ADMIN?"":"none";
   const esSaas=MODO==="saas", wp=document.getElementById("whoPass"), wo=document.getElementById("whoOut");
@@ -923,6 +925,57 @@ async function arrancarApp(){
   document.getElementById("btnExport").onclick=exportCSV;
   document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrar();});
   setView("gerencia");
+  mostrarBienvenida();
+}
+
+/* ===== Saludo de bienvenida + auditorías nuevas desde la última visita =====
+   "Nuevas" = inspecciones cuyo id no estaba en la visita anterior (guardada en
+   localStorage por usuario). Sin tocar backend; el conteo es por navegador. */
+function _primerNombre(email){
+  const local=(email||"").split("@")[0]||"";
+  let t=(local.split(/[._\-+]/)[0]||local).replace(/[0-9]/g,"");
+  return t ? t.charAt(0).toUpperCase()+t.slice(1).toLowerCase() : "";
+}
+function mostrarBienvenida(){
+  const cont=document.getElementById("welcome"); if(!cont) return;
+  if(MODO!=="saas" || !USUARIO) return;                       // solo con sesión real
+  const nombre=_primerNombre(USUARIO);
+  const clave="aq_visita_"+USUARIO.toLowerCase();
+  const idsActuales=(DATA||[]).map(i=>i.id).filter(Boolean);
+  let visto=null; try{ visto=JSON.parse(localStorage.getItem(clave)||"null"); }catch(e){}
+  const total=idsActuales.length;
+  let titulo = nombre ? ("Te damos la bienvenida, "+nombre+" 👋") : "Te damos la bienvenida 👋";
+  let detalle, sub="";
+  if(!visto){                                                 // primera vez en este navegador
+    detalle = total ? ("Tu panel tiene <b>"+total+"</b> "+(total===1?"auditoría":"auditorías")+" registradas.")
+                    : "Tu panel está listo. Crea tu primera inspección con <b>＋ Nueva inspección</b>.";
+  } else {
+    const set=new Set(visto.ids||[]);
+    const nuevas=idsActuales.filter(id=>!set.has(id)).length;
+    detalle = nuevas>0
+      ? ("Durante tu ausencia se "+(nuevas===1?"registró":"registraron")+" <b>"+nuevas+"</b> "+(nuevas===1?"auditoría nueva":"auditorías nuevas")+".")
+      : "No hay auditorías nuevas desde tu última visita.";
+    if(visto.ts){ const f=new Date(visto.ts);
+      if(!isNaN(f)) sub="Última visita: "+f.toLocaleDateString("es-PE",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}); }
+  }
+  cont.innerHTML =
+    '<div style="display:flex;align-items:flex-start;gap:14px;margin:0 0 18px;padding:16px 18px;'+
+    'background:linear-gradient(180deg,rgba(52,211,153,.10),rgba(16,185,129,.04));'+
+    'border:1px solid rgba(52,211,153,.28);border-radius:14px">'+
+      '<div style="flex:none;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;'+
+      'justify-content:center;font-size:20px;background:rgba(52,211,153,.16)">📋</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-weight:700;font-size:15px;margin-bottom:2px">'+titulo+'</div>'+
+        '<div style="font-size:13.5px;opacity:.92">'+detalle+'</div>'+
+        (sub?'<div style="font-size:12px;opacity:.6;margin-top:4px">'+sub+'</div>':'')+
+      '</div>'+
+      '<button id="welcomeX" title="Cerrar" style="flex:none;background:none;border:none;color:inherit;'+
+      'opacity:.55;font-size:18px;cursor:pointer;line-height:1;padding:2px 4px">×</button>'+
+    '</div>';
+  cont.style.display="block";
+  const x=document.getElementById("welcomeX"); if(x) x.onclick=()=>{ cont.style.display="none"; };
+  // Registrar esta visita para el próximo ingreso.
+  try{ localStorage.setItem(clave, JSON.stringify({ids:idsActuales, ts:new Date().toISOString()})); }catch(e){}
 }
 
 async function init(){
