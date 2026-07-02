@@ -6,8 +6,8 @@
 <title>Roadmap de productos — automatizaesto</title>
 <meta name="description" content="El roadmap público de los productos de automatizaesto: qué está en producción, qué está en beta y qué construiremos después." />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#0a0a0b" />
-<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#FBF6EE" />
+<meta name="color-scheme" content="light" />
 <link rel="canonical" href="https://automatizaesto.com/roadmap/" />
 
 <meta property="og:type" content="website" />
@@ -18,11 +18,11 @@
 <meta property="og:description" content="El roadmap público de los productos de automatizaesto: qué está en producción, qué está en beta y qué construiremos después." />
 <meta property="og:image" content="https://automatizaesto.com/og-cover.png" />
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%230a0a0b'>&#955;</text></svg>" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 28 28%27><rect width=%2728%27 height=%2728%27 rx=%276%27 fill=%27%23FBF6EE%27/><path d=%27M6 23 C 6 14, 23 19, 21 10 C 20 6, 13 4.5, 10.5 8.5%27 fill=%27none%27 stroke=%27%233F7A50%27 stroke-width=%272.6%27 stroke-linecap=%27round%27/><circle cx=%279.5%27 cy=%2710%27 r=%272.6%27 fill=%27%23EBA937%27 stroke=%27%233F7A50%27 stroke-width=%271.8%27/></svg>" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/site.css" />
 <style>
   /* ===== Franjas del roadmap ===== */
@@ -103,8 +103,8 @@
     padding: 5px 12px;
     border: 1px solid;
   }
-  .badge-prod   { color: #4ade80; border-color: rgba(74, 222, 128, 0.35); background: rgba(74, 222, 128, 0.08); }
-  .badge-beta   { color: var(--accent-cool); border-color: rgba(122, 184, 255, 0.35); background: rgba(122, 184, 255, 0.08); }
+  .badge-prod   { color: #3F7A50; border-color: rgba(63, 122, 80, 0.35); background: rgba(63, 122, 80, 0.08); }
+  .badge-beta   { color: var(--accent-cool); border-color: rgba(235, 169, 55, 0.35); background: rgba(235, 169, 55, 0.08); }
   .badge-design { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.35); background: rgba(var(--accent-rgb), 0.08); }
   .badge-explore { color: var(--ink-dim); border-color: var(--border-hot); background: var(--bg-soft); }
 
@@ -130,7 +130,7 @@
     display: block;
     height: 100%;
     border-radius: 100px;
-    background: linear-gradient(90deg, rgba(74,222,128,0.7), #4ade80);
+    background: linear-gradient(90deg, rgba(63,122,80,0.7), #3F7A50);
   }
 
   /* ===== Enlaces de tarjeta ===== */
@@ -193,16 +193,16 @@
 
 <nav class="site-nav" aria-label="Navegación principal">
   <a href="../index.html" class="logo" aria-label="automatizaesto — inicio">
-    <span class="logo-mark" aria-hidden="true">λ</span>
+    <span class="logo-mark" aria-hidden="true">✦</span>
     automatiza<em>esto</em>
   </a>
   <div class="nav-links">
     <a href="../servicios.html">Servicios</a>
-    <a href="../casos/index.html">Casos</a>
-    <a href="../index.html#productos">Productos</a>
+    <a href="../nosotros.html">Nosotros</a>
+
     <a href="../blog/index.html">Recursos</a>
   </div>
-  <a href="../index.html#contacto" class="nav-cta">Solicita una demo →</a>
+  <a href="../index.html#contacto" class="nav-cta">Conversemos</a>
 </nav>
 
 <header class="page-head">
@@ -237,18 +237,11 @@
           <h3>AgroField</h3>
           <p>
             App móvil de gestión de campo para agroexportadoras: visitas técnicas,
-            conteo de frutos, control de calidad, GPS, fotos y modo offline-first
-            con sincronización automática sobre backend Supabase.
+            conteo de frutos, control de calidad, GPS y fotos. Funciona sin señal
+            y sincroniza sola al volver la cobertura.
           </p>
-          <p class="road-meta">
-            <strong>Estado:</strong> Fase 2 de 4 (multi-empresa) en curso · ~48% del roadmap
-          </p>
-          <div class="road-bar" role="img" aria-label="Avance del roadmap de AgroField: aproximadamente 48 por ciento">
-            <span style="width: 48%"></span>
-          </div>
           <div class="road-links">
             <a href="../agrofield/index.html">Ver producto →</a>
-            <a href="../agrofield/roadmap.html">Roadmap detallado →</a>
           </div>
         </article>
 
@@ -262,7 +255,7 @@
             de datos.
           </p>
           <p class="road-meta">
-            <strong>Estado:</strong> Fase 3 de 4 · beta con acceso anticipado
+            <strong>Estado:</strong> beta con acceso anticipado
           </p>
           <div class="road-links">
             <a href="../forecast/index.html">Ver producto →</a>
@@ -274,16 +267,11 @@
           <h3>AgroQuality</h3>
           <p>
             Auditoría e inspección de calidad post-cosecha para agroexportadoras:
-            reportes por lote, pallet y muestra con scoring Good/Fair/Poor, defectos
-            por nombre, evidencia fotográfica, termografía y trazabilidad —
-            multi-empresa sobre Supabase.
-          </p>
-          <p class="road-meta">
-            <strong>Estado:</strong> en producción · piloto con una agroexportadora de Ica
+            reportes por lote, pallet y muestra con scoring, defectos por nombre,
+            evidencia fotográfica y trazabilidad.
           </p>
           <div class="road-links">
             <a href="../agroquality/index.html">Ver producto →</a>
-            <a href="https://agroquality.automatizaesto.com" target="_blank" rel="noopener">Abrir plataforma →</a>
           </div>
         </article>
 
@@ -304,33 +292,28 @@
           <p>
             Trazabilidad de cosecha y packing: lotes, jabas y pallets con QR,
             cadena de frío y certificados de trazabilidad para exportación
-            (GlobalGAP/HACCP). Construido sobre el motor offline-first de AgroField.
-          </p>
-          <p class="road-meta">
-            <strong>Horizonte:</strong> S2 2026
+            (GlobalGAP/HACCP).
           </p>
         </article>
 
+        <!-- Forecast · Analista con IA: oculto — describe el diferenciador
+             completo del producto; reactivar cuando esté construido.
         <article class="road-card">
           <span class="badge badge-design">En diseño</span>
           <h3>Forecast · Analista con IA</h3>
           <p>
-            Sube tus fuentes de datos (una o varias) y la IA hace el resto:
-            interpreta tus columnas, identifica tu rubro, te hace solo las
-            preguntas necesarias y te propone qué proyectar — ventas, quiebres
-            de stock, estacionalidad. Con feriados de tu país como variable del
-            modelo, plantillas Excel generadas a tu medida y auditoría de tus
-            proyecciones existentes contra tus datos reales.
-          </p>
-          <p class="road-meta">
-            <strong>Horizonte:</strong> evolución de la beta actual de Forecast
+            Sube tus fuentes de datos y la IA te propone qué proyectar:
+            ventas, quiebres de stock, estacionalidad.
           </p>
         </article>
+        -->
 
       </div>
     </section>
 
-    <!-- Franja 3: Explorando -->
+    <!-- Franja 3: Explorando — oculta: son ideas futuras de negocio que no
+         aportan al cliente de hoy y regalan el pipeline a la competencia.
+         Reactivar producto por producto cuando pase a construcción real.
     <section class="lane" aria-labelledby="lane-explore">
       <div class="lane-head">
         <h2 id="lane-explore">Explorando</h2>
@@ -369,6 +352,7 @@
 
       </div>
     </section>
+    -->
 
     <!-- Principios -->
     <section class="principles" aria-labelledby="principles-title">
@@ -378,8 +362,8 @@
           <span class="num" aria-hidden="true">1</span>
           <h3>Motores probados, no páginas en blanco</h3>
           <p>
-            Construimos sobre lo que ya funciona en producción: offline-first,
-            IA de series de tiempo y automatización con n8n. No partimos de cero.
+            Construimos sobre motores que ya funcionan en producción con
+            clientes reales. No partimos de una página en blanco.
           </p>
         </div>
         <div class="principle">
@@ -405,7 +389,7 @@
       <h2>¿Quieres ser <em>piloto</em> de alguno de estos productos?</h2>
       <p>Si alguno de estos problemas se parece al tuyo, hablemos: los pilotos definen el producto.</p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="../index.html#contacto">Solicita una demo gratis</a>
+        <a class="btn btn-primary" href="../index.html#contacto">Cuéntanos tu caso</a>
         <a class="btn btn-wa" href="https://wa.me/51955179232?text=Hola%2C%20quiero%20automatizar%20un%20proceso%20de%20mi%20empresa." target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
       </div>
     </section>

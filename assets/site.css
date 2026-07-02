@@ -5,23 +5,23 @@
    ============================================================ */
 
 :root {
-  --bg: #0a0a0b;
-  --bg-soft: #111114;
-  --bg-card: #15151a;
-  --border: #26262d;
-  --border-hot: #3a3a45;
-  --ink: #f2f0ea;
-  --ink-dim: #8a8a94;
-  --ink-mute: #58585f;
-  --accent: #7c5cff;
-  --accent-rgb: 124, 92, 255;
-  --accent-warm: #ff6a3d;
-  --accent-cool: #7ab8ff;
-  --grid: rgba(255,255,255,0.035);
+  --bg: #FBF6EE;
+  --bg-soft: #F4EBDD;
+  --bg-card: #FFFDF8;
+  --border: #E4D6C2;
+  --border-hot: #C9B69C;
+  --ink: #33261A;
+  --ink-dim: #6B5B4B;
+  --ink-mute: #9C8C7A;
+  --accent: #3F7A50;
+  --accent-rgb: 63, 122, 80;
+  --accent-warm: #D95B29;
+  --accent-cool: #EBA937;
+  --grid: rgba(0,0,0,0.04);
   --radius: 18px;
   --serif: 'Fraunces', 'Times New Roman', serif;
-  --sans: 'Inter Tight', -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --mono: 'Plus Jakarta Sans', sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,7 +72,7 @@ nav.site-nav {
   z-index: 100;
   width: calc(100% - 40px);
   max-width: 1100px;
-  background: rgba(15, 15, 18, 0.78);
+  background: rgba(255, 253, 248, 0.82);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--border);
