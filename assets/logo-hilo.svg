@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- automatizaesto — logo "el hilo": ovillo de miel + hilo con nudos formando la a -->
+  <path d="M82 94 V40 C82 15 43 11 38 33 C35 46 44 53 52 55 C63 58 69 62 67 70 C64 82 47 86 34 77" fill="none" stroke="#3F7A50" stroke-width="7.5" stroke-linecap="round"/>
+  <circle cx="21" cy="72" r="13.5" fill="#EBA937" stroke="#3F7A50" stroke-width="4"/>
+  <path d="M12 65 L27 78 M17 61 L31 73 M11 73 L23 83" stroke="#3F7A50" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  <circle cx="52" cy="55" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+  <circle cx="67" cy="70" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+</svg>
