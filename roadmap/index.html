@@ -6,8 +6,8 @@
 <title>Roadmap de productos — automatizaesto</title>
 <meta name="description" content="El roadmap público de los productos de automatizaesto: qué está en producción, qué está en beta y qué construiremos después." />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#FBF6EE" />
-<meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#0B1220" />
+<meta name="color-scheme" content="dark" />
 <link rel="canonical" href="https://automatizaesto.com/roadmap/" />
 
 <meta property="og:type" content="website" />
@@ -18,11 +18,11 @@
 <meta property="og:description" content="El roadmap público de los productos de automatizaesto: qué está en producción, qué está en beta y qué construiremos después." />
 <meta property="og:image" content="https://automatizaesto.com/og-cover.png" />
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><rect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%23FBF6EE%27/><path d=%27M80 90 V42 C80 18 44 14 40 35 C37 48 46 54 54 56 C63 59 68 63 66 71 C63 81 48 85 36 78%27 fill=%27none%27 stroke=%27%233F7A50%27 stroke-width=%2710%27 stroke-linecap=%27round%27/><circle cx=%2724%27 cy=%2772%27 r=%2713%27 fill=%27%23EBA937%27 stroke=%27%233F7A50%27 stroke-width=%276%27/><circle cx=%2754%27 cy=%2756%27 r=%277%27 fill=%27%23FBF6EE%27 stroke=%27%233F7A50%27 stroke-width=%276%27/><circle cx=%2766%27 cy=%2771%27 r=%277%27 fill=%27%23FBF6EE%27 stroke=%27%233F7A50%27 stroke-width=%276%27/></svg>" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230B1220'/><path d='M91.4 42.7 A42 42 0 1 1 57.3 8.6' fill='none' stroke='%23E8EDF6' stroke-width='6' stroke-linecap='round'/><circle cx='79.7' cy='20.3' r='6' fill='%2338BDF8'/><text x='50' y='64' text-anchor='middle' font-family='Arial, sans-serif' font-size='42' font-weight='700' fill='%23E8EDF6'>A<tspan fill='%2338BDF8'>e</tspan></text></svg>" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/site.css" />
 <style>
   /* ===== Franjas del roadmap ===== */
@@ -103,7 +103,7 @@
     padding: 5px 12px;
     border: 1px solid;
   }
-  .badge-prod   { color: #3F7A50; border-color: rgba(63, 122, 80, 0.35); background: rgba(63, 122, 80, 0.08); }
+  .badge-prod   { color: #3B82F6; border-color: rgba(63, 122, 80, 0.35); background: rgba(63, 122, 80, 0.08); }
   .badge-beta   { color: var(--accent-cool); border-color: rgba(235, 169, 55, 0.35); background: rgba(235, 169, 55, 0.08); }
   .badge-design { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.35); background: rgba(var(--accent-rgb), 0.08); }
   .badge-explore { color: var(--ink-dim); border-color: var(--border-hot); background: var(--bg-soft); }
@@ -130,7 +130,7 @@
     display: block;
     height: 100%;
     border-radius: 100px;
-    background: linear-gradient(90deg, rgba(63,122,80,0.7), #3F7A50);
+    background: linear-gradient(90deg, rgba(63,122,80,0.7), #3B82F6);
   }
 
   /* ===== Enlaces de tarjeta ===== */
@@ -193,7 +193,13 @@
 
 <nav class="site-nav" aria-label="Navegación principal">
   <a href="../index.html" class="logo" aria-label="automatizaesto — inicio">
-    <svg class="logo-mark" viewBox="0 0 100 100" width="26" height="26" aria-hidden="true"><path d="M81 92 V40 C81 16 44 12 39 34 C36 47 45 54 53 56 C63 59 68 63 66 71 C63 82 47 86 35 78" fill="none" stroke="#3F7A50" stroke-width="9" stroke-linecap="round"/><circle cx="23" cy="73" r="13" fill="#EBA937" stroke="#3F7A50" stroke-width="5"/><circle cx="53" cy="56" r="6.5" fill="#FBF6EE" stroke="#3F7A50" stroke-width="5"/><circle cx="66" cy="71" r="6.5" fill="#FBF6EE" stroke="#3F7A50" stroke-width="5"/></svg>
+    <svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="logo-orbita">
+        <path d="M91.4 42.7 A42 42 0 1 1 57.3 8.6" fill="none" stroke="#E8EDF6" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="79.7" cy="20.3" r="5.5" fill="#38BDF8"/>
+      </g>
+      <text x="50" y="63" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="40" font-weight="700" fill="#E8EDF6">A<tspan fill="#38BDF8">e</tspan></text>
+    </svg>
     automatiza<em>esto</em>
   </a>
   <div class="nav-links">

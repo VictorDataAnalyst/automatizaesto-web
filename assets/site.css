@@ -5,23 +5,23 @@
    ============================================================ */
 
 :root {
-  --bg: #FBF6EE;
-  --bg-soft: #F4EBDD;
-  --bg-card: #FFFDF8;
-  --border: #E4D6C2;
-  --border-hot: #C9B69C;
-  --ink: #33261A;
-  --ink-dim: #6B5B4B;
-  --ink-mute: #9C8C7A;
-  --accent: #3F7A50;
-  --accent-rgb: 63, 122, 80;
-  --accent-warm: #D95B29;
-  --accent-cool: #EBA937;
-  --grid: rgba(0,0,0,0.04);
+  --bg: #0B1220;
+  --bg-soft: #0E1729;
+  --bg-card: #121D33;
+  --border: #1E2B47;
+  --border-hot: #2A3B5F;
+  --ink: #E8EDF6;
+  --ink-dim: #9DA9BF;
+  --ink-mute: #7B88A4;
+  --accent: #3B82F6;
+  --accent-rgb: 59, 130, 246;
+  --accent-warm: #38BDF8;
+  --accent-cool: #38BDF8;
+  --grid: rgba(255,255,255,0.05);
   --radius: 18px;
-  --serif: 'Fraunces', 'Times New Roman', serif;
+  --serif: 'Plus Jakarta Sans', -apple-system, sans-serif;
   --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  --mono: 'Plus Jakarta Sans', sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,7 +72,7 @@ nav.site-nav {
   z-index: 100;
   width: calc(100% - 40px);
   max-width: 1100px;
-  background: rgba(255, 253, 248, 0.82);
+  background: rgba(18, 29, 51, 0.82);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--border);
@@ -113,7 +113,9 @@ nav.site-nav {
 }
 .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.4); }
 @media (max-width: 760px) {
-  .nav-links { display: none; }
+  nav.site-nav { flex-wrap: wrap; border-radius: 20px; row-gap: 10px; padding: 12px 16px; }
+  .nav-links { width: 100%; justify-content: space-between; gap: 8px; }
+  .nav-links a { font-size: 13px; }
 }
 
 /* ===== Page header / breadcrumb ===== */
@@ -151,7 +153,7 @@ h1.page-title {
   letter-spacing: -0.02em;
   max-width: 16ch;
 }
-h1.page-title em { font-style: italic; color: var(--accent); }
+h1.page-title em { font-style: normal; background: linear-gradient(90deg, var(--accent), #38BDF8); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .page-lead {
   margin-top: 22px;
   font-size: clamp(16px, 2.2vw, 20px);
@@ -312,7 +314,7 @@ h1.page-title em { font-style: italic; color: var(--accent); }
   font-size: clamp(26px, 4vw, 38px);
   letter-spacing: -0.02em;
 }
-.cta-band h2 em { font-style: italic; color: var(--accent); }
+.cta-band h2 em { font-style: normal; background: linear-gradient(90deg, var(--accent), #38BDF8); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .cta-band p { color: var(--ink-dim); margin: 14px auto 26px; max-width: 52ch; }
 .btn-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .btn {
@@ -382,3 +384,8 @@ footer {
   margin-top: 22px;
 }
 .post-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Anillo del logo Ae: orbita continua */
+.logo-orbita { transform-origin: 50px 50px; animation: orbita 9s linear infinite; }
+@keyframes orbita { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .logo-orbita { animation: none; } }

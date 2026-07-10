@@ -6,28 +6,28 @@
 <title>Legal — automatizaesto · Privacidad, Términos y Cookies</title>
 <meta name="description" content="Política de Privacidad, Términos y Condiciones y Política de Cookies de automatizaesto." />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#FBF6EE" />
-<meta name="color-scheme" content="light" />
+<meta name="theme-color" content="#0B1220" />
+<meta name="color-scheme" content="dark" />
 <link rel="canonical" href="https://automatizaesto.com/legal.html" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FBF6EE'/><path d='M80 90 V42 C80 18 44 14 40 35 C37 48 46 54 54 56 C63 59 68 63 66 71 C63 81 48 85 36 78' fill='none' stroke='%233F7A50' stroke-width='10' stroke-linecap='round'/><circle cx='24' cy='72' r='13' fill='%23EBA937' stroke='%233F7A50' stroke-width='6'/><circle cx='54' cy='56' r='7' fill='%23FBF6EE' stroke='%233F7A50' stroke-width='6'/><circle cx='66' cy='71' r='7' fill='%23FBF6EE' stroke='%233F7A50' stroke-width='6'/></svg>" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230B1220'/><path d='M91.4 42.7 A42 42 0 1 1 57.3 8.6' fill='none' stroke='%23E8EDF6' stroke-width='6' stroke-linecap='round'/><circle cx='79.7' cy='20.3' r='6' fill='%2338BDF8'/><text x='50' y='64' text-anchor='middle' font-family='Arial, sans-serif' font-size='42' font-weight='700' fill='%23E8EDF6'>A<tspan fill='%2338BDF8'>e</tspan></text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #FBF6EE;
-    --bg-soft: #F4EBDD;
-    --bg-card: #FFFDF8;
-    --border: #E4D6C2;
-    --border-hot: #C9B69C;
-    --ink: #33261A;
-    --ink-dim: #6B5B4B;
-    --ink-mute: #9C8C7A;
-    --accent: #3F7A50;
-    --grid: rgba(0,0,0,0.04);
-    --serif: 'Fraunces', 'Times New Roman', serif;
+    --bg: #0B1220;
+    --bg-soft: #0E1729;
+    --bg-card: #121D33;
+    --border: #1E2B47;
+    --border-hot: #2A3B5F;
+    --ink: #E8EDF6;
+    --ink-dim: #9DA9BF;
+    --ink-mute: #7B88A4;
+    --accent: #3B82F6;
+    --grid: rgba(255,255,255,0.05);
+    --serif: 'Plus Jakarta Sans', -apple-system, sans-serif;
     --sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    --mono: 'Plus Jakarta Sans', sans-serif;
+    --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; scroll-padding-top: 100px; }
@@ -70,11 +70,11 @@
   .logo-mark {
     width: 26px; height: 26px; border-radius: 8px;
     background: none;
-    display: grid; place-items: center; color: #FBF6EE;
+    display: grid; place-items: center; color: #0B1220;
     font-family: var(--mono); font-weight: 700; font-size: 14px;
     box-shadow: none; border-radius: 0;
   }
-  .logo em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .logo em { font-style: normal; font-weight: 500; color: var(--accent); }
   .back-link {
     display: inline-flex; align-items: center; gap: 7px;
     font-size: 13px; color: var(--ink-dim);
@@ -96,7 +96,7 @@
     font-size: clamp(34px, 6vw, 56px); line-height: 1.04; letter-spacing: -0.03em;
     margin-bottom: 16px;
   }
-  header.legal-hero h1 em { font-style: italic; color: var(--accent); }
+  header.legal-hero h1 em { font-style: normal; background: linear-gradient(90deg, var(--accent), #38BDF8); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .updated { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); letter-spacing: 0.04em; }
 
   /* table of contents */
@@ -151,13 +151,24 @@
     .back-link span { display: none; }
     header.legal-hero { padding: 130px 0 30px; }
   }
+
+/* Anillo del logo Ae: orbita continua */
+.logo-orbita { transform-origin: 50px 50px; animation: orbita 9s linear infinite; }
+@keyframes orbita { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .logo-orbita { animation: none; } }
 </style>
 </head>
 <body>
 
 <nav aria-label="Navegación legal">
   <a href="index.html#hero" class="logo" aria-label="automatizaesto — inicio">
-    <svg class="logo-mark" viewBox="0 0 100 100" width="26" height="26" aria-hidden="true"><path d="M81 92 V40 C81 16 44 12 39 34 C36 47 45 54 53 56 C63 59 68 63 66 71 C63 82 47 86 35 78" fill="none" stroke="#3F7A50" stroke-width="9" stroke-linecap="round"/><circle cx="23" cy="73" r="13" fill="#EBA937" stroke="#3F7A50" stroke-width="5"/><circle cx="53" cy="56" r="6.5" fill="#FBF6EE" stroke="#3F7A50" stroke-width="5"/><circle cx="66" cy="71" r="6.5" fill="#FBF6EE" stroke="#3F7A50" stroke-width="5"/></svg>
+    <svg width="32" height="32" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="logo-orbita">
+        <path d="M91.4 42.7 A42 42 0 1 1 57.3 8.6" fill="none" stroke="#E8EDF6" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="79.7" cy="20.3" r="5.5" fill="#38BDF8"/>
+      </g>
+      <text x="50" y="63" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="40" font-weight="700" fill="#E8EDF6">A<tspan fill="#38BDF8">e</tspan></text>
+    </svg>
     automatiza<em>esto</em>
   </a>
   <a href="index.html" class="back-link">

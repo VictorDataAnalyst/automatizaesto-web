@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Generador de assets — automatizaesto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   GENERADOR DE ASSETS (logo y banners de Instagram)
+   · Edita los textos en el bloque DATOS del <script>.
+   · Colores de marca: bloque :root de aquí abajo.
+   · Para regenerar los PNG: instrucciones en el README.md.
+   Variantes por URL:
+     ?v=logo-tile          → logo en tile oscuro (cuadrado)
+     ?v=logo-trans         → logo sobre fondo transparente
+     ?v=banner&n=1|2|3     → banner de Instagram 1080×1080
+   ============================================================ */
+:root {
+  --fondo:  #0B1220;
+  --panel:  #121D33;
+  --tinta:  #E8EDF6;
+  --suave:  #9DA9BF;
+  --mute:   #64718C;
+  --azul:   #3B82F6;
+  --cian:   #38BDF8;
+  --linea:  #1E2B47;
+  --texto: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--texto); }
+.lienzo { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+.oscuro { background: var(--fondo); color: var(--tinta); }
+.oscuro::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--linea) 1px, transparent 1px), linear-gradient(90deg, var(--linea) 1px, transparent 1px);
+  background-size: 5vw 5vw; opacity: .35;
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 35%, #000, transparent 80%);
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 35%, #000, transparent 80%);
+}
+.contenido { position: relative; height: 100%; display: flex; flex-direction: column; padding: 8vw; }
+
+/* logo suelto (tile y transparente) */
+.solo-logo { display: grid; place-items: center; }
+.solo-logo svg { width: 76vw; height: 76vw; }
+.tile { background: var(--fondo); border-radius: 22vw; }
+
+/* banners */
+.cabecera { display: flex; align-items: center; gap: 2.2vw; }
+.cabecera svg { width: 7.5vw; height: 7.5vw; }
+.cabecera b { font-size: 3.4vw; font-weight: 700; letter-spacing: -0.02em; }
+.cabecera b i { font-style: normal; color: var(--cian); }
+.centro { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2.6vw; }
+.eyebrow { font-family: var(--mono); font-size: 2.6vw; color: var(--cian); letter-spacing: .04em; }
+.eyebrow::before { content: '// '; color: var(--mute); }
+.metrica { font-family: var(--mono); font-size: 12vw; font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--tinta); }
+.metrica .flecha { color: var(--cian); font-size: 8vw; margin: 0 1vw; }
+.titulo { font-size: 6.4vw; font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; }
+.titulo .grad { background: linear-gradient(90deg, var(--azul), var(--cian)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.bajada { font-size: 3.1vw; color: var(--suave); line-height: 1.5; max-width: 76vw; }
+.pie { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 2.4vw; color: var(--mute); }
+.pie b { color: var(--azul); font-weight: 600; }
+.logo-grande { display: grid; place-items: center; padding: 2vw 0; }
+.logo-grande svg { width: 32vw; height: 32vw; }
+.centrado { text-align: center; align-items: center; }
+
+/* og-cover 1200×630 (apaisado) */
+.og .contenido { padding: 4.2vw 6vw; }
+.og .cabecera svg { width: 4.4vw; height: 4.4vw; }
+.og .cabecera b { font-size: 2vw; }
+.og-centro { flex: 1; display: flex; align-items: center; gap: 4vw; }
+.og .eyebrow { font-size: 1.55vw; }
+.og .titulo { font-size: 4.6vw; margin-top: 1.4vw; }
+.og .bajada { font-size: 1.85vw; margin-top: 1.6vw; max-width: none; }
+.og-logo { flex: none; }
+.og-logo svg { width: 19vw; height: 19vw; }
+.og .pie { font-size: 1.3vw; }
+</style>
+</head>
+<body>
+<script>
+/* ============================================================
+   DATOS — edita aquí los textos de los banners
+   ============================================================ */
+const DATOS = {
+  marca: {
+    nombre: 'automatiza', nombreAcento: 'esto',
+    dominio: 'automatizaesto.com',
+    tagline: 'Soluciones tecnológicas para la industria'
+  },
+  // Imagen para compartir (og-cover 1200×630): ?v=og
+  og: {
+    eyebrow: 'sistemas · bases de datos · industria',
+    titulo: 'Soluciones tecnológicas para la <span class="grad">operación industrial</span>.',
+    bajada: 'Apps de campo, integración de datos y reportería automática.',
+    pie: 'apps · datos · reportería'
+  },
+  banners: [
+    { // n=1 · presentación de marca
+      tipo: 'marca',
+      eyebrow: 'sistemas · bases de datos · industria',
+      titulo: 'Sacamos tu operación del papel y del <span class="grad">Excel</span>.',
+      pie: 'apps · datos · reportería'
+    },
+    { // n=2 · caso boletas
+      tipo: 'caso',
+      eyebrow: 'caso real · exportadora',
+      antes: '4 h', despues: '5 min',
+      titulo: 'Boletas de <span class="grad">exportación</span>',
+      bajada: 'Media jornada de digitación reemplazada por una app a medida. Mismo equipo, mismos datos, sin el trabajo manual.',
+      pie: 'caso real, anonimizado'
+    },
+    { // n=3 · caso reportería
+      tipo: 'caso',
+      eyebrow: 'caso real · operaciones',
+      antes: '4 h', despues: '30 min',
+      titulo: 'Reportería <span class="grad">operativa</span>',
+      bajada: 'Los números de ayer listos cada mañana — en tu correo y WhatsApp, sin que nadie los arme.',
+      pie: 'caso real, anonimizado'
+    }
+  ]
+};
+
+/* ===== Render (no hace falta editar) ===== */
+function logoAe(conTile) {
+  return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+    + (conTile ? '<rect width="100" height="100" rx="22" fill="#0B1220"/>' : '')
+    + '<path d="M91.4 42.7 A42 42 0 1 1 57.3 8.6" fill="none" stroke="#E8EDF6" stroke-width="5" stroke-linecap="round"/>'
+    + '<circle cx="79.7" cy="20.3" r="5.5" fill="#38BDF8"/>'
+    + '<text x="50" y="63" text-anchor="middle" font-family="\'Plus Jakarta Sans\', sans-serif" font-size="40" font-weight="700" fill="#E8EDF6">A<tspan fill="#38BDF8">e</tspan></text>'
+    + '</svg>';
+}
+const q = new URLSearchParams(location.search);
+const v = q.get('v') || 'banner';
+const m = DATOS.marca;
+const cabecera = '<div class="cabecera">' + logoAe(false) + '<b>' + m.nombre + '<i>' + m.nombreAcento + '</i></b></div>';
+const pie = t => '<div class="pie"><b>' + m.dominio + '</b><span>' + t + '</span></div>';
+
+if (v === 'logo-tile') {
+  document.body.innerHTML = '<div class="lienzo solo-logo">' + logoAe(true) + '</div>';
+  document.body.querySelector('svg').style.cssText = 'width:100vw;height:100vh;display:block';
+} else if (v === 'logo-trans') {
+  document.body.innerHTML = '<div class="lienzo solo-logo">' + logoAe(false) + '</div>';
+  document.body.querySelector('svg').style.cssText = 'width:86vw;height:86vw;display:block';
+} else if (v === 'og') {
+  const o = DATOS.og;
+  document.body.innerHTML = '<div class="lienzo oscuro og"><div class="contenido">'
+    + cabecera
+    + '<div class="og-centro"><div>'
+    + '<span class="eyebrow">' + o.eyebrow + '</span>'
+    + '<h1 class="titulo">' + o.titulo + '</h1>'
+    + '<p class="bajada">' + o.bajada + '</p>'
+    + '</div><div class="og-logo">' + logoAe(false) + '</div></div>'
+    + pie(o.pie)
+    + '</div></div>';
+} else {
+  const b = DATOS.banners[(+q.get('n') || 1) - 1];
+  let centro;
+  if (b.tipo === 'marca') {
+    centro = '<div class="centro centrado"><div class="logo-grande">' + logoAe(false) + '</div>'
+      + '<span class="eyebrow">' + b.eyebrow + '</span>'
+      + '<h1 class="titulo">' + b.titulo + '</h1>'
+      + '<p class="bajada">' + m.tagline + '</p></div>';
+  } else {
+    centro = '<div class="centro"><span class="eyebrow">' + b.eyebrow + '</span>'
+      + '<div class="metrica">' + b.antes + '<span class="flecha">→</span>' + b.despues + '</div>'
+      + '<h1 class="titulo">' + b.titulo + '</h1>'
+      + '<p class="bajada">' + b.bajada + '</p></div>';
+  }
+  document.body.innerHTML = '<div class="lienzo oscuro"><div class="contenido">' + cabecera + centro + pie(b.pie) + '</div></div>';
+}
+</script>
+</body>
+</html>
