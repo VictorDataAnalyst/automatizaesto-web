@@ -24,6 +24,8 @@ import config                                                         # noqa: E4
 import aprendizaje                                                     # noqa: E402
 from auth import usuario_actual                                       # noqa: E402
 from db import DB                                                     # noqa: E402
+import plan as plan_mod                                               # noqa: E402
+import correo as correo_mod                                           # noqa: E402
 
 
 def _ahora_iso() -> str:
@@ -347,6 +349,94 @@ def descargar(token: str, user=Depends(usuario_actual)):
     return StreamingResponse(
         buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": 'attachment; filename="informe_forecast.xlsx"'})
+
+
+# ---------------------------------------------------------------------
+# Plan operativo por fecha (meta -> volumen por fecha + personal por turno)
+# ---------------------------------------------------------------------
+class ConfigPlan(BaseModel):
+    token: str
+    meta: float
+    productividad: float
+    turnos: int = 1
+
+
+def _plan_de_sesion(org_id: str, cfg: ConfigPlan) -> tuple[dict, dict]:
+    """Recalcula el plan desde la sesión (no se confía en el cliente) y lo guarda."""
+    ses = _working(org_id, cfg.token)
+    if "resultados" not in ses or "meta" not in ses:
+        raise HTTPException(409, "Primero genera el informe (paso 3) antes del plan.")
+    _, _, fc, _ = ses["resultados"]
+    unidad = (ses.get("informe", {}).get("kpis", {}) or {}).get("unidad", "unidades")
+    p = plan_mod.generar_plan(ses["limpio"], fc, ses["meta"]["freq"],
+                              cfg.meta, cfg.productividad, cfg.turnos, unidad)
+    ses["plan"] = p
+    return p, ses
+
+
+@app.post("/api/plan")
+def crear_plan(cfg: ConfigPlan, user=Depends(usuario_actual)):
+    org_id = DB.org_de_usuario(user["user_id"])
+    p, _ = _plan_de_sesion(org_id, cfg)
+    return p
+
+
+@app.get("/api/plan/descargar/{token}")
+def descargar_plan(token: str, user=Depends(usuario_actual)):
+    org_id = DB.org_de_usuario(user["user_id"])
+    ses = WORKING.get(token)
+    if not ses or "plan" not in ses or (org_id and DB.get_dataset(org_id, token) is None):
+        raise HTTPException(404, "No hay un plan generado para descargar.")
+    p = ses["plan"]
+    df = pd.DataFrame(p["filas"]).rename(columns={
+        "fecha": "fecha", "volumen_objetivo": "volumen_objetivo",
+        "proyeccion": "proyeccion_modelo", "person_turnos": "person_turnos_totales",
+        "personas_turno": "personas_por_turno"})
+    resumen = pd.DataFrame([
+        {"campo": "meta", "valor": p["meta"]},
+        {"campo": "unidad", "valor": p["unidad"]},
+        {"campo": "productividad_por_persona_turno", "valor": p["productividad"]},
+        {"campo": "turnos_por_periodo", "valor": p["turnos"]},
+        {"campo": "proyeccion_total_modelo", "valor": p["proy_total"]},
+        {"campo": "meta_vs_proyeccion_pct", "valor": p["diff_pct"]},
+        {"campo": "lectura", "valor": p["pacing"]["mensaje"]},
+    ])
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as xw:
+        df.to_excel(xw, sheet_name="plan_por_fecha", index=False)
+        resumen.to_excel(xw, sheet_name="resumen", index=False)
+    buf.seek(0)
+    return StreamingResponse(
+        buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": 'attachment; filename="plan_operativo.xlsx"'})
+
+
+# ---------------------------------------------------------------------
+# Correo del informe + plan
+# ---------------------------------------------------------------------
+class ConfigCorreo(BaseModel):
+    token: str
+    destino: str
+    asunto: str | None = None
+    incluir_plan: bool = True
+
+
+@app.post("/api/correo")
+def enviar_correo(cfg: ConfigCorreo, user=Depends(usuario_actual)):
+    org_id = DB.org_de_usuario(user["user_id"])
+    ses = _working(org_id, cfg.token)
+    inf = ses.get("informe")
+    if not inf:
+        raise HTTPException(409, "Genera el informe antes de enviarlo por correo.")
+    p = ses.get("plan") if cfg.incluir_plan else None
+    nombre = (((DB.get_perfil(org_id) or {}).get("identidad") or {}).get("nombre")
+              if org_id else None)
+    html = correo_mod.construir_html(inf, p, nombre)
+    asunto = cfg.asunto or f"Tu proyección: {inf.get('kpis', {}).get('total_fmt', '')} " \
+                           f"{inf.get('kpis', {}).get('unidad', '')}"
+    res = correo_mod.enviar(cfg.destino, asunto, html)
+    return {**res, "asunto": asunto, "html": html,
+            "proveedor_configurado": correo_mod.proveedor() is not None}
 
 
 @app.get("/api/plantilla")

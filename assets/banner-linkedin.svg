@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1584 396">
+  <rect width="1584" height="396" fill="#FBF6EE"/>
+  <circle cx="1600" cy="72" r="175" fill="#EBA937" opacity="0.10"/>
+  <circle cx="1495" cy="368" r="95" fill="#3F7A50" opacity="0.06"/>
+  <path d="M-40 350 C 240 312 470 384 760 346 S 1300 300 1640 356" fill="none" stroke="#3F7A50" stroke-width="3" opacity="0.10"/>
+
+  <g transform="translate(506,98) scale(2.0)">
+    <path d="M82 94 V40 C82 15 43 11 38 33 C35 46 44 53 52 55 C63 58 69 62 67 70 C64 82 47 86 34 77" fill="none" stroke="#3F7A50" stroke-width="7.5" stroke-linecap="round"/>
+    <circle cx="21" cy="72" r="13.5" fill="#EBA937" stroke="#3F7A50" stroke-width="4"/>
+    <path d="M12 65 L27 78 M17 61 L31 73 M11 73 L23 83" stroke="#3F7A50" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+    <circle cx="52" cy="55" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+    <circle cx="67" cy="70" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+  </g>
+
+  <text x="802" y="120" font-family="Plus Jakarta Sans" font-weight="600" font-size="24" letter-spacing="1.5" fill="#9C8C7A">@automatizaesto</text>
+  <text x="800" y="192" font-family="Fraunces Medium" font-size="72" fill="#33261A">Victor Cardeña</text>
+  <text x="802" y="238" font-family="Plus Jakarta Sans" font-weight="400" font-size="26" fill="#6B5B4B">Ingeniero · Fundador de automatizaesto</text>
+  <text x="800" y="318" font-family="Fraunces Medium" font-style="italic" font-size="42" fill="#3F7A50">Del enredo al hilo.</text>
+  <text x="1540" y="362" text-anchor="end" font-family="Plus Jakarta Sans" font-weight="600" font-size="24" fill="#9C8C7A">automatizaesto.com</text>
+</svg>

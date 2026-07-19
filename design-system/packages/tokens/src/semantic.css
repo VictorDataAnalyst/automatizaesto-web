@@ -1,0 +1,39 @@
+/* ============================================================
+   Tokens semánticos — contrato que consumen los componentes.
+   Los componentes de @automatizaesto/ui SOLO usan estos nombres
+   (--color-accent, --font-display, …), nunca hex crudo.
+   Cada tema (corporate/forecast/agroquality) los redefine.
+
+   Este bloque fija el tema por defecto (corporate) en :root, de modo
+   que cualquier árbol sin [data-theme] siga siendo válido. Para cambiar
+   de marca basta con <html data-theme="agroquality">.
+   ============================================================ */
+
+:root {
+  --color-bg: #0a0a0b;
+  --color-bg-soft: #111114;
+  --color-surface: #15151a;
+  --color-border: #26262d;
+  --color-border-strong: #3a3a45;
+
+  --color-ink: #f2f0ea;
+  --color-ink-dim: #8a8a94;
+  --color-ink-mute: #58585f;
+
+  --color-accent: #7c5cff;
+  --color-accent-rgb: 124, 92, 255;
+  --color-accent-contrast: #ffffff;
+  --color-accent-warm: #ff6a3d;
+  --color-accent-cool: #7ab8ff;
+
+  --color-success: #25d366;
+  --color-success-bg: rgba(37, 211, 102, 0.12);
+  --color-warning: #e8b440;
+  --color-warning-bg: rgba(232, 180, 64, 0.12);
+  --color-danger: #ff6a3d;
+  --color-danger-bg: rgba(255, 106, 61, 0.12);
+
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-sans: 'Inter Tight', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

@@ -16,7 +16,7 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:locale" content="es_ES" />
+<meta property="og:locale" content="es_PE" />
 <meta property="og:site_name" content="automatizaesto" />
 <meta property="og:url" content="https://automatizaesto.com/" />
 <meta property="og:title" content="automatizaesto — Soluciones tecnológicas para la industria" />
@@ -41,8 +41,10 @@
   "url": "https://automatizaesto.com/",
   "description": "Soluciones tecnológicas para empresas industriales y exportadoras. Aplicaciones de planta y campo, integración de datos y reportería automática, por fases y a precio cerrado.",
   "email": "hola@automatizaesto.com",
+  "telephone": "+51955179232",
+  "address": { "@type": "PostalAddress", "addressCountry": "PE" },
   "founder": { "@type": "Person", "name": "Victor Cardeña" },
-  "areaServed": "Latinoamérica",
+  "areaServed": ["Perú", "Latinoamérica"],
   "knowsLanguage": "es",
   "knowsAbout": ["Automatización industrial de procesos", "Administración de bases de datos", "Aplicaciones de planta y campo", "Tableros de análisis", "Integraciones de datos"],
   "makesOffer": [
@@ -503,6 +505,7 @@ footer { padding: 56px 0 48px; color: var(--tinta-suave); font-size: 0.92rem; }
   <nav class="nav-links" aria-label="Principal">
     <a href="#servicios">Qué hacemos</a>
     <a href="#metodo">Cómo trabajamos</a>
+    <a href="casos/index.html">Casos</a>
     <a href="nosotros.html">Nosotros</a>
     <a class="nav-cta" href="#contacto">Conversemos</a>
   </nav>
@@ -800,6 +803,8 @@ footer { padding: 56px 0 48px; color: var(--tinta-suave); font-size: 0.92rem; }
         <a href="#inicio">Inicio</a>
         <a href="nosotros.html">Nosotros</a>
         <a href="servicios.html">Servicios</a>
+        <a href="casos/index.html">Casos de éxito</a>
+        <a href="portafolio/index.html">Portafolio</a>
         <a href="roadmap/index.html">Roadmap</a>
         <a href="blog/index.html">Recursos</a>
         <a href="nosotros.html#faq">Preguntas frecuentes</a>
@@ -1008,14 +1013,4 @@ const DATOS = {
       const umbral = innerHeight * 0.35;
       let actual = null;
       seccionDe.forEach((a, s) => { if (s.getBoundingClientRect().top <= umbral) actual = s; });
-      enlaces.forEach(a => a.classList.remove('activo'));
-      if (actual) seccionDe.get(actual).classList.add('activo');
-    }
-  }
-  addEventListener('scroll', alScroll, { passive: true });
-  alScroll();
-})();
-</script>
-<script src="assets/consent.js" defer></script>
-</body>
-</html>
+      enlaces.forEach(a =>

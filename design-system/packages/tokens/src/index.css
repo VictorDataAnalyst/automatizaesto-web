@@ -1,0 +1,13 @@
+/* ============================================================
+   @automatizaesto/tokens — punto de entrada único.
+   Importa en el orden correcto: núcleo → semántico (default) → temas.
+   Uso en una app:
+     import '@automatizaesto/tokens/index.css';
+     <html data-theme="agroquality"> … </html>
+   ============================================================ */
+
+@import './core.css';
+@import './semantic.css';
+@import './theme-corporate.css';
+@import './theme-forecast.css';
+@import './theme-agroquality.css';

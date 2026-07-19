@@ -1,0 +1,39 @@
+/* ============================================================
+   Tema: agroquality (app de auditoría de calidad)
+   Claro, acento esmeralda/lima. Display Sora, texto Inter.
+   Extraído de agroquality/app/static/index.html.
+   ============================================================ */
+
+[data-theme="agroquality"] {
+  /* superficies */
+  --color-bg: #f4f6f5;
+  --color-bg-soft: #eef2f0;
+  --color-surface: #ffffff;
+  --color-border: #e4e9e6;
+  --color-border-strong: #c9d4ce;
+
+  /* tinta */
+  --color-ink: #0f1a14;
+  --color-ink-dim: #5c6b62;
+  --color-ink-mute: #8a9a90;
+
+  /* acento (esmeralda) */
+  --color-accent: #1f9d57;
+  --color-accent-rgb: 31, 157, 87;
+  --color-accent-contrast: #ffffff;
+  --color-accent-warm: #27c26b;
+  --color-accent-cool: #157f47;
+
+  /* estado (escala good/fair/poor del producto) */
+  --color-success: #22a65a;
+  --color-success-bg: #e4f6ec;
+  --color-warning: #e0b100;
+  --color-warning-bg: #fbf4d6;
+  --color-danger: #e2602a;
+  --color-danger-bg: #fbe7dc;
+
+  /* tipografía */
+  --font-display: 'Sora', sans-serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'Sora', ui-monospace, monospace;
+}

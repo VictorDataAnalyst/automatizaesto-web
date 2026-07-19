@@ -1,0 +1,19 @@
+{
+  "name": "@automatizaesto/tokens",
+  "version": "0.1.0",
+  "description": "Tokens de diseño de Automatizaesto: núcleo + temas (corporate / forecast / agroquality).",
+  "license": "UNLICENSED",
+  "private": true,
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./index.css": "./src/index.css",
+    "./core.css": "./src/core.css",
+    "./semantic.css": "./src/semantic.css",
+    "./theme-corporate.css": "./src/theme-corporate.css",
+    "./theme-forecast.css": "./src/theme-forecast.css",
+    "./theme-agroquality.css": "./src/theme-agroquality.css",
+    "./tailwind-preset.cjs": "./tailwind-preset.cjs"
+  }
+}

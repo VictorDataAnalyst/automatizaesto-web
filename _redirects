@@ -1,0 +1,21 @@
+# Bloqueo de archivos internos que no deben servirse públicamente.
+# El "!" fuerza la regla aunque el archivo exista en el deploy.
+# Nota: esto los oculta en producción, pero siguen en el repo/historial de git.
+
+/Propuesta_Economica_AgroQuality_Marand.pdf  /404.html  404!
+/Presupuesto_Estimacion_AgroQuality.xlsx     /404.html  404!
+/gen_propuesta_agroquality.py                /404.html  404!
+/render.yaml                                 /404.html  404!
+
+# Runbook, backend y esquema de BD de AgroQuality (el backend real corre en Render)
+/agroquality/OPERACIONES.md                  /404.html  404!
+/agroquality/app/*                           /404.html  404!
+/agroquality/supabase/*                      /404.html  404!
+
+# Borradores y material de diseño interno
+/home-v2.html                                /404.html  404!
+/redesign-preview.html                       /404.html  404!
+/design-system/*                             /404.html  404!
+
+# Informe de auditoría interno
+/AUDITORIA_SITIO_2026-07-13.md               /404.html  404!

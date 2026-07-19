@@ -231,6 +231,49 @@ table.ranking tr.ganador td{background:#FDFAF3}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--navy);color:#fff;padding:13px 24px;border-radius:12px;font-size:.9rem;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:200;box-shadow:var(--shadow-lg)}
 #toast.on{opacity:1;transform:translateX(-50%)}
 
+/* ── Plan operativo por fecha ── */
+.plan-card input[type=number]{font-family:var(--mono)}
+.pacing{border-radius:var(--r-md);padding:14px 18px;margin:18px 0 14px;font-size:.92rem;border:1px solid var(--border);border-left:3px solid var(--blue);background:rgba(43,108,176,.06);color:var(--navy2)}
+.pacing.agresiva{border-left-color:var(--gold);background:#FDFAF3}
+.pacing.holgada{border-left-color:var(--teal);background:rgba(40,176,136,.07)}
+.pacing.realista{border-left-color:var(--blue);background:rgba(43,108,176,.06)}
+.pacing b{color:var(--navy)}
+.plan-pico{display:flex;gap:14px;flex-wrap:wrap;margin:4px 0 14px}
+.plan-pico .p{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;font-size:.82rem;color:var(--muted)}
+.plan-pico .p b{display:block;font-family:var(--mono);font-size:1.1rem;color:var(--navy);margin-top:2px}
+.plan-tabla{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:6px}
+.plan-tabla th{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:right}
+.plan-tabla th:first-child{text-align:left}
+.plan-tabla td{padding:7px 10px;border-bottom:1px solid var(--bg2);font-family:var(--mono);font-size:.82rem;text-align:right}
+.plan-tabla td:first-child{text-align:left;color:var(--navy);font-weight:600}
+.plan-tabla td.pers{font-weight:700;color:var(--navy)}
+.plan-tabla td.proy{color:var(--muted)}
+.plan-wrap{max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:var(--r-sm);margin-top:6px}
+.plan-acciones{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+
+/* ── Modal de correo ── */
+.modal{position:fixed;inset:0;background:rgba(12,26,46,.45);backdrop-filter:blur(4px);z-index:150;display:flex;align-items:flex-start;justify-content:center;padding:6vh 18px;overflow:auto}
+.modal-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow-lg);max-width:560px;width:100%;padding:28px 30px;position:relative}
+.modal-card h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;color:var(--navy)}
+.modal-x{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer}
+.modal-x:hover{color:var(--navy)}
+.chk-inline{display:flex;align-items:center;gap:8px;font-size:.86rem;color:var(--navy2);margin:12px 0 4px;cursor:pointer}
+.chk-inline input{accent-color:var(--gold)}
+#correo-iframe{width:100%;height:420px;border:1px solid var(--border);border-radius:var(--r-sm);margin-top:14px;background:#fff}
+
+/* ── Banner de error inline (no solo toast) ── */
+.err-banner{display:flex;align-items:flex-start;gap:12px;background:#FDF4F4;border:1px solid rgba(224,82,82,.35);border-left:3px solid var(--rojo);border-radius:var(--r-md);padding:14px 18px;margin:18px 0;box-shadow:var(--shadow)}
+.err-banner .ic{font-size:1.1rem;line-height:1.4}
+.err-banner .txt{flex:1;font-size:.9rem;color:var(--navy2)}
+.err-banner .txt b{color:var(--rojo)}
+.err-banner .cerrar{background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;padding:2px 4px}
+.err-banner .cerrar:hover{color:var(--navy)}
+
+/* ── Foco visible accesible (teclado) ── */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.insight:focus-visible,.rol-card:focus-visible{outline-offset:3px}
+.btn:focus-visible{outline-offset:3px}
+
 footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-size:.8rem;color:var(--muted)}
 </style>
 </head>
@@ -253,6 +296,12 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
     <span id="st1" class="on">1 · Tus datos</span>
     <span id="st2">2 · Configura</span>
     <span id="st3">3 · Informe</span>
+  </div>
+
+  <div class="err-banner" id="err-banner" role="alert" style="display:none">
+    <span class="ic">⚠️</span>
+    <span class="txt"><b>Algo salió mal.</b> <span id="err-msg"></span></span>
+    <button class="cerrar" aria-label="Cerrar aviso" onclick="ocultarError()">✕</button>
   </div>
 
   <!-- ════ LOGIN ════ -->
@@ -384,6 +433,24 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
 
     <div class="insights-grid" id="insights"></div>
 
+    <div class="seccion card plan-card" id="plan-card" style="display:none">
+      <h3>Plan operativo por fecha</h3>
+      <p class="sub">Ingresa tu meta para el periodo. La repartimos por fecha según tu patrón estacional,
+        estimamos el personal por turno y te decimos si la meta es realista frente a la proyección.</p>
+      <div class="grid3">
+        <div class="campo"><label>Meta del periodo (<span id="plan-unidad">unidades</span>)</label>
+          <input type="number" id="plan-meta" min="0" step="any" placeholder="Ej. 5000"></div>
+        <div class="campo"><label>Productividad por persona·turno</label>
+          <input type="number" id="plan-prod" min="1" step="any" placeholder="Ej. 200"></div>
+        <div class="campo"><label>Turnos por periodo</label>
+          <input type="number" id="plan-turnos" min="1" step="1" value="1"></div>
+      </div>
+      <div class="acciones" style="margin-top:16px">
+        <button class="btn btn-primario" id="btn-plan">Generar plan →</button>
+      </div>
+      <div id="plan-resultado"></div>
+    </div>
+
     <details class="anexo">
       <summary>Anexo técnico — ranking de modelos y validación</summary>
       <div class="cuerpo">
@@ -433,11 +500,29 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
 
 <div id="overlay"><div class="spinner"></div><p id="overlay-msg">Entrenando modelos…</p>
 <small>Competimos 4 modelos contra tu historia real. Esto puede tardar un momento.</small></div>
+<div id="correo-modal" class="modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="correo-titulo">
+  <div class="modal-card">
+    <button class="modal-x" aria-label="Cerrar" onclick="cerrarCorreo()">✕</button>
+    <h3 id="correo-titulo">Enviar por correo</h3>
+    <p class="sub" style="color:var(--muted)">El informe y tu plan, en un correo listo. Puedes previsualizarlo
+      y descargarlo; el envío real se activa cuando se configure el proveedor de correo.</p>
+    <div class="campo"><label>Destinatario</label>
+      <input type="email" id="correo-destino" placeholder="gerente@empresa.com"></div>
+    <label class="chk-inline"><input type="checkbox" id="correo-plan" checked> Incluir el plan operativo si lo generaste</label>
+    <div class="acciones" style="margin-top:14px">
+      <button class="btn btn-primario" id="btn-correo-enviar">Enviar →</button>
+      <button class="btn btn-ghost" id="btn-correo-preview">Vista previa</button>
+      <a class="btn btn-ghost" id="btn-correo-descargar" style="display:none">Descargar .html</a>
+    </div>
+    <div class="login-msg" id="correo-estado"></div>
+    <iframe id="correo-iframe" title="Vista previa del correo" style="display:none"></iframe>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
 const $ = s => document.querySelector(s);
-let ESTADO = { token:null, analisis:null, rol:'gerente', validado:false, informe:null, aprendido:null };
+let ESTADO = { token:null, analisis:null, rol:'gerente', validado:false, informe:null, aprendido:null, informeCache:{} };
 let AUTH = { modo:null, token:null, sb:null, user:null };
 let PERFIL = null;
 
@@ -493,6 +578,7 @@ function mostrarPantalla(id, conStepper){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function irA(n){
+  ocultarError();
   mostrarPantalla('p'+n, true);
   [1,2,3].forEach(i=>{ const st=$('#st'+i);
     st.classList.toggle('on', i===n); st.classList.toggle('done', i<n); });
@@ -500,9 +586,28 @@ function irA(n){
 function nuevoAnalisis(){ reiniciar(); }
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on');
   clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),3200); }
-function cargando(on,msg){ $('#overlay').classList.toggle('on',on); if(msg)$('#overlay-msg').textContent=msg; }
-function reiniciar(){ ESTADO={token:null,analisis:null,rol:'gerente',validado:false,informe:null,aprendido:null};
-  $('#inp-archivo').value=''; irA(1); }
+function mostrarError(msg){ $('#err-msg').textContent = msg; $('#err-banner').style.display='flex';
+  window.scrollTo({top:0, behavior:'smooth'}); }
+function ocultarError(){ $('#err-banner').style.display='none'; }
+
+/* Overlay con microcopy que rota durante el entrenamiento largo */
+const _ovMsgs = ['Compitiendo 4 modelos contra tu historia…',
+  'Midiendo el error real con validación cruzada…',
+  'Eligiendo el mejor modelo por cada serie…',
+  'Redactando tu informe ejecutivo…'];
+let _ovTimer = null;
+function cargando(on,msg){
+  $('#overlay').classList.toggle('on',on);
+  if(_ovTimer){ clearInterval(_ovTimer); _ovTimer=null; }
+  if(!on) return;
+  if(msg) $('#overlay-msg').textContent = msg;
+  if(msg && /modelos|Compitiendo/.test(msg)){          // solo el entrenamiento largo rota
+    let i=0; _ovTimer=setInterval(()=>{ i=(i+1)%_ovMsgs.length;
+      $('#overlay-msg').textContent=_ovMsgs[i]; }, 2600);
+  }
+}
+function reiniciar(){ ESTADO={token:null,analisis:null,rol:'gerente',validado:false,informe:null,aprendido:null,informeCache:{}};
+  ocultarError(); $('#inp-archivo').value=''; irA(1); }
 
 /* ── Login (demo y SaaS) ── */
 $('#ld-entrar').addEventListener('click', async ()=>{
@@ -614,7 +719,7 @@ async function subir(file){
     pintarConfig();
     irA(2);
     await validar();
-  }catch(e){ toast('⚠️ '+e.message); }
+  }catch(e){ mostrarError('No pude leer el archivo: '+e.message+' Revisa que tenga una columna de fecha y una numérica.'); }
   finally{ cargando(false); }
 }
 
@@ -693,6 +798,12 @@ $('#btn-generar').addEventListener('click', ()=>generarInforme(ESTADO.rol, true)
 
 /* ── P3: informe ── */
 async function generarInforme(rol, navegar){
+  // Corrida nueva (desde P2): limpia el caché de roles de la corrida anterior.
+  if(navegar) ESTADO.informeCache = {};
+  // Cambio de pestaña hacia un rol ya generado: instantáneo, sin red ni corrida nueva.
+  if(!navegar && ESTADO.informeCache[rol]){
+    ESTADO.informe = ESTADO.informeCache[rol]; ESTADO.rol = rol; pintarInforme(); return;
+  }
   cargando(true, navegar ? 'Compitiendo 4 modelos contra tu historia…' : 'Reescribiendo el informe para tu rol…');
   try{
     const r = await api('/api/forecast',{method:'POST',
@@ -700,11 +811,12 @@ async function generarInforme(rol, navegar){
       body: JSON.stringify({ token: ESTADO.token, rol,
         horizonte: +$('#sel-horizonte').value, pais: $('#sel-pais').value })});
     ESTADO.informe = await r.json();
+    ESTADO.informeCache[rol] = ESTADO.informe;   // recordar para cambios de pestaña
     ESTADO.rol = rol;
     pintarInforme();
     if(navegar) irA(3);
     cargarPerfil();   // refresca el perfil aprendido en segundo plano
-  }catch(e){ toast('⚠️ '+e.message); }
+  }catch(e){ mostrarError('No pude generar el informe: '+e.message); }
   finally{ cargando(false); }
 }
 
@@ -722,10 +834,12 @@ function pintarInforme(){
   $('#inf-veredicto').innerHTML =
     `<span class="conf-dot conf-${k.confianza}"></span><b>${k.veredicto}</b>`;
 
+  const esAnalista = inf.rol === 'analista';
   $('#inf-kpis').innerHTML = [
     [`${k.piso_fmt} – ${k.techo_fmt}`,'Rango 80% de confianza'],
-    [`${k.wape_pct}%`,'Error validado (WAPE)'],
-    [k.n_series,'Series modeladas'],
+    // "WAPE" es jerga de modelo: solo el analista la quiere ver.
+    [`${k.wape_pct}%`, esAnalista ? 'Error validado (WAPE)' : 'Margen de error'],
+    [k.n_series, esAnalista ? 'Series modeladas' : 'Series proyectadas'],
     [`${k.horizonte} periodos ${k.frecuencia_plural}`,'Horizonte proyectado'],
   ].map(([v,l])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
 
@@ -740,70 +854,184 @@ function pintarInforme(){
       <ul>${mem.lineas.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
   } else { mb.innerHTML = ''; }
 
-  document.querySelectorAll('#rol-tabs button').forEach(b=>
-    b.classList.toggle('on', b.dataset.rol===inf.rol));
+  document.querySelectorAll('#rol-tabs button').forEach(b=>{
+    const on = b.dataset.rol===inf.rol;
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', on?'true':'false'); });
 
   $('#insights').innerHTML = inf.insights.map((x,i)=>`
-    <div class="insight" data-i="${i}">
+    <div class="insight" data-i="${i}" tabindex="0" role="button" aria-expanded="false"
+         aria-label="${x.titulo} — abrir detalle">
       <button class="guardar" onclick="event.stopPropagation(); guardarInsight(${i}, this)">⭐ guardar</button>
       <div class="top"><span class="ic">${x.icono}</span><h4>${x.titulo}</h4>
         ${x.cifra?`<span class="cifra">${x.cifra}</span>`:''}</div>
       <p class="resumen">${x.resumen}</p>
       <div class="detalle">${x.detalle}</div>
       <div class="mini-chart ${x.chart?'tiene':''}" id="mini-${i}"></div>
-      <div class="pista">Toca para ver el detalle ${x.chart?'y la gráfica':''}</div>
+      <div class="pista">Toca o pulsa Enter para ver el detalle ${x.chart?'y la gráfica':''}</div>
     </div>`).join('');
-  document.querySelectorAll('.insight').forEach(el=>
-    el.addEventListener('click', ()=>{
-      el.classList.toggle('abierto');
-      const i = +el.dataset.i, x = inf.insights[i];
-      if(el.classList.contains('abierto') && x.chart && !el._pintado){
-        renderChart($('#mini-'+i), x.chart, false); el._pintado = true;
-      }
-    }));
+  const alternarInsight = el=>{
+    const abierto = el.classList.toggle('abierto');
+    el.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    const i = +el.dataset.i, x = inf.insights[i];
+    if(abierto && x.chart && !el._pintado){
+      renderChart($('#mini-'+i), x.chart, false); el._pintado = true;
+    }
+  };
+  document.querySelectorAll('.insight').forEach(el=>{
+    el.addEventListener('click', ()=>alternarInsight(el));
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); alternarInsight(el); }
+    });
+  });
 
-  const ganadores = new Set();
-  Object.entries(inf.anexo.ganadores).forEach(([s,ms])=>ms.forEach(m=>ganadores.add(s+'|'+m)));
-  $('#tabla-ranking').innerHTML =
-    '<tr><th>Serie</th><th>Modelo</th><th>Error WAPE %</th><th>Sesgo %</th></tr>' +
-    inf.anexo.ranking.map(r=>
-      `<tr class="${ganadores.has(r.serie+'|'+r.modelo)?'ganador':''}">
-        <td>${r.serie}</td><td>${r.modelo}</td>
-        <td>${r.error_WAPE_pct}</td><td>${r.sesgo_pct}</td></tr>`).join('');
+  // El anexo de ranking de modelos es cocina del modelo: solo interesa al analista.
+  // Gerente y operaciones deciden con la cifra y los hallazgos, no con qué modelo ganó.
+  const anexo = document.querySelector('details.anexo');
+  if(esAnalista){
+    anexo.style.display = '';
+    const ganadores = new Set();
+    Object.entries(inf.anexo.ganadores).forEach(([s,ms])=>ms.forEach(m=>ganadores.add(s+'|'+m)));
+    $('#tabla-ranking').innerHTML =
+      '<tr><th>Serie</th><th>Modelo</th><th>Error WAPE %</th><th>Sesgo %</th></tr>' +
+      inf.anexo.ranking.map(r=>
+        `<tr class="${ganadores.has(r.serie+'|'+r.modelo)?'ganador':''}">
+          <td>${r.serie}</td><td>${r.modelo}</td>
+          <td>${r.error_WAPE_pct}</td><td>${r.sesgo_pct}</td></tr>`).join('');
+  } else {
+    anexo.style.display = 'none';
+    anexo.open = false;
+  }
 
   $('#btn-descargar').onclick = (e)=>{ e.preventDefault(); descargar(ESTADO.token); };
+
+  // Plan operativo: herramienta de decisión → para gerente y operaciones, no el analista.
+  const verPlan = inf.rol==='gerente' || inf.rol==='operaciones';
+  $('#plan-card').style.display = verPlan ? '' : 'none';
+  if(verPlan){
+    $('#plan-unidad').textContent = k.unidad || 'unidades';
+    $('#plan-meta').placeholder = 'Ej. ' + (k.total_fmt || '5000');
+    $('#plan-resultado').innerHTML = '';   // el plan depende del rol activo; se regenera
+  }
 }
 
-async function descargar(token){
+async function descargarBlob(path, filename){
   try{
-    const r = await api('/api/descargar/' + token);
+    const r = await api(path);
     const blob = await r.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'informe_forecast.xlsx';
+    a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-  }catch(e){ toast('⚠️ '+e.message); }
+  }catch(e){ mostrarError('No pude descargar el archivo: '+e.message); }
 }
+async function descargar(token){ return descargarBlob('/api/descargar/'+token, 'informe_forecast.xlsx'); }
+
+/* ── Plan operativo por fecha ── */
+$('#btn-plan').addEventListener('click', generarPlan);
+async function generarPlan(){
+  const meta = parseFloat($('#plan-meta').value);
+  const prod = parseFloat($('#plan-prod').value);
+  const turnos = parseInt($('#plan-turnos').value || '1', 10);
+  if(!(meta>0))  return toast('Ingresa una meta mayor a 0.');
+  if(!(prod>0))  return toast('Ingresa la productividad por persona·turno.');
+  cargando(true, 'Armando tu plan por fecha…');
+  try{
+    const r = await api('/api/plan',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: ESTADO.token, meta, productividad: prod, turnos })});
+    renderPlan(await r.json());
+  }catch(e){ mostrarError('No pude generar el plan: '+e.message); }
+  finally{ cargando(false); }
+}
+function renderPlan(p){
+  const pac = p.pacing || {};
+  const nf = v => Number(v).toLocaleString('es-PE',{maximumFractionDigits:0});
+  const filas = p.filas.map(f=>`<tr>
+      <td>${f.fecha}</td>
+      <td>${nf(f.volumen_objetivo)}</td>
+      <td class="proy">${nf(f.proyeccion)}</td>
+      <td class="pers">${f.personas_turno}</td></tr>`).join('');
+  $('#plan-resultado').innerHTML = `
+    <div class="pacing ${pac.nivel||''}">${pac.mensaje||''}</div>
+    <div class="plan-pico">
+      <div class="p">Personal pico<b>${p.personas_pico} /turno</b></div>
+      <div class="p">Fecha pico<b>${p.fecha_pico||'—'}</b></div>
+      <div class="p">Meta vs proyección<b>${p.diff_pct>=0?'+':''}${p.diff_pct}%</b></div>
+    </div>
+    <div class="plan-wrap"><table class="plan-tabla">
+      <tr><th>Fecha</th><th>Objetivo (${p.unidad})</th><th>Proyección</th><th>Pers./turno</th></tr>
+      ${filas}</table></div>
+    <div class="plan-acciones">
+      <a class="btn btn-oro" id="btn-plan-excel">Descargar plan (Excel) ↓</a>
+      <button class="btn btn-ghost" onclick="abrirCorreo()">Enviar por correo ✉</button>
+    </div>`;
+  $('#btn-plan-excel').onclick = (e)=>{ e.preventDefault();
+    descargarBlob('/api/plan/descargar/'+ESTADO.token, 'plan_operativo.xlsx'); };
+}
+
+/* ── Correo: generar/previsualizar siempre; enviar si hay proveedor ── */
+function abrirCorreo(){
+  const est=$('#correo-estado'); est.textContent=''; est.className='login-msg';
+  $('#correo-iframe').style.display='none'; $('#btn-correo-descargar').style.display='none';
+  if(AUTH.user && AUTH.user.includes('@')) $('#correo-destino').value = AUTH.user;
+  $('#correo-modal').style.display='flex';
+}
+function cerrarCorreo(){ $('#correo-modal').style.display='none'; }
+async function pedirCorreo(soloPreview){
+  const destino = $('#correo-destino').value.trim();
+  const est = $('#correo-estado');
+  if(!soloPreview && !/.+@.+\..+/.test(destino)){
+    est.textContent='Ingresa un correo válido.'; est.className='login-msg err'; return; }
+  try{
+    const r = await api('/api/correo',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: ESTADO.token, destino: destino || 'preview@local',
+        incluir_plan: $('#correo-plan').checked })});
+    const d = await r.json();
+    const ifr = $('#correo-iframe'); ifr.srcdoc = d.html; ifr.style.display='block';
+    const dl = $('#btn-correo-descargar'); dl.style.display='';
+    dl.onclick = (e)=>{ e.preventDefault();
+      const blob=new Blob([d.html],{type:'text/html'}); const u=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=u; a.download='correo_forecast.html';
+      a.click(); URL.revokeObjectURL(u); };
+    if(soloPreview){ est.textContent='Vista previa lista — revísala abajo o descárgala.'; est.className='login-msg'; }
+    else if(d.enviado){ est.textContent='✓ Enviado a '+destino; est.className='login-msg ok'; }
+    else { est.textContent='Aún no se envía: '+(d.motivo||'')+' La vista previa quedó lista abajo.'; est.className='login-msg err'; }
+  }catch(e){ est.textContent=e.message; est.className='login-msg err'; }
+}
+$('#btn-correo-preview').addEventListener('click', ()=>pedirCorreo(true));
+$('#btn-correo-enviar').addEventListener('click', ()=>pedirCorreo(false));
 
 /* ── Gráficas ECharts con la paleta de marca ── */
 const PALETA = ['#1A2B45','#C8901C','#28B088','#2B6CB0','#E8B440','#8B5CF6'];
+const _baseNombre = n => n.replace(/ · (histórico|proyección)$/,'');
 function renderChart(el, chart, grande){
+  // Limpiar la instancia y el observer previos del nodo (evita fuga y el aviso
+  // "instance already initialized" de ECharts al re-renderizar).
+  if(el._ec){ el._ec.dispose(); el._ec = null; }
+  if(el._ro){ el._ro.disconnect(); el._ro = null; }
   const ec = echarts.init(el, null, {renderer:'svg'});
+  el._ec = ec;
   const series = [];
+  // Mismo color para la historia y la proyección de una misma serie lógica:
+  // la línea continua es pasado, la punteada es futuro. Mucho más legible con
+  // varias series que dando un color distinto a cada tramo.
+  const colorDe = {};
   let ci = 0;
-  chart.series.forEach(s=>{
-    const color = PALETA[ci++ % PALETA.length];
+  const colorPara = nb => (colorDe[nb] ??= PALETA[ci++ % PALETA.length]);
+  let fronteraX = null;   // donde arranca la proyección -> línea divisoria
+  chart.series.forEach((s,si)=>{
+    const color = colorPara(_baseNombre(s.nombre));
     if(chart.tipo==='barras'){
       series.push({type:'bar', name:s.nombre, data:s.x.map((x,j)=>[x,s.y[j]]),
         itemStyle:{color:'#C8901C', borderRadius:[5,5,0,0]}});
       return;
     }
     if(s.banda_lo){
+      if(fronteraX===null && s.x.length) fronteraX = s.x[0];
       series.push({type:'line', name:'_lo', data:s.x.map((x,j)=>[x,s.banda_lo[j]]),
-        stack:'b'+ci, symbol:'none', lineStyle:{opacity:0}, tooltip:{show:false}});
+        stack:'b'+si, symbol:'none', lineStyle:{opacity:0}, tooltip:{show:false}});
       series.push({type:'line', name:'rango 80%', data:s.x.map((x,j)=>[x,s.banda_hi[j]-s.banda_lo[j]]),
-        stack:'b'+ci, symbol:'none', lineStyle:{opacity:0},
+        stack:'b'+si, symbol:'none', lineStyle:{opacity:0},
         areaStyle:{color:'rgba(200,144,28,.13)'}, tooltip:{show:false}});
     }
     series.push({type:'line', name:s.nombre, data:s.x.map((x,j)=>[x,s.y[j]]),
@@ -811,6 +1039,15 @@ function renderChart(el, chart, grande){
       lineStyle:{width:2.4, color, type: s.discontinua?'dashed':'solid'},
       itemStyle:{color}});
   });
+  // Línea divisoria pasado/futuro en la frontera de la proyección.
+  if(fronteraX!==null && series.length){
+    series[series.length-1].markLine = {
+      silent:true, symbol:'none', animation:false,
+      lineStyle:{color:'#9FB0C6', type:'dashed', width:1},
+      label:{formatter:'inicio proyección', color:'#5A7391', fontSize:10,
+             position:'insideEndTop', fontFamily:'JetBrains Mono'},
+      data:[{xAxis: fronteraX}]};
+  }
   ec.setOption({
     textStyle:{fontFamily:'Inter Tight'},
     color:PALETA,
@@ -828,7 +1065,8 @@ function renderChart(el, chart, grande){
       axisLabel:{color:'#5A7391', fontSize:11, fontFamily:'JetBrains Mono'}},
     series
   });
-  new ResizeObserver(()=>ec.resize()).observe(el);
+  const ro = new ResizeObserver(()=>ec.resize());
+  ro.observe(el); el._ro = ro;
 }
 
 /* ── Arranque ── */

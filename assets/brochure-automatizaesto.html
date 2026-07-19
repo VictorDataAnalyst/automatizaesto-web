@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>automatizaesto — Brochure de servicios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --papel:#FBF6EE; --papel-alt:#F4EBDD; --crema:#FFFDF8;
+    --tinta:#33261A; --tinta-suave:#6B5B4B; --tinta-mute:#9C8C7A;
+    --acento:#3F7A50; --acento-h:#33633F; --salvia:#5F7D5C; --miel:#EBA937; --linea:#E4D6C2;
+    --display:'Fraunces',Georgia,serif; --texto:'Plus Jakarta Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#e7e2d8;font-family:var(--texto);color:var(--tinta);line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--display);font-weight:500;line-height:1.12;letter-spacing:-0.01em}
+  em{font-style:italic;color:var(--acento)}
+
+  .barra{position:sticky;top:0;background:var(--tinta);color:var(--papel);padding:12px 20px;text-align:center;font-size:14px;font-weight:600;z-index:10}
+  .barra span{opacity:.8;font-weight:400}
+
+  .hoja{width:210mm;min-height:297mm;margin:18px auto;background:var(--papel);padding:16mm 15mm;box-shadow:0 8px 40px rgba(51,38,26,.15)}
+  .hoja+.hoja{margin-top:0}
+
+  .marca{display:flex;align-items:center;gap:12px;margin-bottom:6mm}
+  .marca svg{display:block}
+  .marca .wm{font-size:22px;font-weight:700}
+  .marca .wm em{font-family:var(--display);font-weight:500;font-style:normal}
+  .marca .lema{margin-left:auto;font-family:var(--display);font-style:italic;font-size:16px;color:var(--acento)}
+
+  .hero h1{font-size:38px;max-width:15ch}
+  .hero p{margin-top:10px;font-size:15px;color:var(--tinta-suave);max-width:52ch}
+
+  .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acento);margin:9mm 0 4mm}
+
+  .servicios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .serv{background:var(--crema);border:1px solid var(--linea);border-radius:14px;padding:16px}
+  .serv .esf{width:52px;height:52px;border-radius:50%;background:var(--papel);border:1.5px solid var(--linea);display:grid;place-items:center;color:var(--acento);margin-bottom:10px}
+  .serv h3{font-size:17px;margin-bottom:5px}
+  .serv p{font-size:12.5px;color:var(--tinta-suave)}
+  .serv .nota{margin-top:9px;display:inline-block;font-size:11px;font-weight:600;color:var(--salvia);background:rgba(95,125,92,.1);padding:4px 9px;border-radius:99px}
+
+  .pasos{display:grid;grid-template-columns:1fr 1fr;gap:9px 22px}
+  .paso{display:flex;gap:12px;align-items:flex-start}
+  .paso .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--papel-alt);border:1.5px solid var(--linea);display:grid;place-items:center;font-family:var(--display);font-style:italic;color:var(--acento);font-size:16px}
+  .paso h4{font-size:15px;margin-bottom:2px}
+  .paso p{font-size:12.5px;color:var(--tinta-suave)}
+
+  .casos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .caso{background:var(--tinta);color:var(--papel);border-radius:16px;padding:20px}
+  .caso .rubro{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--miel)}
+  .caso .metrica{font-family:var(--display);font-size:30px;margin:8px 0 4px;color:var(--papel)}
+  .caso .metrica b{color:var(--miel);font-weight:500}
+  .caso p{font-size:12.5px;color:#c9b9a6;margin-top:6px}
+
+  .bolsillo{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-top:2mm}
+  .bolsillo li{list-style:none;display:flex;gap:9px;font-size:13px;color:var(--tinta-suave);padding:3px 0}
+  .bolsillo li::before{content:'✦';color:var(--miel)}
+  .bolsillo li b{color:var(--tinta)}
+
+  .cta{margin-top:9mm;background:var(--acento);color:#fff;border-radius:16px;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .cta h3{color:#fff;font-size:22px}
+  .cta p{font-size:13px;opacity:.9;margin-top:3px}
+  .cta .datos{text-align:right;font-size:13px;line-height:1.9}
+  .cta .datos b{font-weight:600}
+
+  @media print{
+    body{background:#fff}
+    .barra{display:none}
+    .hoja{margin:0;box-shadow:none;width:auto;min-height:auto;padding:14mm}
+    .hoja:first-of-type{page-break-after:always}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="barra noprint">Para guardarlo como PDF: <span>Ctrl/Cmd + P → Destino “Guardar como PDF” → Márgenes “Ninguno”.</span></div>
+
+<section class="hoja">
+  <div class="marca">
+    <svg width="42" height="42" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M82 94 V40 C82 15 43 11 38 33 C35 46 44 53 52 55 C63 58 69 62 67 70 C64 82 47 86 34 77" fill="none" stroke="#3F7A50" stroke-width="7.5" stroke-linecap="round"/>
+      <circle cx="21" cy="72" r="13.5" fill="#EBA937" stroke="#3F7A50" stroke-width="4"/>
+      <path d="M12 65 L27 78 M17 61 L31 73 M11 73 L23 83" stroke="#3F7A50" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+      <circle cx="52" cy="55" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+      <circle cx="67" cy="70" r="6.8" fill="#FBF6EE" stroke="#3F7A50" stroke-width="4"/>
+    </svg>
+    <span class="wm">automatiza<em>esto</em></span>
+    <span class="lema">Del enredo al hilo</span>
+  </div>
+
+  <div class="hero">
+    <h1>Software a medida para <em>pequeñas empresas</em>.</h1>
+    <p>Ayudamos a negocios como el tuyo a dejar atrás el papel y el Excel infinito, con aplicaciones hechas para ti y precios que sí caben en tu bolsillo. Sin humo, sin palabras raras.</p>
+  </div>
+
+  <span class="eyebrow">Qué hacemos</span>
+  <div class="servicios">
+    <div class="serv">
+      <div class="esf"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 5h3M12 18.2v.1"/></svg></div>
+      <h3>Aplicaciones a tu medida</h3>
+      <p>Apps sencillas para registrar y controlar tu operación desde el celular, hechas para cómo trabaja tu equipo.</p>
+      <span class="nota">Resultados desde la 1ª semana</span>
+    </div>
+    <div class="serv">
+      <div class="esf"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 19H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v1"/><path d="M11 21l2.2-2H18a3 3 0 0 0 3-3v-3a3 3 0 0 0-3-3h-5a3 3 0 0 0-3 3v3a3 3 0 0 0 1 2.2z"/></svg></div>
+      <h3>Consultoría cercana</h3>
+      <p>Entendemos tu día a día y te decimos con honestidad qué conviene automatizar y qué no.</p>
+      <span class="nota">1ª conversación sin costo</span>
+    </div>
+    <div class="serv">
+      <div class="esf"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 21v-8M11 21V6M16 21v-11M21 21V10"/></svg></div>
+      <h3>Reportes que se hacen solos</h3>
+      <p>Los números que necesitas cada mañana, conectados a lo que ya usas: Excel, WhatsApp, tu correo.</p>
+      <span class="nota">Se paga con las horas que ahorras</span>
+    </div>
+  </div>
+
+  <span class="eyebrow">Cómo trabajamos</span>
+  <div class="pasos">
+    <div class="paso"><div class="n">1</div><div><h4>Conversamos</h4><p>Nos cuentas cómo trabajas hoy. Escuchamos más de lo que hablamos.</p></div></div>
+    <div class="paso"><div class="n">2</div><div><h4>Te proponemos</h4><p>Una propuesta corta y en cristiano: qué, cuánto y cuándo. Precio cerrado.</p></div></div>
+    <div class="paso"><div class="n">3</div><div><h4>Construimos por fases</h4><p>Cada una o dos semanas ves algo funcionando y lo pruebas con tu equipo.</p></div></div>
+    <div class="paso"><div class="n">4</div><div><h4>Te acompañamos</h4><p>Capacitamos a tu gente y mejoramos la herramienta mientras tu negocio crece.</p></div></div>
+  </div>
+</section>
+
+<section class="hoja">
+  <span class="eyebrow" style="margin-top:0">Resultados reales</span>
+  <div class="casos">
+    <div class="caso">
+      <span class="rubro">Empresa exportadora</span>
+      <div class="metrica">De 4 horas a <b>3 minutos</b></div>
+      <p>Sus boletas se armaban pasando, dato por dato, la información de un Excel del proveedor. Construimos una app en Excel (VBA) que las genera sola, con un solo botón.</p>
+    </div>
+    <div class="caso">
+      <span class="rubro">Call center</span>
+      <div class="metrica">De 4 horas a <b>30 minutos</b></div>
+      <p>La reportería diaria vivía en hojas de Excel. Migramos sus datos a una base de datos SQL Server con procesos automáticos y tableros en Power BI. En uso hoy, cada mañana.</p>
+    </div>
+  </div>
+
+  <span class="eyebrow">Precios claros — tecnología que cabe en tu bolsillo</span>
+  <ul class="bolsillo">
+    <li><span><b>Pagas por fases</b>, no todo por adelantado. Cada fase entrega algo que ya puedes usar.</span></li>
+    <li><span><b>Precio cerrado por escrito</b> antes de empezar. Si nos demoramos más, es problema nuestro.</span></li>
+    <li><span><b>Empezamos pequeño</b>: primero lo que más te duele; lo demás puede esperar.</span></li>
+    <li><span><b>Sin permanencia.</b> Lo que construimos es tuyo, con tu código y tus datos.</span></li>
+  </ul>
+
+  <span class="eyebrow">Con qué construimos</span>
+  <p style="font-size:13.5px;color:var(--tinta-suave);max-width:60ch">Elegimos la tecnología según tu caso y tu presupuesto: desde una macro de Excel bien hecha hasta una aplicación completa. Trabajamos con Excel · VBA, AppSheet, bases de datos SQL, Python, Power BI y WhatsApp.</p>
+
+  <div class="cta">
+    <div>
+      <h3>Cuéntanos qué te quita el sueño.</h3>
+      <p>Te respondemos en menos de 24 horas con ideas concretas y un precio claro.</p>
+    </div>
+    <div class="datos">
+      <div><b>automatizaesto.com</b></div>
+      <div>hola@automatizaesto.com</div>
+      <div>WhatsApp +51 955 179 232</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+/* ============================================================
+   Tema: forecast (app de forecasting)
+   Claro, base navy + acento oro. Display serif.
+   Extraído de forecast_nueva_version/app/static/index.html.
+   ============================================================ */
+
+[data-theme="forecast"] {
+  /* superficies */
+  --color-bg: #f7f9fc;
+  --color-bg-soft: #eef3fa;
+  --color-surface: #ffffff;
+  --color-border: #dde6f0;
+  --color-border-strong: #c3d2e6;
+
+  /* tinta (navy) */
+  --color-ink: #0c1a2e;
+  --color-ink-dim: #1a2b45;
+  --color-ink-mute: #5a7391;
+
+  /* acento (oro) */
+  --color-accent: #c8901c;
+  --color-accent-rgb: 200, 144, 28;
+  --color-accent-contrast: #ffffff;
+  --color-accent-warm: #e8b440;
+  --color-accent-cool: #2b6cb0;
+
+  /* estado */
+  --color-success: #28b088;
+  --color-success-bg: #e3f5ef;
+  --color-warning: #c8901c;
+  --color-warning-bg: #fbf2dc;
+  --color-danger: #e05252;
+  --color-danger-bg: #fbe4e4;
+
+  /* tipografía */
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Inter Tight', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

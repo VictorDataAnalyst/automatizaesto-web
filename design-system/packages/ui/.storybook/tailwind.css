@@ -1,0 +1,10 @@
+/* tokens primero (define las CSS variables y los temas), luego Tailwind */
+@import '@automatizaesto/tokens/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-sans);
+}
