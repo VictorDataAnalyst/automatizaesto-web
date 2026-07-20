@@ -80,7 +80,7 @@
 
   var lenis = null;
   if (typeof Lenis !== 'undefined') {
-    lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    lenis = new Lenis({ duration: 0.8, smoothWheel: true });
     function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
     /* anclas internas a través de Lenis */
