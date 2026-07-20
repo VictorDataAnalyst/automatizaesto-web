@@ -4,9 +4,33 @@
    Degrada con elegancia: sin CDN o con movimiento reducido,
    la página funciona completa en estático.
    ============================================================ */
+/* ------------------------------------------------------------
+   REDES SOCIALES — único lugar donde se configuran.
+   Deja la URL vacía ('') y el botón se oculta solo, sin romper
+   el diseño. Igual para los LinkedIn del equipo (data-linkedin).
+   ------------------------------------------------------------ */
+window.AE_SOCIAL = {
+  linkedin:  'https://www.linkedin.com/company/automatizaesto',
+  facebook:  '',
+  instagram: '',
+  youtube:   '',
+  x:         '',
+  tiktok:    ''
+};
+
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* redes sociales: activa solo las que tienen URL */
+  document.querySelectorAll('.social-row a[data-red]').forEach(function (a) {
+    var url = (window.AE_SOCIAL || {})[a.dataset.red];
+    if (url) { a.href = url; a.classList.add('on'); }
+  });
+  /* LinkedIn por persona: el botón aparece solo si hay URL */
+  document.querySelectorAll('.btn-li[data-linkedin]').forEach(function (a) {
+    if (a.dataset.linkedin) { a.href = a.dataset.linkedin; a.classList.add('on'); }
+  });
 
   /* nav: fondo al hacer scroll */
   var nav = document.querySelector('.nav');
