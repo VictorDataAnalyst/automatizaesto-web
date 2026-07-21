@@ -121,10 +121,11 @@ img, svg, video { display: block; max-width: 100%; }
 .nav.scrolled { background: rgba(6,10,8,.72); backdrop-filter: blur(18px); border-color: var(--linea); }
 .nav .container { display: flex; align-items: center; gap: 40px; height: 76px; }
 .brand { display: flex; align-items: center; gap: 12px; font-family: var(--f-display); font-weight: 700; font-size: 1.1rem; letter-spacing: -.02em; }
+/* Monograma de la casa: "Ae" sobre gradiente del producto */
 .brand-mark {
   width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center;
   background: linear-gradient(140deg, var(--esmeralda), #0C5A33); color: #fff;
-  font-family: var(--f-mono); font-size: 19px;
+  font-family: var(--f-display); font-weight: 700; font-size: 14px; letter-spacing: -.02em;
 }
 .nav-links { display: flex; gap: 4px; margin-left: auto; }
 .nav-links a { font-size: .9rem; font-weight: 500; color: var(--tinta-2); padding: 9px 15px; border-radius: 9px; transition: color .25s, background .25s; }
