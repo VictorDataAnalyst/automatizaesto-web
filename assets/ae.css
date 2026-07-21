@@ -366,6 +366,79 @@ footer { border-top: 1px solid var(--linea); padding-block: 60px 40px; font-size
 .f-desc { max-width: 34ch; font-size: .88rem; color: var(--tinta-2); margin-top: 16px; }
 .f-brandcol { max-width: 300px; }
 
+/* ---------- Filtros (portafolio, blog) ---------- */
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-top: clamp(34px, 5vh, 54px); }
+.filtro { font-family: var(--f-mono); font-size: .76rem; letter-spacing: .06em; color: var(--tinta-2);
+  border: 1px solid var(--linea); background: none; padding: 10px 20px; border-radius: 100px; cursor: pointer;
+  transition: color .3s, border-color .3s, background .3s; }
+.filtro:hover { color: var(--tinta); border-color: rgba(61,123,255,.4); }
+.filtro[aria-pressed="true"] { color: #fff; border-color: var(--ion); background: rgba(61,123,255,.14); }
+.light .filtro { color: var(--tinta-inv2); border-color: var(--linea-inv); }
+.light .filtro:hover { color: var(--tinta-inv); }
+.light .filtro[aria-pressed="true"] { color: var(--ion-d); border-color: var(--ion-d); background: rgba(61,123,255,.08); }
+.buscador { margin-top: 20px; max-width: 420px; width: 100%; background: rgba(237,241,244,.05);
+  border: 1px solid var(--linea); border-radius: 100px; padding: 13px 22px; color: var(--tinta);
+  font-family: inherit; font-size: .92rem; transition: border-color .3s; }
+.buscador::placeholder { color: var(--tinta-2); }
+.buscador:focus { outline: none; border-color: var(--ion); }
+.light .buscador { background: var(--blanco); border-color: var(--linea-inv); color: var(--tinta-inv); }
+.filtrable { transition: opacity .4s var(--curva), transform .4s var(--curva); }
+.filtrable[hidden] { display: none; }
+.sin-resultados { margin-top: 40px; color: var(--tinta-2); font-size: .95rem; }
+
+/* ---------- Caso de éxito (bloque narrativo) ---------- */
+.caso-bloque { border: 1px solid var(--linea-inv); border-radius: 24px; background: var(--blanco);
+  padding: clamp(28px, 4vw, 48px); margin-top: 20px; }
+.caso-bloque .sector { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ion-d); }
+.caso-bloque h3 { font-size: clamp(1.4rem, 2.8vw, 2.1rem); margin: 12px 0 26px; max-width: 24ch; }
+.caso-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); }
+@media (max-width: 900px) { .caso-cols { grid-template-columns: 1fr; } }
+.caso-col h4 { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--tinta-inv2); font-weight: 500; padding-bottom: 12px; border-bottom: 1px solid var(--linea-inv); margin-bottom: 16px; }
+.caso-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.caso-col li { font-size: .92rem; color: var(--tinta-inv2); display: flex; gap: 10px; }
+.caso-col li::before { content: "—"; color: var(--ion-d); flex-shrink: 0; }
+.caso-col p { font-size: .92rem; color: var(--tinta-inv2); }
+.caso-tec { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--linea-inv); }
+.caso-tec span { font-family: var(--f-mono); font-size: .72rem; color: var(--tinta-inv2);
+  border: 1px solid var(--linea-inv); padding: 7px 15px; border-radius: 100px; }
+.caso-bloque .cta-caso { margin-top: 26px; display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-display); font-weight: 600; font-size: .9rem; color: var(--ion-d); }
+.caso-bloque.pendiente { border-style: dashed; background: transparent; }
+.caso-bloque.pendiente h3 { color: var(--tinta-inv2); margin-bottom: 0; }
+
+/* ---------- Tarjetas de proyecto y post ---------- */
+.cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: clamp(34px, 5vh, 54px); }
+@media (max-width: 980px) { .cards-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { .cards-3 { grid-template-columns: 1fr; } }
+.pcard { border: 1px solid var(--linea); border-radius: 20px; overflow: hidden; background: rgba(237,241,244,.02);
+  display: flex; flex-direction: column; transition: transform .5s var(--curva), border-color .4s; }
+.pcard:hover { transform: translateY(-6px); border-color: rgba(61,123,255,.4); }
+.pcard .visual { aspect-ratio: 16/9; position: relative; overflow: hidden;
+  background: linear-gradient(140deg, rgba(61,123,255,.22), rgba(10,12,14,.9)); }
+.pcard .visual .mini { position: absolute; inset: 14px; display: flex; align-items: flex-end; gap: 5px; }
+.pcard .visual .mini i { flex: 1; background: linear-gradient(180deg, var(--ion-2), rgba(61,123,255,.25)); border-radius: 3px 3px 1px 1px; }
+.pcard .bd { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.pcard .tag { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ion-2); }
+.pcard h3 { font-size: 1.08rem; color: #fff; line-height: 1.25; }
+.pcard p { font-size: .88rem; color: var(--tinta-2); }
+.pcard .pie { margin-top: auto; padding-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pcard .pie span { font-family: var(--f-mono); font-size: .68rem; color: var(--tinta-2);
+  border: 1px solid var(--linea); padding: 5px 11px; border-radius: 100px; }
+.pcard .link { font-family: var(--f-display); font-weight: 600; font-size: .86rem; color: var(--ion-2); margin-top: auto; padding-top: 14px; }
+.pcard.claro { background: var(--blanco); border-color: var(--linea-inv); }
+.pcard.claro h3 { color: var(--tinta-inv); }
+.pcard.claro p { color: var(--tinta-inv2); }
+.pcard.claro .tag { color: var(--ion-d); }
+.pcard.claro .link { color: var(--ion-d); }
+.pcard.claro .pie span { color: var(--tinta-inv2); border-color: var(--linea-inv); }
+.pcard.proximo { opacity: .6; }
+.pcard.proximo:hover { transform: none; }
+
+/* migas */
+.migas { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .1em; color: var(--tinta-2); margin-bottom: 22px; }
+.migas a:hover { color: var(--ion-2); }
+
 /* accesibilidad */
 :focus-visible { outline: 2px solid var(--ion); outline-offset: 3px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) {

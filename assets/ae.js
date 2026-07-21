@@ -53,6 +53,46 @@ window.AE_SOCIAL = {
   var yr = document.getElementById('yr');
   if (yr) yr.textContent = new Date().getFullYear();
 
+  /* ----------------------------------------------------------
+     Filtros + búsqueda (portafolio, blog).
+     Declarativo: los elementos filtrables llevan data-cat y,
+     opcionalmente, data-buscar con el texto indexable.
+     ---------------------------------------------------------- */
+  (function filtros() {
+    var grupo = document.querySelector('[data-filtros]');
+    if (!grupo) return;
+    var items = Array.prototype.slice.call(document.querySelectorAll('.filtrable'));
+    var buscador = document.querySelector('[data-buscador]');
+    var vacio = document.querySelector('[data-vacio]');
+    var cat = 'todos';
+
+    function aplicar() {
+      var q = (buscador && buscador.value || '').trim().toLowerCase();
+      var visibles = 0;
+      items.forEach(function (el) {
+        var okCat = cat === 'todos' || (el.dataset.cat || '').split(' ').indexOf(cat) !== -1;
+        var texto = (el.dataset.buscar || el.textContent || '').toLowerCase();
+        var okQ = !q || texto.indexOf(q) !== -1;
+        var ver = okCat && okQ;
+        el.hidden = !ver;
+        if (ver) visibles++;
+      });
+      if (vacio) vacio.hidden = visibles > 0;
+    }
+
+    grupo.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.filtro');
+      if (!b) return;
+      cat = b.dataset.cat || 'todos';
+      grupo.querySelectorAll('.filtro').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      aplicar();
+    });
+    if (buscador) buscador.addEventListener('input', aplicar);
+    aplicar();
+  })();
+
   /* movimiento premium */
   if (reduce || typeof gsap === 'undefined') return;
 
