@@ -93,6 +93,26 @@ window.AE_SOCIAL = {
     aplicar();
   })();
 
+  /* ----------------------------------------------------------
+     Calculadora de ROI (página AI). Estimación transparente:
+     el ahorro asume una reducción conservadora del 50 % del
+     tiempo de documentación — se declara en la nota al pie.
+     ---------------------------------------------------------- */
+  (function roi() {
+    var campos = ['roi_vol', 'roi_min', 'roi_costo'].map(function (id) { return document.getElementById(id); });
+    if (campos.some(function (c) { return !c; })) return;
+    var outH = document.getElementById('roi_horas'), outS = document.getElementById('roi_ahorro');
+    var fmt = function (n) { return Math.round(n).toLocaleString('es-PE'); };
+    function calcular() {
+      var vol = +campos[0].value || 0, min = +campos[1].value || 0, costo = +campos[2].value || 0;
+      var horas = vol * min / 60 * 0.5;
+      outH.textContent = fmt(horas) + ' h';
+      outS.textContent = 'S/ ' + fmt(horas * costo);
+    }
+    campos.forEach(function (c) { c.addEventListener('input', calcular); });
+    calcular();
+  })();
+
   /* movimiento premium */
   if (reduce || typeof gsap === 'undefined') return;
 
