@@ -19,6 +19,10 @@ create index if not exists idx_eventos_tipo      on eventos(tipo, creado_en desc
 alter table eventos enable row level security;
 
 -- Solo lectura de los eventos de mi propia org (el backend escribe con service key).
+-- `to authenticated` explícito, igual que el resto de políticas: sin eso la
+-- política también aplica a `anon` y la seguridad depende de que auth.uid()
+-- sea NULL. Funciona, pero es mejor cerrar por rol que por efecto secundario.
 drop policy if exists "eventos de mi org" on eventos;
 create policy "eventos de mi org" on eventos
-  for select using (org_id in (select org_id from miembros where user_id = auth.uid()));
+  for select to authenticated
+  using (org_id in (select mis_orgs()));

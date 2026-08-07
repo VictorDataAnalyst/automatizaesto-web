@@ -25,6 +25,11 @@ where (p.perfil->'identidad'->>'acepta_promos')::boolean is true
 comment on view contactos_marketing is
   'Solo contactos con consentimiento comercial explícito. No enviar a nadie fuera de esta vista.';
 
--- La vista se consulta con el service key desde el backend / dashboard.
--- No se expone a `anon`: es una lista de contactos, no dato de la app.
+-- CRÍTICO: una vista NO aplica el RLS de las tablas que consulta — corre con
+-- los permisos de su dueño. Y Supabase concede acceso a anon/authenticated por
+-- defecto. Sin estos revoke, cualquier cliente con sesión iniciada podría leer
+-- los correos de TODOS los demás clientes.
+-- Esta lista se consulta solo con el service key (backend / dashboard).
 revoke all on contactos_marketing from anon;
+revoke all on contactos_marketing from authenticated;
+revoke all on contactos_marketing from public;
