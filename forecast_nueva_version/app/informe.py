@@ -16,7 +16,7 @@ PAISES = {"PE": "Perú", "CO": "Colombia", "MX": "México", "CL": "Chile",
           "EC": "Ecuador", "BO": "Bolivia", "AR": "Argentina", "ES": "España"}
 
 # "periodos diarios / semanales / mensuales / trimestrales"
-FREQ_PLURAL = {"diaria": "diarios", "semanal": "semanales",
+FREQ_PLURAL = {"diaria": "diarios", "semanal": "semanales", "quincenal": "quincenales",
                "mensual": "mensuales", "trimestral": "trimestrales"}
 
 

@@ -73,7 +73,27 @@ def detectar_columnas(df: pd.DataFrame) -> dict:
 
 
 # ---------- 2. Prevalidacion ----------
-def prevalidar(df, col_fecha, col_valor, col_serie):
+# Granularidades soportadas: nombre -> (freq pandas, periodos por año, rango).
+# El "rango" ordena de fino a grueso: solo se permite agregar hacia arriba.
+GRANULARIDADES = {
+    "diaria":     ("D",      7, 0),
+    "semanal":    ("W-SUN", 52, 1),
+    "quincenal":  ("SMS",   24, 2),   # dias 1 y 15 de cada mes
+    "mensual":    ("MS",    12, 3),
+    "trimestral": ("QS",     4, 4),
+}
+
+
+def horizonte_maximo(limpio, meta) -> int:
+    """Horizonte maximo que la HISTORIA soporta validar (no solo la estacionalidad).
+    Con 3 ventanas de validacion se necesita ~3x el horizonte en datos; verificado
+    empiricamente: 72 pts -> 24, 34 -> 11, 17 -> 5. Sin este tope, horizontes
+    largos revientan la validacion cruzada con un error incomprensible."""
+    n_min = int(limpio.groupby("unique_id").size().min())
+    return max(2, min(int(meta["season"]), n_min // 3))
+
+
+def prevalidar(df, col_fecha, col_valor, col_serie, granularidad=None):
     """Devuelve (df_limpio, lista de checks). Cada check: (nivel, mensaje).
     nivel: ok | warn | error"""
     checks = []
@@ -120,7 +140,23 @@ def prevalidar(df, col_fecha, col_valor, col_serie):
     elif mediana <= 9:   freq, season, fnom = "W-SUN", 52, "semanal"
     elif mediana <= 45:  freq, season, fnom = "MS", 12, "mensual"
     else:                freq, season, fnom = "QS", 4, "trimestral"
+    nativa = fnom
     checks.append(("ok", f"Frecuencia detectada: {fnom} (gap mediano {mediana:.0f} dias)."))
+
+    # Granularidad elegida por el usuario: solo se puede AGREGAR (ir a un periodo
+    # mas grueso), nunca desagregar — no se puede inventar detalle que no existe.
+    # Agregar es lo correcto para horizontes largos: en vez de estirar 90 pasos
+    # diarios (el error se acumula), proyectas 6 quincenas con puntos estables.
+    if granularidad and granularidad in GRANULARIDADES:
+        f2, s2, rango2 = GRANULARIDADES[granularidad]
+        if rango2 >= GRANULARIDADES[fnom][2]:
+            if granularidad != fnom:
+                checks.append(("ok", f"Datos de frecuencia {nativa} agregados a {granularidad} "
+                                     f"para proyectar horizontes mas largos con menos ruido."))
+            freq, season, fnom = f2, s2, granularidad
+        else:
+            checks.append(("warn", f"No puedo desagregar datos de frecuencia {nativa} "
+                                   f"a {granularidad}: se mantiene {nativa}."))
 
     # Gaps -> reindexar y rellenar con 0 (tipico en demanda) si son pocos
     partes = []
@@ -128,12 +164,8 @@ def prevalidar(df, col_fecha, col_valor, col_serie):
         g = g.set_index(col_fecha).sort_index()[[col_valor]]
         if freq == "D":
             idx = pd.date_range(g.index.min(), g.index.max(), freq="D")
-        elif freq.startswith("W"):
-            g = g.resample("W-SUN")[ [col_valor] ].sum(); idx = g.index
-        elif freq == "MS":
-            g = g.resample("MS")[ [col_valor] ].sum(); idx = g.index
         else:
-            g = g.resample("QS")[ [col_valor] ].sum(); idx = g.index
+            g = g.resample(freq)[ [col_valor] ].sum(); idx = g.index
         faltan = len(idx) - len(g.dropna())
         g = g.reindex(idx).fillna(0.0) if freq == "D" else g.fillna(0.0)
         if faltan > 0:
@@ -150,7 +182,7 @@ def prevalidar(df, col_fecha, col_valor, col_serie):
         else:
             checks.append(("ok", f"Serie '{uid}': {len(g)} periodos. Suficiente historia."))
 
-    meta = {"freq": freq, "season": season, "freq_nombre": fnom}
+    meta = {"freq": freq, "season": season, "freq_nombre": fnom, "freq_nativa": nativa}
     return (limpio, meta), checks
 
 
@@ -222,9 +254,16 @@ def _motor_nixtla(limpio, meta, horizonte, n_windows):
     ], freq=freq, n_jobs=-1)
 
     lags_base = {7: [1, 2, 3, 7, 14, 28], 52: [1, 2, 4, 8, 26, 52],
-                 12: [1, 2, 3, 6, 12], 4: [1, 2, 4]}[season]
+                 24: [1, 2, 4, 6, 12, 24],          # quincenal
+                 12: [1, 2, 3, 6, 12], 4: [1, 2, 4]}.get(season, [1, 2, 3])
     n_min = limpio.groupby("unique_id").size().min()
-    lags = [l for l in lags_base if l < n_min - h - 5] or [1]
+    step = max(1, h // 2)
+    # OJO: la validacion cruzada entrena sobre una ventana MAS CORTA que la serie
+    # completa (se le descuentan el horizonte y el desplazamiento de ventanas).
+    # Filtrar los lags contra n_min dejaba pasar lags mayores que esa ventana ->
+    # matriz de features vacia -> LightGBM: "Input data must be 2 dimensional and non empty".
+    n_entrena = n_min - h - (n_windows - 1) * step
+    lags = [l for l in lags_base if l < n_entrena - 5] or [1]
     mlf = MLForecast(
         models={"LightGBM": lgb.LGBMRegressor(
             n_estimators=500, learning_rate=0.05, num_leaves=31,
@@ -235,7 +274,6 @@ def _motor_nixtla(limpio, meta, horizonte, n_windows):
                                   ExpandingMean()]},
         date_features=["dayofweek", "week", "month"] if freq == "D" else ["week", "month"],
     )
-    step = max(1, h // 2)
     cv_sf = sf.cross_validation(df=limpio, h=h, n_windows=n_windows, step_size=step)
     cv_ml = mlf.cross_validation(df=limpio, h=h, n_windows=n_windows, step_size=step,
                                  static_features=[])
@@ -296,10 +334,14 @@ def _motor_portable(limpio, meta, horizonte, n_windows):
     freq, season = meta["freq"], meta["season"]
     h = horizonte
     lags_base = {7: [1, 2, 3, 7, 14, 28], 52: [1, 2, 4, 8, 26, 52],
-                 12: [1, 2, 3, 6, 12], 4: [1, 2, 4]}[season]
+                 24: [1, 2, 4, 6, 12, 24],          # quincenal
+                 12: [1, 2, 3, 6, 12], 4: [1, 2, 4]}.get(season, [1, 2, 3])
     n_min = limpio.groupby("unique_id").size().min()
-    lags = [l for l in lags_base if l < n_min - h - 5] or [1]
     step = max(1, h // 2)
+    # Mismo criterio que el motor Nixtla: los lags se filtran contra la ventana
+    # REAL de entrenamiento en validacion cruzada, no contra la serie completa.
+    n_entrena = n_min - h - (n_windows - 1) * step
+    lags = [l for l in lags_base if l < n_entrena - 5] or [1]
 
     def fit_pred_lgb(train, future_index):
         d = _features_ml(train, season, lags).dropna()

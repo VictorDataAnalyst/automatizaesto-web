@@ -1,11 +1,26 @@
-fastapi>=0.111
-uvicorn>=0.30
-python-multipart
-holidays>=0.50
-pandas>=2.0
-numpy
-scipy
-openpyxl
-statsforecast>=1.7
-mlforecast>=0.13
-lightgbm>=4.0
+# Versiones fijas = builds reproducibles. Para actualizar: sube el pin,
+# corre los self-checks (python asistente.py, capacidad.py, erlang.py,
+# precision.py) y prueba el flujo completo antes de desplegar.
+
+# API
+fastapi==0.115.14
+uvicorn==0.34.3
+python-multipart==0.0.29
+
+# Auth (JWT de Supabase) y llamadas a Supabase — sin estas la app
+# NO arranca en MODO_SAAS, aunque en modo demo no se noten.
+PyJWT==2.10.1
+cryptography==48.0.0          # PyJWT necesita esto para ES256/RS256 (JWKS)
+httpx==0.28.1
+
+# Datos
+pandas==2.3.0
+numpy==2.4.6
+scipy==1.15.3
+openpyxl==3.1.5
+holidays==0.76
+
+# Motor de pronóstico
+statsforecast==2.0.3
+mlforecast==1.0.31
+lightgbm==4.6.0

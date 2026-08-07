@@ -10,6 +10,8 @@ import math
 import numpy as np
 import pandas as pd
 
+import erlang
+
 
 def _pesos_estacionales(limpio: pd.DataFrame, freq: str) -> pd.Series:
     """Peso relativo de cada 'casillero' de calendario (día de semana si la
@@ -83,6 +85,40 @@ def generar_plan(limpio: pd.DataFrame, forecast: pd.DataFrame, freq: str,
         "pacing": {"nivel": nivel, "mensaje": msg},
         "personas_pico": pico["personas_turno"] if pico else 0,
         "fecha_pico": pico["fecha"] if pico else None,
+        "filas": filas,
+    }
+
+
+def generar_plan_erlang(forecast: pd.DataFrame, aht_seg: float, intervalo_seg: float,
+                        nivel_servicio: float, tiempo_objetivo_seg: float,
+                        shrinkage: float, unidad: str = "llamadas") -> dict:
+    """Plan de staffing por Erlang C: agentes por intervalo desde la demanda
+    proyectada. Compara contra el lineal (tráfico puro) para mostrar la prima
+    de cola que el promedio ignora."""
+    fc = forecast.groupby("ds")["Forecast"].sum().sort_index()
+    filas = []
+    for ds, arr in fc.items():
+        r = erlang.agentes(float(arr), aht_seg, intervalo_seg, nivel_servicio,
+                           tiempo_objetivo_seg, shrinkage=shrinkage)
+        filas.append({
+            "fecha": str(pd.Timestamp(ds).date()),
+            "llegadas": round(float(arr), 1),
+            "agentes_lineal": math.ceil(r["trafico_erlangs"]),   # cuerpos a 100% ocup (naive)
+            "agentes_erlang": r["agentes"],
+            "sl": r["sl"], "ocupacion": r["ocupacion"],
+        })
+    pico = max(filas, key=lambda f: f["agentes_erlang"]) if filas else None
+    ag = pico["agentes_erlang"] if pico else 0
+    return {
+        "metodo": "erlang", "unidad": unidad, "aht_seg": aht_seg,
+        "intervalo_seg": intervalo_seg, "nivel_servicio": nivel_servicio,
+        "shrinkage": shrinkage, "n_fechas": len(filas),
+        "agentes_pico": ag, "fecha_pico": pico["fecha"] if pico else None,
+        "pacing": {"nivel": "erlang", "mensaje": (
+            f"Con AHT {aht_seg:.0f}s y meta de {nivel_servicio*100:.0f}% en "
+            f"{tiempo_objetivo_seg:.0f}s necesitas hasta {ag} agentes por intervalo "
+            f"(pico el {pico['fecha'] if pico else '—'}). Planificar por el promedio "
+            f"(método lineal) subestima porque ignora la cola.")},
         "filas": filas,
     }
 
