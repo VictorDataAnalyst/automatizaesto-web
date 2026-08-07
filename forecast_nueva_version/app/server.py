@@ -4,6 +4,8 @@
 # Ejecutar:  python server.py   (abre http://localhost:8602)
 # =====================================================================
 import io
+import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,7 +20,8 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE.parent / "files"))
 sys.path.insert(0, str(BASE))
 from app_forecast_universal import (detectar_columnas, prevalidar,    # noqa: E402
-                                    entrenar_y_competir, MOTOR_INFO)
+                                    entrenar_y_competir, MOTOR_INFO,
+                                    GRANULARIDADES, horizonte_maximo)
 from informe import generar_informe, PAISES, FREQ_PLURAL             # noqa: E402
 import config                                                         # noqa: E402
 import aprendizaje                                                     # noqa: E402
@@ -26,6 +29,10 @@ from auth import usuario_actual                                       # noqa: E4
 from db import DB                                                     # noqa: E402
 import plan as plan_mod                                               # noqa: E402
 import correo as correo_mod                                           # noqa: E402
+import asistente                                                      # noqa: E402
+import capacidad                                                      # noqa: E402
+import precision                                                      # noqa: E402
+import fva                                                            # noqa: E402
 
 
 def _ahora_iso() -> str:
@@ -103,6 +110,26 @@ def proponer_analisis(df: pd.DataFrame, sug: dict) -> list:
 # ---------------------------------------------------------------------
 # Helpers de sesión: la caché de cómputo se reconstruye desde Storage
 # ---------------------------------------------------------------------
+MAX_SUBIDA_MB = int(os.environ.get("MAX_SUBIDA_MB", "25"))
+# 0 = sin tope. Protege el costo de CPU mientras el producto es gratuito.
+MAX_CORRIDAS_DIA = int(os.environ.get("MAX_CORRIDAS_DIA", "50"))
+
+
+async def _leer_subida(archivo: UploadFile) -> bytes:
+    """Lee el archivo en trozos y corta pasado el límite: nunca cargamos en
+    memoria más de lo permitido (un Excel gigante tumbaría el proceso)."""
+    tope = MAX_SUBIDA_MB * 1024 * 1024
+    trozos, total = [], 0
+    while trozo := await archivo.read(1024 * 1024):
+        total += len(trozo)
+        if total > tope:
+            raise HTTPException(413, f"El archivo supera el límite de {MAX_SUBIDA_MB} MB.")
+        trozos.append(trozo)
+    if not total:
+        raise HTTPException(400, "El archivo está vacío.")
+    return b"".join(trozos)
+
+
 def _leer_df(crudo: bytes, nombre: str) -> pd.DataFrame:
     if nombre.lower().endswith(".csv"):
         return pd.read_csv(io.BytesIO(crudo))
@@ -147,9 +174,16 @@ def estado(user=Depends(usuario_actual)):
 # ---------------------------------------------------------------------
 # Cuenta del usuario: identidad, perfil aprendido e insights guardados
 # ---------------------------------------------------------------------
+_RE_EMAIL = re.compile(r"^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$")
+
+
 class Identidad(BaseModel):
     nombre: str | None = None
     negocio: str | None = None
+    email: str | None = None
+    # Consentimiento comercial EXPLÍCITO y separado (Ley 29733): tener el correo
+    # para operar la cuenta no autoriza a enviar promociones. None = no respondió.
+    acepta_promos: bool | None = None
 
 
 @app.post("/api/identidad")
@@ -157,14 +191,30 @@ def set_identidad(idn: Identidad, user=Depends(usuario_actual)):
     """El usuario 'ingresa su información'. Se guarda en su perfil de org."""
     org_id = _org_de(user)
     perfil = {**aprendizaje.perfil_vacio(), **(DB.get_perfil(org_id) or {})}
-    perfil["identidad"] = {
-        "nombre": idn.nombre or (perfil.get("identidad") or {}).get("nombre")
-                  or user.get("email"),
-        "negocio": idn.negocio or (perfil.get("identidad") or {}).get("negocio"),
+    previa = perfil.get("identidad") or {}
+
+    email = (idn.email or "").strip().lower() or None
+    if email and not _RE_EMAIL.match(email):
+        raise HTTPException(400, "Ese correo no parece válido.")
+    # En SaaS el correo de la cuenta manda; el del formulario solo aplica en demo.
+    email = user.get("email") or email or previa.get("email")
+
+    identidad = {
+        "nombre": idn.nombre or previa.get("nombre") or user.get("email"),
+        "negocio": idn.negocio or previa.get("negocio"),
+        "email": email,
+        "acepta_promos": previa.get("acepta_promos", False),
+        "consentimiento_en": previa.get("consentimiento_en"),
     }
+    # Solo sellamos fecha cuando el usuario responde de verdad (no en cada guardado).
+    if idn.acepta_promos is not None and idn.acepta_promos != previa.get("acepta_promos"):
+        identidad["acepta_promos"] = bool(idn.acepta_promos)
+        identidad["consentimiento_en"] = _ahora_iso() if idn.acepta_promos else None
+
+    perfil["identidad"] = identidad
     perfil["actualizado_en"] = _ahora_iso()
     DB.guardar_perfil(org_id, perfil)
-    return {"ok": True, "identidad": perfil["identidad"]}
+    return {"ok": True, "identidad": identidad}
 
 
 @app.get("/api/perfil")
@@ -204,7 +254,7 @@ def borrar_guardado(guardado_id: str, user=Depends(usuario_actual)):
 
 @app.post("/api/analizar")
 async def analizar(archivo: UploadFile = File(...), user=Depends(usuario_actual)):
-    crudo = await archivo.read()
+    crudo = await _leer_subida(archivo)
     try:
         df = _leer_df(crudo, archivo.filename)
     except Exception as e:
@@ -228,6 +278,9 @@ async def analizar(archivo: UploadFile = File(...), user=Depends(usuario_actual)
     token = ds["id"]
     ds["storage_path"] = DB.subir_archivo(org_id, token, crudo, archivo.filename)
     WORKING[token] = {"df": df, "nombre": archivo.filename, "org_id": org_id}
+    DB.registrar_evento(org_id, "datos_subidos",
+                        {"filas": int(len(df)), "columnas": int(len(df.columns)),
+                         "rubro": detectar_rubro(df.columns)["nombre"]})
 
     return {
         "token": token, "archivo": archivo.filename, "filas": int(len(df)),
@@ -251,25 +304,44 @@ class ConfigValidar(BaseModel):
     fecha: str
     valor: str
     serie: str | None = None
+    granularidad: str | None = None      # diaria|semanal|quincenal|mensual|trimestral
+
+
+# Cuántos periodos equivalen a ~3 meses en cada granularidad (para sugerir).
+_TRES_MESES = {"diaria": 90, "semanal": 13, "quincenal": 6, "mensual": 3, "trimestral": 1}
 
 
 @app.post("/api/validar")
 def validar(cfg: ConfigValidar, user=Depends(usuario_actual)):
     org_id = DB.org_de_usuario(user["user_id"])
     ses = _working(org_id, cfg.token)
-    res, checks = prevalidar(ses["df"], cfg.fecha, cfg.valor, cfg.serie)
+    res, checks = prevalidar(ses["df"], cfg.fecha, cfg.valor, cfg.serie, cfg.granularidad)
     out = {"checks": [{"nivel": n, "mensaje": m} for n, m in checks]}
     if res is None:
         out["ok"] = False
         return out
     limpio, meta = res
     ses["limpio"], ses["meta"] = limpio, meta
-    out.update(ok=True, frecuencia=meta["freq_nombre"],
-               frecuencia_plural=FREQ_PLURAL.get(meta["freq_nombre"],
-                                                 meta["freq_nombre"] + "es"),
-               horizonte_max=int(meta["season"]),
-               horizonte_sugerido=int(min(16, meta["season"])),
+    fnom, nativa = meta["freq_nombre"], meta["freq_nativa"]
+    # Ofrecemos la granularidad nativa y todas las más gruesas: agregar sí,
+    # desagregar no (no se puede inventar detalle que los datos no tienen).
+    opciones = [g for g, (_, _, r) in GRANULARIDADES.items()
+                if r >= GRANULARIDADES[nativa][2]]
+    # El tope lo pone la historia disponible, no solo la estacionalidad: pedir
+    # más de lo que los datos pueden validar rompía el entrenamiento.
+    h_max = horizonte_maximo(limpio, meta)
+    out.update(ok=True, frecuencia=fnom,
+               frecuencia_plural=FREQ_PLURAL.get(fnom, fnom + "es"),
+               horizonte_max=h_max,
+               horizonte_sugerido=int(min(_TRES_MESES.get(fnom, 8), h_max)),
+               granularidad=fnom, granularidad_nativa=nativa,
+               granularidades=opciones,
                n_series=int(limpio["unique_id"].nunique()))
+    if h_max < _TRES_MESES.get(fnom, 8):
+        out["checks"].append({"nivel": "warn", "mensaje":
+            f"Con {int(limpio.groupby('unique_id').size().min())} periodos de historia "
+            f"puedo proyectar hasta {h_max}. Para llegar más lejos, agrupa en periodos "
+            f"más grandes o carga más historia."})
     return out
 
 
@@ -279,6 +351,10 @@ class ConfigForecast(BaseModel):
     rol: str = "gerente"            # gerente | analista | operaciones
     pais: str | None = "PE"
     unidad: str = "unidades"
+    # Análisis limpio: ignora lo aprendido de corridas anteriores (memoria,
+    # track record, perfil). Útil cuando el negocio cambió o se quiere una
+    # segunda opinión sin sesgo de la historia.
+    sin_memoria: bool = False
 
 
 @app.post("/api/forecast")
@@ -286,25 +362,68 @@ def forecast(cfg: ConfigForecast, user=Depends(usuario_actual)):
     if cfg.rol not in ("gerente", "analista", "operaciones"):
         raise HTTPException(400, "Rol inválido.")
     org_id = DB.org_de_usuario(user["user_id"])
+    # Tope de protección, NO monetización: cada corrida entrena 4 modelos.
+    # Generoso a propósito — un usuario real nunca lo toca; frena bucles y abusos.
+    if MAX_CORRIDAS_DIA and org_id:
+        desde = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0,
+                                                   microsecond=0).isoformat()
+        if DB.corridas_desde(org_id, desde) >= MAX_CORRIDAS_DIA:
+            raise HTTPException(429, f"Llegaste al máximo de {MAX_CORRIDAS_DIA} análisis "
+                                     f"por día. Escríbenos si necesitas más.")
     ses = _working(org_id, cfg.token)
     if "limpio" not in ses:
         raise HTTPException(409, "Primero valida los datos (paso 2).")
     limpio, meta = ses["limpio"], ses["meta"]
-    h = max(2, min(cfg.horizonte, meta["season"]))
+    # Tope por historia disponible (no solo estacionalidad): ver horizonte_maximo.
+    h = max(2, min(cfg.horizonte, horizonte_maximo(limpio, meta)))
 
     firma = (h,)
     if ses.get("firma") != firma:
-        ses["resultados"] = entrenar_y_competir(limpio, meta, h)
+        try:
+            ses["resultados"] = entrenar_y_competir(limpio, meta, h)
+        except Exception as e:   # noqa: BLE001 — el usuario nunca debe ver un 500
+            raise HTTPException(422, f"No pude entrenar con esta configuración: {e}. "
+                                     f"Prueba un horizonte más corto o agrupa los "
+                                     f"periodos en unidades más grandes.")
         ses["firma"] = firma
     tabla, mejores, fc, cv = ses["resultados"]
 
     inf = generar_informe(limpio, meta, tabla, mejores, fc, cv,
                           rol=cfg.rol, pais=cfg.pais, unidad=cfg.unidad)
-
+    # Fase 2: capacidad vs demanda desde la columna de stock, si el cliente la subió.
+    cap_ins = capacidad.insight_capacidad(ses["df"], detectar_columnas(ses["df"]),
+                                          fc, meta["season"], cfg.unidad)
+    if cap_ins:
+        inf["insights"].append(cap_ins)
     # --- Memoria: comparar con la historia ANTES de fundir esta corrida ---
-    cfg_dict = {"rol": cfg.rol, "pais": cfg.pais, "horizonte": h, "unidad": cfg.unidad}
+    cfg_dict = {"rol": cfg.rol, "pais": cfg.pais, "horizonte": h, "unidad": cfg.unidad,
+                "sin_memoria": cfg.sin_memoria}
     perfil = DB.get_perfil(org_id) or {}
-    inf["memoria"] = aprendizaje.bloque_memoria(perfil, inf)
+    # Análisis limpio: el usuario pidió una lectura sin el contexto acumulado.
+    inf["sin_memoria"] = cfg.sin_memoria
+    inf["memoria"] = None if cfg.sin_memoria else aprendizaje.bloque_memoria(perfil, inf)
+
+    # Precisión histórica: contrasta proyecciones ya emitidas contra lo real
+    # (se evalúa ANTES de persistir esta corrida, para no compararse consigo misma).
+    inf["precision"] = None if cfg.sin_memoria else \
+        precision.evaluar(DB.informes_previos(org_id), limpio)
+
+    # Comparación contra la proyección manual del equipo (FVA), si la subieron.
+    inf["fva"] = fva.evaluar(ses["df"], detectar_columnas(ses["df"]), limpio, cv,
+                             mejores, meta, cfg.unidad)
+
+    # Asistente ejecutivo: decisiones + evidencia + confianza + riesgos + plan (determinista).
+    rubro_nom = detectar_rubro(ses["df"].columns)["nombre"]
+    inf["rubro"] = rubro_nom
+    inf["asistente"] = asistente.construir(inf, rubro_nom,
+                                           {} if cfg.sin_memoria else aprendizaje.resumen_perfil(perfil),
+                                           inf["precision"], inf["fva"])
+    ses["cfg"] = cfg_dict   # para re-narrar escenarios what-if sin re-entrenar
+    DB.registrar_evento(org_id, "informe_generado",
+                        {"rol": cfg.rol, "horizonte": h, "rubro": rubro_nom,
+                         "n_series": int(inf["kpis"]["n_series"]),
+                         "con_capacidad": bool(cap_ins),
+                         "con_track_record": bool(inf["precision"])})
     ses["informe"] = inf
 
     # Persistir la corrida (metadatos + informe jsonb) para el historial.
@@ -317,6 +436,53 @@ def forecast(cfg: ConfigForecast, user=Depends(usuario_actual)):
     perfil_nuevo = aprendizaje.fundir_corrida(perfil, cfg_dict, inf, rubro, _ahora_iso())
     DB.guardar_perfil(org_id, perfil_nuevo)
     return inf
+
+
+# ---------------------------------------------------------------------
+# Medición de uso (etapa gratuita): ¿vuelve?, ¿qué usa?, ¿dónde abandona?
+# ---------------------------------------------------------------------
+# Lista blanca: el endpoint es superficie pública; no aceptamos tipos libres.
+EVENTOS_VALIDOS = {
+    "datos_subidos", "validacion_ok", "validacion_error", "informe_generado",
+    "rol_cambiado", "porque_abierto", "escenario_simulado", "plan_generado",
+    "insight_guardado", "descarga_excel", "correo_preview", "abandono",
+}
+
+
+class Evento(BaseModel):
+    tipo: str
+    meta: dict | None = None
+
+
+@app.post("/api/evento")
+def registrar_evento(ev: Evento, user=Depends(usuario_actual)):
+    if ev.tipo not in EVENTOS_VALIDOS:
+        raise HTTPException(400, "Tipo de evento no reconocido.")
+    org_id = DB.org_de_usuario(user["user_id"])
+    if org_id:
+        # meta acotado: no queremos datos del negocio del cliente en telemetría.
+        meta = {k: v for k, v in list((ev.meta or {}).items())[:8]
+                if isinstance(v, (str, int, float, bool))}
+        DB.registrar_evento(org_id, ev.tipo, meta)
+    return {"ok": True}
+
+
+@app.get("/api/uso")
+def uso(user=Depends(usuario_actual)):
+    """Resumen de uso de TU organización. Para la vista global de todos los
+    clientes, consulta la tabla `eventos` en Supabase (no exponemos cross-org)."""
+    org_id = DB.org_de_usuario(user["user_id"])
+    if not org_id:
+        return {"eventos": {}, "corridas": 0}
+    evs = DB.eventos(org_id)
+    conteo: dict = {}
+    for e in evs:
+        conteo[e["tipo"]] = conteo.get(e["tipo"], 0) + 1
+    corridas = DB.historial(org_id)
+    return {"eventos": conteo, "total_eventos": len(evs),
+            "corridas": len(corridas),
+            "dias_activos": len({(c.get("creado_en") or "")[:10] for c in corridas} - {""}),
+            "ultimo": (corridas[0].get("creado_en") if corridas else None)}
 
 
 @app.get("/api/historial")
@@ -352,13 +518,59 @@ def descargar(token: str, user=Depends(usuario_actual)):
 
 
 # ---------------------------------------------------------------------
+# Escenario what-if (Fase 3): escala la demanda y re-narra, sin re-entrenar.
+# El sistema NO afirma causas (Mundial, clima…): el usuario activa el factor.
+# ---------------------------------------------------------------------
+class ConfigEscenario(BaseModel):
+    token: str
+    factor_demanda: float = 0.0        # +0.20 = +20% de demanda proyectada
+
+
+@app.post("/api/escenario")
+def escenario(cfg: ConfigEscenario, user=Depends(usuario_actual)):
+    org_id = DB.org_de_usuario(user["user_id"])
+    ses = _working(org_id, cfg.token)
+    if "resultados" not in ses or "cfg" not in ses:
+        raise HTTPException(409, "Genera el informe base antes de simular escenarios.")
+    tabla, mejores, fc, cv = ses["resultados"]
+    f = 1.0 + float(cfg.factor_demanda)
+    fc2 = fc.copy()
+    for c in ("Forecast", "Lo_80", "Hi_80"):
+        if c in fc2:
+            fc2[c] = fc2[c] * f
+    c = ses["cfg"]
+    inf = generar_informe(ses["limpio"], ses["meta"], tabla, mejores, fc2, cv,
+                          rol=c["rol"], pais=c["pais"], unidad=c["unidad"])
+    cap_ins = capacidad.insight_capacidad(ses["df"], detectar_columnas(ses["df"]),
+                                          fc2, ses["meta"]["season"], c["unidad"])
+    if cap_ins:
+        inf["insights"].append(cap_ins)
+    rubro_nom = detectar_rubro(ses["df"].columns)["nombre"]
+    inf["rubro"] = rubro_nom
+    inf["precision"] = (ses.get("informe") or {}).get("precision")   # ya evaluada en la corrida base
+    inf["asistente"] = asistente.construir(inf, rubro_nom,
+                                           aprendizaje.resumen_perfil(DB.get_perfil(org_id) or {}),
+                                           inf["precision"])
+    inf["escenario"] = {"factor_demanda": cfg.factor_demanda}
+    return inf   # no se persiste: es una simulación
+
+
+# ---------------------------------------------------------------------
 # Plan operativo por fecha (meta -> volumen por fecha + personal por turno)
 # ---------------------------------------------------------------------
 class ConfigPlan(BaseModel):
     token: str
-    meta: float
-    productividad: float
+    metodo: str = "lineal"                 # lineal | erlang
+    # lineal
+    meta: float | None = None
+    productividad: float | None = None
     turnos: int = 1
+    # erlang (BPO/colas)
+    aht_seg: float | None = None
+    intervalo_seg: float = 1800
+    nivel_servicio: float = 0.8
+    tiempo_objetivo_seg: float = 20
+    shrinkage: float = 0.0
 
 
 def _plan_de_sesion(org_id: str, cfg: ConfigPlan) -> tuple[dict, dict]:
@@ -368,8 +580,17 @@ def _plan_de_sesion(org_id: str, cfg: ConfigPlan) -> tuple[dict, dict]:
         raise HTTPException(409, "Primero genera el informe (paso 3) antes del plan.")
     _, _, fc, _ = ses["resultados"]
     unidad = (ses.get("informe", {}).get("kpis", {}) or {}).get("unidad", "unidades")
-    p = plan_mod.generar_plan(ses["limpio"], fc, ses["meta"]["freq"],
-                              cfg.meta, cfg.productividad, cfg.turnos, unidad)
+    if cfg.metodo == "erlang":
+        if not cfg.aht_seg or cfg.aht_seg <= 0:
+            raise HTTPException(400, "Erlang necesita el AHT (tiempo medio de atención) en segundos.")
+        p = plan_mod.generar_plan_erlang(fc, cfg.aht_seg, cfg.intervalo_seg,
+                                         cfg.nivel_servicio, cfg.tiempo_objetivo_seg,
+                                         cfg.shrinkage, unidad)
+    else:
+        if not cfg.meta or not cfg.productividad:
+            raise HTTPException(400, "El plan lineal necesita meta y productividad.")
+        p = plan_mod.generar_plan(ses["limpio"], fc, ses["meta"]["freq"],
+                                  cfg.meta, cfg.productividad, cfg.turnos, unidad)
     ses["plan"] = p
     return p, ses
 
@@ -388,19 +609,11 @@ def descargar_plan(token: str, user=Depends(usuario_actual)):
     if not ses or "plan" not in ses or (org_id and DB.get_dataset(org_id, token) is None):
         raise HTTPException(404, "No hay un plan generado para descargar.")
     p = ses["plan"]
-    df = pd.DataFrame(p["filas"]).rename(columns={
-        "fecha": "fecha", "volumen_objetivo": "volumen_objetivo",
-        "proyeccion": "proyeccion_modelo", "person_turnos": "person_turnos_totales",
-        "personas_turno": "personas_por_turno"})
-    resumen = pd.DataFrame([
-        {"campo": "meta", "valor": p["meta"]},
-        {"campo": "unidad", "valor": p["unidad"]},
-        {"campo": "productividad_por_persona_turno", "valor": p["productividad"]},
-        {"campo": "turnos_por_periodo", "valor": p["turnos"]},
-        {"campo": "proyeccion_total_modelo", "valor": p["proy_total"]},
-        {"campo": "meta_vs_proyeccion_pct", "valor": p["diff_pct"]},
-        {"campo": "lectura", "valor": p["pacing"]["mensaje"]},
-    ])
+    df = pd.DataFrame(p["filas"])
+    # Resumen genérico: todos los escalares del plan (sirve para lineal y erlang).
+    resumen = pd.DataFrame(
+        [{"campo": k, "valor": (v.get("mensaje") if isinstance(v, dict) else v)}
+         for k, v in p.items() if k != "filas"])
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine="openpyxl") as xw:
         df.to_excel(xw, sheet_name="plan_por_fecha", index=False)
@@ -453,14 +666,21 @@ def plantilla(extendida: bool = False):
             fila = {"fecha": f.date(), "serie": serie, "valor": round(float(v), 1)}
             if extendida:
                 fila["stock"] = round(float(v) * rng.uniform(1.5, 3.0), 0)
+                # Proyección que habría hecho el equipo a mano: sirve para que la
+                # app compare "tu gente vs el modelo" (FVA) sobre lo ya ocurrido.
+                fila["proyeccion_manual"] = round(float(v) * rng.uniform(0.82, 1.22), 1)
             filas.append(fila)
     df = pd.DataFrame(filas)
     instr = pd.DataFrame({"instrucciones": [
         "fecha: una fila por periodo (día, semana o mes — la app detecta la frecuencia).",
         "serie: opcional — cliente, producto, mercado, campaña… Borra la columna si solo tienes un total.",
         "valor: la métrica numérica que quieres proyectar (ventas, kg, horas…).",
-        "stock: opcional (plantilla extendida) — inventario disponible por periodo." if extendida else
-        "¿Manejas inventario? Descarga la plantilla extendida para incluir 'stock'.",
+        "stock: opcional (plantilla extendida) — capacidad o inventario disponible por periodo." if extendida else
+        "¿Manejas inventario o capacidad? Descarga la plantilla extendida para incluir 'stock'.",
+        "proyeccion_manual: opcional — lo que tu equipo proyectó a mano para ese periodo. "
+        "Si la llenas, la app compara quién acertó más: tu gente o el modelo." if extendida else
+        "¿Tu equipo ya hace proyecciones a mano? La plantilla extendida trae "
+        "'proyeccion_manual' para comparar quién acierta más.",
         "Reemplaza los datos de ejemplo por los tuyos y sube el archivo a la app.",
     ]})
     buf = io.BytesIO()
@@ -472,6 +692,16 @@ def plantilla(extendida: bool = False):
     return StreamingResponse(
         buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{nombre}"'})
+
+
+@app.middleware("http")
+async def _sin_cache_html(request, call_next):
+    """El HTML lleva la app entera embebida: si el navegador lo cachea, el
+    cliente se queda con una versión vieja tras cada despliegue."""
+    resp = await call_next(request)
+    if resp.headers.get("content-type", "").startswith("text/html"):
+        resp.headers["Cache-Control"] = "no-cache, must-revalidate"
+    return resp
 
 
 app.mount("/", StaticFiles(directory=BASE / "static", html=True), name="static")

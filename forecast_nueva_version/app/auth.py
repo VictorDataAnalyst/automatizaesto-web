@@ -39,6 +39,11 @@ def verificar_jwt(token: str) -> dict:
             payload = jwt.decode(token, clave, algorithms=list(_ASIMETRICOS),
                                  audience="authenticated", leeway=60)
         else:
+            if not config.SUPABASE_JWT_SECRET:
+                # Token HS256 (proyecto antiguo) pero sin secreto configurado:
+                # mejor decirlo claro que devolver "token inválido" y confundir.
+                raise HTTPException(500, "Tu proyecto emite tokens HS256: falta "
+                                         "SUPABASE_JWT_SECRET en la configuración.")
             payload = jwt.decode(token, config.SUPABASE_JWT_SECRET,
                                  algorithms=["HS256"], audience="authenticated", leeway=60)
     except jwt.ExpiredSignatureError:

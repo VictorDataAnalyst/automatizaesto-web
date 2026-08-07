@@ -231,6 +231,22 @@ table.ranking tr.ganador td{background:#FDFAF3}
 #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--navy);color:#fff;padding:13px 24px;border-radius:12px;font-size:.9rem;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:200;box-shadow:var(--shadow-lg)}
 #toast.on{opacity:1;transform:translateX(-50%)}
 
+/* ── Briefing prescriptivo (Fase 1) ── */
+.briefing{background:linear-gradient(135deg,rgba(200,144,28,.09),rgba(40,176,136,.06));border:1px solid rgba(200,144,28,.3);border-radius:var(--r-lg);padding:22px 26px;margin:20px 0 6px;box-shadow:var(--shadow)}
+.briefing .cab{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:10px}
+.briefing .titular{font-family:var(--serif);font-weight:600;font-size:1.2rem;color:var(--navy);line-height:1.4;margin-bottom:14px}
+.briefing ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.briefing li{font-size:.95rem;color:var(--navy2);line-height:1.55;padding-left:22px;position:relative}
+.briefing li::before{content:'→';position:absolute;left:2px;color:var(--gold);font-weight:700}
+
+/* ── Escenario what-if (Fase 3) ── */
+.escenario-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:100px;padding:8px 16px;margin:14px 0 2px;box-shadow:var(--shadow)}
+.escenario-bar .lbl{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.escenario-bar input[type=range]{accent-color:var(--gold);max-width:200px;flex:1}
+.escenario-bar .esc-val{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--gold);min-width:110px}
+.escenario-bar .esc-chip{font-family:var(--mono);font-size:.66rem;padding:4px 12px;border-radius:20px;background:rgba(200,144,28,.12);color:var(--gold)}
+.btn-sm{padding:7px 16px;font-size:.82rem}
+
 /* ── Plan operativo por fecha ── */
 .plan-card input[type=number]{font-family:var(--mono)}
 .pacing{border-radius:var(--r-md);padding:14px 18px;margin:18px 0 14px;font-size:.92rem;border:1px solid var(--border);border-left:3px solid var(--blue);background:rgba(43,108,176,.06);color:var(--navy2)}
@@ -260,6 +276,142 @@ table.ranking tr.ganador td{background:#FDFAF3}
 .chk-inline{display:flex;align-items:center;gap:8px;font-size:.86rem;color:var(--navy2);margin:12px 0 4px;cursor:pointer}
 .chk-inline input{accent-color:var(--gold)}
 #correo-iframe{width:100%;height:420px;border:1px solid var(--border);border-radius:var(--r-sm);margin-top:14px;background:#fff}
+
+.prefs-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:20px 24px}
+.prefs-nota{font-size:.85rem;color:var(--muted);margin-top:8px}
+
+/* ── Home / continuidad ── */
+.home-hero{padding:34px 0 26px}
+.home-hero h2{font-family:var(--serif);font-weight:600;font-size:2.2rem;color:var(--navy);letter-spacing:-.02em}
+.home-sub{color:var(--muted);font-size:1.05rem;margin:10px 0 22px;max-width:520px}
+.btn-grande{font-size:1.05rem;padding:16px 34px}
+
+/* ══════ ASISTENTE EJECUTIVO — nueva jerarquía por decisiones ══════ */
+.ctx-linea{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:center;margin:6px 0 30px}
+.bloque{margin:0 0 56px}
+.bloque-cab{margin-bottom:22px}
+.bloque-titulo{font-family:var(--serif);font-weight:600;font-size:1.5rem;color:var(--navy);letter-spacing:-.01em}
+.bloque-sub{color:var(--muted);font-size:.95rem;margin-top:6px;max-width:640px}
+
+/* S1 · Decisiones — el bloque protagonista */
+.sec-decisiones{margin-bottom:64px}
+.sec-decisiones .bloque-titulo{font-size:2rem}
+.decisiones-grid{display:grid;gap:16px;margin-top:8px}
+.decision{display:flex;gap:18px;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 28px;box-shadow:0 1px 2px rgba(12,26,46,.04);transition:box-shadow .18s,border-color .18s}
+.decision:hover{box-shadow:var(--shadow)}
+.decision.t-ok{border-left:3px solid var(--teal)}
+.decision.t-alerta{border-left:3px solid var(--gold)}
+.decision.t-accion{border-left:3px solid var(--blue)}
+.decision.t-info{border-left:3px solid #C9D6E6}
+.dec-ic{font-size:1.5rem;line-height:1.2;flex-shrink:0}
+.dec-cuerpo{flex:1;min-width:0}
+.dec-prio{display:inline-block;font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;padding:3px 10px;border-radius:20px;margin-bottom:8px;background:var(--bg2);color:var(--muted)}
+.dec-prio.p-alta{background:rgba(224,82,82,.1);color:var(--rojo)}
+.dec-prio.p-media{background:rgba(200,144,28,.12);color:var(--gold)}
+.decision h3{font-family:var(--serif);font-weight:600;font-size:1.22rem;color:var(--navy);line-height:1.3}
+.dec-res{color:var(--muted);font-size:.95rem;margin-top:8px;line-height:1.6}
+.dec-acc{color:var(--navy2);font-size:.95rem;font-weight:600;margin-top:10px;line-height:1.5}
+.dec-acc::before{content:'➡ ';color:var(--gold)}
+.verpor{margin-top:14px;background:none;border:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--blue);cursor:pointer;padding:0}
+.verpor:hover{text-decoration:underline}
+.porque{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--bg2)}
+.decision.abierto .porque{display:block;animation:fade .25s ease}
+.ev-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.evm{background:var(--bg);border-radius:var(--r-sm);padding:10px 14px}
+.evm span{display:block;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.evm b{font-family:var(--mono);font-size:1rem;color:var(--navy)}
+
+/* S2 · Evidencia — tarjetas de igual alto y cifras que no se parten */
+.evidencia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:16px;align-items:stretch}
+.ev-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+  padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.ev-l{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;
+  line-height:1.35;min-height:2.4em}
+.ev-v{font-family:var(--mono);font-size:1.5rem;font-weight:500;color:var(--navy);
+  line-height:1.15;white-space:nowrap;margin-top:auto}
+.ev-v.sm{font-size:1.05rem;white-space:normal}
+.ev-v small{font-family:var(--sans);font-size:.5em;font-weight:600;color:var(--muted);
+  margin-left:5px;white-space:nowrap}
+.ev-ayuda{font-size:.72rem;color:var(--muted);line-height:1.45;padding-top:8px;
+  border-top:1px solid var(--bg2)}
+
+/* S3 · Confianza */
+.conf-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:24px 28px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;box-shadow:0 1px 2px rgba(12,26,46,.04)}
+.conf-stars{font-size:1.5rem;color:var(--gold);letter-spacing:2px}
+.conf-stars b{font-family:var(--serif);font-size:1.2rem;color:var(--navy);margin-left:10px;letter-spacing:0}
+.conf-motivos{list-style:none;display:flex;flex-direction:column;gap:6px}
+.conf-motivos li{font-size:.9rem;color:var(--navy2)}
+.conf-motivos li::first-letter{color:var(--teal)}
+
+.campo-nota{font-size:.8rem;color:var(--muted);margin-top:6px;line-height:1.45}
+.curva-wrap{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:var(--r-sm)}
+#grafica-curva{width:100%;height:340px}
+
+/* Explicación "for dummies" dentro de Ver por qué */
+.porque-txt{font-size:.95rem;color:var(--navy2);line-height:1.65;background:var(--bg);
+  border-radius:var(--r-sm);padding:14px 16px;margin-bottom:14px}
+.porque-cab{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--muted);margin-bottom:8px}
+.evm em{display:block;font-style:normal;font-size:.74rem;color:var(--muted);
+  margin-top:5px;line-height:1.4}
+
+/* Comparación equipo vs modelo (FVA) */
+.comp-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:24px 28px;box-shadow:0 1px 2px rgba(12,26,46,.04)}
+.comp-card.gana-manual{border-left:3px solid var(--blue)}
+.comp-card.gana-modelo{border-left:3px solid var(--teal)}
+.comp-card.gana-empate{border-left:3px solid var(--gold)}
+.comp-card h3{font-family:var(--serif);font-weight:600;font-size:1.2rem;color:var(--navy)}
+.comp-msg{color:var(--muted);font-size:.95rem;margin-top:8px;line-height:1.6}
+.comp-barras{display:flex;flex-direction:column;gap:10px;margin:18px 0}
+.cb{display:flex;align-items:center;gap:12px;font-size:.86rem}
+.cb-l{min-width:210px;color:var(--navy2)}
+.cb-bar{flex:1;height:10px;background:var(--bg2);border-radius:20px;overflow:hidden}
+.cb-bar i{display:block;height:100%;background:#C9D6E6}
+.cb.win .cb-bar i{background:var(--teal)}
+.cb b{font-family:var(--mono);font-size:.82rem;color:var(--navy);min-width:100px;text-align:right}
+.comp-acc{font-size:.95rem;font-weight:600;color:var(--navy2);margin-top:6px}
+
+/* Track record — el acierto verificado contra la realidad */
+.track{background:#fff;border:1px solid var(--border);border-left:3px solid var(--teal);border-radius:var(--r-md);padding:22px 26px;margin-top:16px}
+.track-cab{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:10px}
+.track-frase{font-family:var(--serif);font-size:1.15rem;color:var(--navy);line-height:1.45}
+.track-vacio{border-left-color:#C9D6E6}
+.track-vacio p{color:var(--muted);font-size:.92rem;line-height:1.55}
+.track-tend{display:inline-block;font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;padding:4px 11px;border-radius:20px;margin-top:10px}
+.track-tend.t-mejorando{background:rgba(40,176,136,.12);color:var(--teal)}
+.track-tend.t-empeorando{background:rgba(224,82,82,.1);color:var(--rojo)}
+.track-filas{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.tf{background:var(--bg);border-radius:var(--r-sm);padding:9px 14px;font-size:.8rem}
+.tf span{color:var(--muted);font-family:var(--mono);font-size:.7rem;display:block}
+.tf b{font-family:var(--mono);color:var(--navy);font-size:.95rem}
+.tf i{color:var(--muted);font-style:normal;font-size:.72rem;margin-left:7px}
+.track-glob{font-size:.85rem;color:var(--muted);margin-top:12px}
+
+/* S4 · Riesgos */
+.riesgos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.riesgo{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:22px;box-shadow:0 1px 2px rgba(12,26,46,.04)}
+.riesgo.t-alerta{border-top:3px solid var(--gold)}
+.riesgo.t-info{border-top:3px solid var(--blue)}
+.riesgo h3{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--navy)}
+.riesgo-datos{display:flex;gap:24px;margin:14px 0}
+.riesgo-datos span{display:block;font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.riesgo-datos b{font-family:var(--mono);font-size:1.05rem;color:var(--navy)}
+.riesgo-acc{font-size:.9rem;color:var(--navy2);font-weight:600}
+
+/* Plan de acción cronológico */
+.plan-accion-lista{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--border);margin-left:6px}
+.pa-row{display:flex;gap:18px;align-items:baseline;padding:14px 0 14px 22px;position:relative}
+.pa-row::before{content:'';position:absolute;left:-7px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid #fff}
+.pa-cuando{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);min-width:150px;flex-shrink:0}
+.pa-acc{font-size:.95rem;color:var(--navy2);line-height:1.5}
+
+/* Placeholders "próximamente" */
+.prox-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.proximamente{background:var(--bg);border:1px dashed var(--border);border-radius:var(--r-md);padding:16px 20px;font-size:.9rem;color:var(--muted);margin-top:10px}
+.proximamente b{color:var(--navy2)}
+.badge-prox{display:inline-block;font-family:var(--mono);font-size:.56rem;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:20px;background:var(--bg2);color:var(--muted);margin-right:8px}
 
 /* ── Banner de error inline (no solo toast) ── */
 .err-banner{display:flex;align-items:flex-start;gap:12px;background:#FDF4F4;border:1px solid rgba(224,82,82,.35);border-left:3px solid var(--rojo);border-radius:var(--r-md);padding:14px 18px;margin:18px 0;box-shadow:var(--shadow)}
@@ -324,7 +476,10 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
         <!-- Modo demo: solo identifícate para personalizar -->
         <div id="login-demo" style="display:none">
           <div class="campo"><label>Tu nombre</label><input type="text" id="ld-nombre" placeholder="Ej. Víctor"></div>
+          <div class="campo"><label>Tu correo</label><input type="email" id="ld-email" placeholder="tu@empresa.com"></div>
           <div class="campo"><label>Tu negocio (opcional)</label><input type="text" id="ld-negocio" placeholder="Ej. Agroexportadora del Sur"></div>
+          <label class="chk-inline"><input type="checkbox" id="ld-promos">
+            Quiero recibir novedades y mejoras del producto por correo</label>
           <button class="btn btn-primario" id="ld-entrar">Entrar a mi cuenta →</button>
           <div class="login-alt">Modo demo local · tus datos quedan en esta sesión</div>
         </div>
@@ -394,13 +549,22 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
       </div>
       <div class="grid2" style="margin-top:16px">
         <div class="campo"><label>País (para feriados)</label><select id="sel-pais"></select></div>
-        <div class="campo"><label>Horizonte a proyectar</label>
-          <div class="slider-row">
-            <input type="range" id="sel-horizonte" min="4" max="16" value="8">
-            <span class="slider-val" id="horizonte-val"></span>
-          </div>
+        <div class="campo"><label>Agrupar los periodos por</label>
+          <select id="sel-granularidad"></select>
+          <p class="campo-nota" id="gran-nota"></p>
         </div>
       </div>
+      <div class="campo" style="margin-top:14px">
+        <label>Horizonte a proyectar</label>
+        <div class="slider-row">
+          <input type="range" id="sel-horizonte" min="2" max="16" value="8">
+          <span class="slider-val" id="horizonte-val"></span>
+        </div>
+        <p class="campo-nota" id="horizonte-nota"></p>
+      </div>
+
+      <label class="chk-inline" style="margin-top:16px"><input type="checkbox" id="sel-limpio">
+        Análisis limpio — no usar lo aprendido de mis análisis anteriores</label>
     </div>
 
     <div class="acciones">
@@ -409,88 +573,192 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
     </div>
   </section>
 
-  <!-- ════ PANTALLA 3: INFORME ════ -->
+  <!-- ════ PANTALLA 3: ASISTENTE ════ -->
   <section class="pantalla" id="p3">
-    <div class="informe-hero">
-      <div class="etiqueta" id="inf-etiqueta"></div>
-      <div class="cifra-hero" id="inf-total"></div>
-      <div><span class="var-chip" id="inf-var"></span></div>
-      <p class="veredicto" id="inf-veredicto"></p>
-    </div>
-
-    <div class="kpi-strip" id="inf-kpis"></div>
-
-    <div class="chart-principal"><div id="grafica-principal"></div></div>
-
     <div class="rol-tabs" id="rol-tabs">
       <button data-rol="gerente">👔 Gerente</button>
-      <button data-rol="analista">📐 Analista</button>
       <button data-rol="operaciones">🏭 Operaciones</button>
+      <button data-rol="analista">📐 Analista</button>
     </div>
-    <p class="rol-nota">El mismo análisis, contado para quien lo lee: cambia el orden, el lenguaje y el nivel de detalle.</p>
+    <div class="ctx-linea" id="inf-etiqueta"></div>
 
-    <div id="inf-memoria"></div>
-
-    <div class="insights-grid" id="insights"></div>
-
-    <div class="seccion card plan-card" id="plan-card" style="display:none">
-      <h3>Plan operativo por fecha</h3>
-      <p class="sub">Ingresa tu meta para el periodo. La repartimos por fecha según tu patrón estacional,
-        estimamos el personal por turno y te decimos si la meta es realista frente a la proyección.</p>
-      <div class="grid3">
-        <div class="campo"><label>Meta del periodo (<span id="plan-unidad">unidades</span>)</label>
-          <input type="number" id="plan-meta" min="0" step="any" placeholder="Ej. 5000"></div>
-        <div class="campo"><label>Productividad por persona·turno</label>
-          <input type="number" id="plan-prod" min="1" step="any" placeholder="Ej. 200"></div>
-        <div class="campo"><label>Turnos por periodo</label>
-          <input type="number" id="plan-turnos" min="1" step="1" value="1"></div>
+    <!-- 1 · QUÉ DEBERÍAS HACER -->
+    <section class="bloque sec-decisiones" id="sec-decisiones" data-roles="gerente operaciones analista">
+      <div class="bloque-cab">
+        <h2 class="bloque-titulo">Tu asistente recomienda</h2>
+        <p class="bloque-sub" id="dec-continuidad"></p>
       </div>
-      <div class="acciones" style="margin-top:16px">
-        <button class="btn btn-primario" id="btn-plan">Generar plan →</button>
-      </div>
-      <div id="plan-resultado"></div>
-    </div>
+      <div class="decisiones-grid" id="decisiones-grid"></div>
+    </section>
 
-    <details class="anexo">
-      <summary>Anexo técnico — ranking de modelos y validación</summary>
-      <div class="cuerpo">
-        <p class="sub" style="color:var(--muted);font-size:.85rem;margin-bottom:12px">
-          WAPE: error porcentual absoluto ponderado (menor = mejor). Sesgo: + sobreestima, − subestima.
-          Filas resaltadas = modelo elegido por serie.</p>
-        <table class="ranking" id="tabla-ranking"></table>
+    <!-- 2 · LA PROYECCIÓN, PERIODO A PERIODO -->
+    <section class="bloque" id="sec-curva" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Tu proyección, periodo a periodo</h2>
+      <p class="bloque-sub">No solo el total: cuánto esperar en cada fecha, con su rango.</p>
+      <div class="chart-principal" style="margin-bottom:16px"><div id="grafica-curva"></div></div>
+      <div class="curva-wrap"><table class="plan-tabla" id="tabla-curva"></table></div>
+      <p class="campo-nota" id="curva-nota"></p>
+    </section>
+
+    <!-- TU EQUIPO VS EL MODELO (FVA) -->
+    <section class="bloque" id="sec-comparacion" data-roles="gerente operaciones analista" style="display:none">
+      <h2 class="bloque-titulo">Tu equipo vs el modelo</h2>
+      <p class="bloque-sub">Qué habría pasado si usabas la proyección que mandó tu gente.</p>
+      <div id="comparacion-box"></div>
+    </section>
+
+    <!-- 3 · POR QUÉ -->
+    <section class="bloque" id="sec-evidencia" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">¿Por qué te recomiendo esto?</h2>
+      <p class="bloque-sub">Las cifras exactas en las que se apoya cada recomendación.</p>
+      <div class="evidencia-grid" id="evidencia-grid"></div>
+    </section>
+
+    <!-- 3 · CONFIANZA -->
+    <section class="bloque" id="sec-confianza" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Nivel de confianza</h2>
+      <div id="confianza-box"></div>
+    </section>
+
+    <!-- 4 · RIESGOS -->
+    <section class="bloque" id="sec-riesgos" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Riesgos detectados</h2>
+      <div class="riesgos-grid" id="riesgos-grid"></div>
+    </section>
+
+    <!-- PLAN DE ACCIÓN CRONOLÓGICO -->
+    <section class="bloque" id="sec-plan-accion" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Plan de acción</h2>
+      <p class="bloque-sub">Tus recomendaciones ordenadas en el tiempo.</p>
+      <div class="plan-accion-lista" id="plan-accion-lista"></div>
+    </section>
+
+    <!-- 5 · ESCENARIOS -->
+    <section class="bloque" id="sec-escenarios" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Escenarios</h2>
+      <p class="bloque-sub">Primero decides; luego simulas. Ajusta la demanda y el asistente vuelve a narrar.</p>
+      <div class="escenario-bar" id="escenario-bar">
+        <span class="lbl">Simular demanda</span>
+        <input type="range" id="esc-factor" min="-30" max="50" value="0" step="5" aria-label="Factor de demanda">
+        <span class="esc-val" id="esc-val">demanda base</span>
+        <button class="btn btn-ghost btn-sm" id="btn-esc">Aplicar</button>
+        <span class="esc-chip" id="esc-chip" style="display:none"></span>
+        <button class="btn btn-ghost btn-sm" id="btn-esc-reset" style="display:none">Volver a base</button>
       </div>
-    </details>
+      <div class="proximamente"><span class="badge-prox">Próximamente</span>
+        <b>Simular decisiones</b> — ¿qué pasa si agrego un turno o subo la capacidad?</div>
+    </section>
+
+    <!-- OBJETIVOS + RESTRICCIONES (preparado) -->
+    <section class="bloque" id="sec-objetivos" data-roles="gerente operaciones analista">
+      <h2 class="bloque-titulo">Objetivos y restricciones</h2>
+      <div class="prox-grid">
+        <div class="proximamente"><span class="badge-prox">Próximamente</span>
+          <b>Objetivos del negocio</b> — reducir costos, maximizar servicio, reducir quiebres.</div>
+        <div class="proximamente"><span class="badge-prox">Próximamente</span>
+          <b>Restricciones</b> — máximo de turnos, personas o capacidad disponible.</div>
+      </div>
+    </section>
+
+    <!-- 6 · PLAN OPERATIVO -->
+    <section class="bloque" id="sec-plan" data-roles="operaciones analista">
+      <h2 class="bloque-titulo">Plan operativo sugerido</h2>
+      <div class="card plan-card" id="plan-card">
+        <p class="sub">Ingresa tu meta para el periodo. La repartimos por fecha según tu patrón estacional,
+          estimamos el personal por turno y te decimos si la meta es realista frente a la proyección.</p>
+        <div class="campo" id="plan-metodo-wrap" style="display:none;max-width:340px;margin-bottom:14px">
+          <label>Método de dimensionamiento</label>
+          <select id="plan-metodo">
+            <option value="lineal">Lineal — volumen ÷ productividad</option>
+            <option value="erlang">Erlang C — colas / atención</option>
+          </select>
+        </div>
+        <div class="grid3" id="plan-lineal-inputs">
+          <div class="campo"><label>Meta del periodo (<span id="plan-unidad">unidades</span>)</label>
+            <input type="number" id="plan-meta" min="0" step="any" placeholder="Ej. 5000"></div>
+          <div class="campo"><label>Productividad por persona·turno</label>
+            <input type="number" id="plan-prod" min="1" step="any" placeholder="Ej. 200"></div>
+          <div class="campo"><label>Turnos por periodo</label>
+            <input type="number" id="plan-turnos" min="1" step="1" value="1"></div>
+        </div>
+        <div class="grid2" id="plan-erlang-inputs" style="display:none">
+          <div class="campo"><label>AHT — atención media (segundos)</label>
+            <input type="number" id="erl-aht" min="1" step="any" placeholder="Ej. 300"></div>
+          <div class="campo"><label>Duración del intervalo (minutos)</label>
+            <input type="number" id="erl-int" min="1" step="any" value="30"></div>
+          <div class="campo"><label>Nivel de servicio (%)</label>
+            <input type="number" id="erl-sl" min="1" max="99" step="any" value="80"></div>
+          <div class="campo"><label>Ausentismo / shrinkage (%)</label>
+            <input type="number" id="erl-shr" min="0" max="90" step="any" value="0"></div>
+        </div>
+        <div class="acciones" style="margin-top:16px">
+          <button class="btn btn-primario" id="btn-plan">Generar plan →</button>
+        </div>
+        <div id="plan-resultado"></div>
+      </div>
+    </section>
+
+    <!-- 7 · EVIDENCIAS (gráficas) -->
+    <section class="bloque" id="sec-graficas" data-roles="operaciones analista">
+      <h2 class="bloque-titulo">Evidencias</h2>
+      <p class="bloque-sub">Las gráficas ya no mandan: sostienen las recomendaciones.</p>
+      <div class="chart-principal"><div id="grafica-principal"></div></div>
+      <div class="insights-grid" id="insights"></div>
+    </section>
+
+    <!-- 8 · DATOS TÉCNICOS -->
+    <section class="bloque" id="sec-tecnicos" data-roles="analista">
+      <h2 class="bloque-titulo">Datos técnicos</h2>
+      <div id="inf-memoria"></div>
+      <details class="anexo" style="margin-top:14px">
+        <summary>Ranking de modelos y validación</summary>
+        <div class="cuerpo">
+          <p class="sub" style="color:var(--muted);font-size:.85rem;margin-bottom:12px">
+            WAPE: error porcentual absoluto ponderado (menor = mejor). Sesgo: + sobreestima, − subestima.
+            Filas resaltadas = modelo elegido por serie.</p>
+          <table class="ranking" id="tabla-ranking"></table>
+        </div>
+      </details>
+    </section>
 
     <div class="acciones" style="justify-content:center">
       <a class="btn btn-oro" id="btn-descargar">Descargar informe en Excel ↓</a>
+      <button class="btn btn-ghost" onclick="abrirCorreo()">Enviar por correo ✉</button>
       <button class="btn btn-ghost" onclick="reiniciar()">Analizar otro archivo</button>
     </div>
   </section>
 
-  <!-- ════ MI CUENTA ════ -->
+  <!-- ════ HOME / CONTINUIDAD ════ -->
   <section class="pantalla" id="cuenta">
-    <div class="cuenta-head">
-      <h2 id="cta-saludo">Mi cuenta</h2>
-      <span class="neg" id="cta-negocio"></span>
+    <div class="home-hero">
+      <h2 id="cta-saludo">Hola</h2>
+      <p class="home-sub" id="cta-negocio-linea">Tu asistente aprendió esto de tu negocio desde el último análisis.</p>
+      <button class="btn btn-primario btn-grande" onclick="nuevoAnalisis()">Nuevo análisis →</button>
     </div>
-    <p class="sub" style="color:var(--muted)">Lo que la app ha aprendido de tu negocio a partir de tus análisis.</p>
 
     <div class="saber-grid" id="cta-saber"></div>
 
-    <div class="seccion card">
-      <h3>Tus análisis guardados</h3>
-      <p class="sub">Los hallazgos que marcaste como tuyos. Toca «guardar» en cualquier insight del informe.</p>
+    <div class="bloque">
+      <h2 class="bloque-titulo">Tus recomendaciones guardadas</h2>
+      <p class="bloque-sub">Lo que marcaste como tuyo. Toca «⭐ guardar» en cualquier recomendación del informe.</p>
       <div class="lista-hist" id="cta-guardados"></div>
     </div>
 
-    <div class="seccion card">
-      <h3>Historial de corridas</h3>
-      <p class="sub">Cada proyección que generaste, con su rol y horizonte.</p>
+    <div class="bloque">
+      <h2 class="bloque-titulo">Historial</h2>
       <div class="lista-hist" id="cta-historial"></div>
     </div>
 
+    <div class="bloque">
+      <h2 class="bloque-titulo">Comunicaciones</h2>
+      <div class="prefs-card">
+        <label class="chk-inline"><input type="checkbox" id="cta-promos" onchange="guardarPromos(this.checked)">
+          Recibir novedades y mejoras del producto por correo</label>
+        <p class="prefs-nota" id="cta-promos-nota"></p>
+      </div>
+    </div>
+
     <div class="acciones">
-      <button class="btn btn-primario" onclick="nuevoAnalisis()">+ Nuevo análisis</button>
       <button class="btn btn-ghost" id="btn-logout" style="display:none" onclick="cerrarSesion()">Cerrar sesión</button>
     </div>
   </section>
@@ -534,6 +802,14 @@ async function api(path, opts={}){
   if(!r.ok){ let d; try{ d=(await r.json()).detail; }catch(_){} throw new Error(d || ('Error '+r.status)); }
   return r;
 }
+/* Telemetría de uso: best-effort, nunca bloquea ni rompe el flujo. */
+function evento(tipo, meta){
+  try{
+    api('/api/evento',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({tipo, meta: meta||{}})}).catch(()=>{});
+  }catch(_){}
+}
+
 function loginMsg(txt, err){ const m=$('#login-msg'); m.textContent=txt; m.className='login-msg '+(err?'err':'ok'); }
 
 async function boot(){
@@ -613,10 +889,12 @@ function reiniciar(){ ESTADO={token:null,analisis:null,rol:'gerente',validado:fa
 $('#ld-entrar').addEventListener('click', async ()=>{
   const nombre = $('#ld-nombre').value.trim() || 'Invitado';
   const negocio = $('#ld-negocio').value.trim() || null;
+  const email = $('#ld-email').value.trim() || null;
+  const acepta_promos = $('#ld-promos').checked;
   AUTH.user = nombre;
   try{
     await api('/api/identidad',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({nombre, negocio})});
+      body:JSON.stringify({nombre, negocio, email, acepta_promos})});
     await entrarApp();
   }catch(e){ loginMsg(e.message, true); }
 });
@@ -656,14 +934,17 @@ function abrirCuenta(){ if(PERFIL){ renderCuenta(PERFIL); mostrarPantalla('cuent
 
 function renderCuenta(d){
   const p = d.perfil, idn = p.identidad || {};
-  $('#cta-saludo').textContent = idn.nombre ? ('Hola, '+idn.nombre) : 'Mi cuenta';
-  $('#cta-negocio').textContent = idn.negocio ? ('· '+idn.negocio) : '';
+  $('#cta-saludo').textContent = idn.nombre ? ('Hola, '+idn.nombre) : 'Hola';
+  $('#cta-negocio-linea').textContent = idn.negocio
+    ? `Tu asistente aprendió esto de ${idn.negocio} desde el último análisis.`
+    : 'Tu asistente aprendió esto de tu negocio desde el último análisis.';
   const wape = (p.wape_tipico!=null) ? p.wape_tipico+'%' : '—';
+  const ult = (d.historial && d.historial[0]) ? (d.historial[0].creado_en||'').slice(0,10) : '—';
   const saber = [
-    ['Corridas hechas', p.n_corridas||0],
-    ['Rubro', p.rubro||'—'],
-    ['Rol que prefieres', p.rol_preferido||'—'],
-    ['Error típico (WAPE)', wape],
+    ['Análisis hechos', p.n_corridas||0],
+    ['Error típico', wape],
+    ['Sector', p.rubro||'—'],
+    ['Último análisis', ult],
   ];
   $('#cta-saber').innerHTML = saber.map(([l,v])=>
     `<div class="saber"><div class="l">${l}</div><div class="v ${String(v).length>9?'sm':''}">${v}</div></div>`).join('');
@@ -676,12 +957,32 @@ function renderCuenta(d){
           <p>${ix.resumen||''}</p>${g.nota?`<p><em>${g.nota}</em></p>`:''}</div>`; }).join('')
     : `<div class="vacio">Aún no guardas análisis. Genera un informe y toca «⭐ guardar» en lo que te sirva.</div>`;
 
+  const idnp = p.identidad || {};
+  const chk = $('#cta-promos');
+  if(chk){
+    chk.checked = !!idnp.acepta_promos;
+    $('#cta-promos-nota').textContent = idnp.email
+      ? (idnp.acepta_promos
+          ? `Te escribiremos a ${idnp.email}. Puedes desactivarlo cuando quieras.`
+          : `No te enviamos correos comerciales. Tu correo (${idnp.email}) solo se usa para tu cuenta.`)
+      : 'Aún no registraste un correo.';
+  }
+
   $('#cta-historial').innerHTML = (d.historial && d.historial.length)
     ? d.historial.map(c=>{ const cf=c.config||{};
         return `<div class="hist-row"><span class="badge ${c.estado==='lista'?'lista':''}">${c.estado||'—'}</span>
           <span class="meta">Rol ${cf.rol||'—'} · horizonte ${cf.horizonte||'—'}${cf.pais?(' · '+cf.pais):''}</span>
           <span class="fch">${(c.creado_en||'').slice(0,10)}</span></div>`; }).join('')
     : `<div class="vacio">Aún no generas proyecciones. Sube tu primer archivo.</div>`;
+}
+
+async function guardarPromos(acepta){
+  try{
+    await api('/api/identidad',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({acepta_promos: acepta})});
+    toast(acepta ? 'Listo, te escribiremos con novedades' : 'No te enviaremos más correos');
+    cargarPerfil();
+  }catch(e){ toast('⚠️ '+e.message); }
 }
 
 async function quitarGuardado(id){
@@ -695,6 +996,7 @@ async function guardarInsight(i, btn){
     await api('/api/guardados',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({corrida_id: ESTADO.informe.corrida_id || null, insight: x})});
     if(btn){ btn.classList.add('hecho'); btn.textContent='✓ guardado'; }
+    evento('insight_guardado', {titulo: x.titulo||''});
     toast('Guardado en tu cuenta ⭐');
     cargarPerfil();
   }catch(e){ toast('⚠️ '+e.message); }
@@ -766,27 +1068,57 @@ async function validar(){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ token: ESTADO.token,
       fecha: $('#sel-fecha').value, valor: $('#sel-valor').value,
-      serie: serie.startsWith('(') ? null : serie })});
+      serie: serie.startsWith('(') ? null : serie,
+      granularidad: ESTADO.granularidad || null })});
   const v = await r.json();
   const ic = {ok:'✓',warn:'!',error:'✕'};
   $('#checks').innerHTML = v.checks.map(c=>
     `<div class="chk ${c.nivel}"><i>${ic[c.nivel]}</i><span>${c.mensaje}</span></div>`).join('');
   ESTADO.validado = v.ok;
   $('#btn-generar').disabled = !v.ok;
+  // Dónde se atascan: si la validación falla, muchos abandonan aquí.
+  evento(v.ok ? 'validacion_ok' : 'validacion_error',
+         v.ok ? {} : {motivo: (v.checks.find(c=>c.nivel==='error')||{}).mensaje || ''});
   if(v.ok){
     const sl = $('#sel-horizonte');
     sl.max = v.horizonte_max;
     sl.value = (ESTADO.aprendido && ESTADO.aprendido.horizonte)
-      ? Math.max(4, Math.min(ESTADO.aprendido.horizonte, v.horizonte_max))
+      ? Math.max(2, Math.min(ESTADO.aprendido.horizonte, v.horizonte_max))
       : v.horizonte_sugerido;
     ESTADO.frecuenciaPlural = v.frecuencia_plural;
+    ESTADO.granularidad = v.granularidad;
+    // Selector de agrupación: solo la nativa y las más gruesas.
+    const gs = $('#sel-granularidad');
+    gs.innerHTML = (v.granularidades||[v.granularidad]).map(g=>
+      `<option value="${g}" ${g===v.granularidad?'selected':''}>${g[0].toUpperCase()+g.slice(1)}</option>`).join('');
+    $('#gran-nota').textContent = (v.granularidad_nativa === v.granularidad)
+      ? `Tus datos vienen con frecuencia ${v.granularidad_nativa}. Agrúpalos en periodos más grandes para proyectar más lejos.`
+      : `Datos de frecuencia ${v.granularidad_nativa}, agrupados a ${v.granularidad}.`;
     pintaHorizonte();
   }
 }
+// Cuánto dura un periodo de cada granularidad, en días — para traducir a
+// lenguaje de negocio ("6 quincenas ≈ 3 meses") en vez de "6 periodos".
+const _DIAS_PERIODO = {diaria:1, semanal:7, quincenal:15, mensual:30, trimestral:91};
+// Sustantivos, no adjetivos: "6 quincenas", no "6 quincenales".
+const _NOMBRE_PERIODO = {diaria:['día','días'], semanal:['semana','semanas'],
+  quincenal:['quincena','quincenas'], mensual:['mes','meses'],
+  trimestral:['trimestre','trimestres']};
 function pintaHorizonte(){
-  $('#horizonte-val').textContent = `${$('#sel-horizonte').value} periodos ${ESTADO.frecuenciaPlural||''}`;
+  const n = +$('#sel-horizonte').value;
+  const par = _NOMBRE_PERIODO[ESTADO.granularidad] || ['periodo','periodos'];
+  $('#horizonte-val').textContent = `${n} ${n===1?par[0]:par[1]}`;
+  const dias = n * (_DIAS_PERIODO[ESTADO.granularidad] || 1);
+  const eq = dias >= 330 ? `~${(dias/365).toFixed(1)} años`
+           : dias >= 60  ? `~${Math.round(dias/30)} meses`
+           : dias >= 14  ? `~${Math.round(dias/7)} semanas` : `~${dias} días`;
+  $('#horizonte-nota').textContent = `Estás proyectando ${eq} hacia adelante.`;
 }
 $('#sel-horizonte').addEventListener('input', pintaHorizonte);
+$('#sel-granularidad').addEventListener('change', ()=>{
+  ESTADO.granularidad = $('#sel-granularidad').value;
+  validar();   // reagrupa los datos y recalcula el horizonte máximo
+});
 
 document.querySelectorAll('#roles .rol-card').forEach(b=>
   b.addEventListener('click', ()=>{
@@ -802,18 +1134,20 @@ async function generarInforme(rol, navegar){
   if(navegar) ESTADO.informeCache = {};
   // Cambio de pestaña hacia un rol ya generado: instantáneo, sin red ni corrida nueva.
   if(!navegar && ESTADO.informeCache[rol]){
-    ESTADO.informe = ESTADO.informeCache[rol]; ESTADO.rol = rol; pintarInforme(); return;
+    ESTADO.informe = ESTADO.informeCache[rol]; ESTADO.rol = rol;
+    resetEscenarioUI(); pintarInforme(); return;
   }
   cargando(true, navegar ? 'Compitiendo 4 modelos contra tu historia…' : 'Reescribiendo el informe para tu rol…');
   try{
     const r = await api('/api/forecast',{method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ token: ESTADO.token, rol,
-        horizonte: +$('#sel-horizonte').value, pais: $('#sel-pais').value })});
+        horizonte: +$('#sel-horizonte').value, pais: $('#sel-pais').value,
+        sin_memoria: !!($('#sel-limpio') && $('#sel-limpio').checked) })});
     ESTADO.informe = await r.json();
     ESTADO.informeCache[rol] = ESTADO.informe;   // recordar para cambios de pestaña
     ESTADO.rol = rol;
-    pintarInforme();
+    resetEscenarioUI(); pintarInforme();
     if(navegar) irA(3);
     cargarPerfil();   // refresca el perfil aprendido en segundo plano
   }catch(e){ mostrarError('No pude generar el informe: '+e.message); }
@@ -821,42 +1155,157 @@ async function generarInforme(rol, navegar){
 }
 
 document.querySelectorAll('#rol-tabs button').forEach(b=>
-  b.addEventListener('click', ()=>{ if(b.dataset.rol!==ESTADO.rol) generarInforme(b.dataset.rol,false); }));
+  b.addEventListener('click', ()=>{ if(b.dataset.rol!==ESTADO.rol){
+    evento('rol_cambiado', {de: ESTADO.rol, a: b.dataset.rol});
+    generarInforme(b.dataset.rol,false); } }));
 
-function pintarInforme(){
-  const inf = ESTADO.informe, k = inf.kpis;
+const _DEC_IC = {ok:'✅', alerta:'⚠️', accion:'➡️', info:'ℹ️'};
+function togglePorque(btn){
+  const abierto = btn.parentElement.classList.toggle('abierto');
+  btn.setAttribute('aria-expanded', abierto?'true':'false');
+  btn.textContent = abierto ? 'Ocultar explicación ▴' : 'Ver por qué ▾';
+  // Señal fuerte: ¿el usuario verifica la recomendación o la acepta a ciegas?
+  if(abierto) evento('porque_abierto', {titulo: btn.parentElement.querySelector('h3')?.textContent||''});
+}
+function gateSecciones(rol){
+  document.querySelectorAll('#p3 .bloque[data-roles]').forEach(s=>{
+    s.style.display = s.dataset.roles.split(' ').includes(rol) ? '' : 'none';
+  });
+}
+
+function pintarInforme(inf){
+  inf = inf || ESTADO.informe;
+  const k = inf.kpis, a = inf.asistente || {decisiones:[],evidencia:[],riesgos:[],plan_accion:[],confianza:{}};
   $('#inf-etiqueta').textContent =
-    `Proyección · ${k.horizonte} periodos ${k.frecuencia_plural} · ${k.n_series} serie${k.n_series>1?'s':''}`;
-  $('#inf-total').innerHTML = `${k.total_fmt} <small>${k.unidad}</small>`;
-  const v = $('#inf-var');
-  v.textContent = `${k.variacion_pct>=0?'▲':'▼'} ${Math.abs(k.variacion_pct).toFixed(1)}% vs periodo anterior`;
-  v.className = 'var-chip ' + (k.variacion_pct>=0?'up':'down');
-  $('#inf-veredicto').innerHTML =
-    `<span class="conf-dot conf-${k.confianza}"></span><b>${k.veredicto}</b>`;
+    `Proyección · ${k.horizonte} ${k.frecuencia_plural} · ${k.n_series} serie${k.n_series>1?'s':''} · ${k.unidad}`;
 
-  const esAnalista = inf.rol === 'analista';
-  $('#inf-kpis').innerHTML = [
-    [`${k.piso_fmt} – ${k.techo_fmt}`,'Rango 80% de confianza'],
-    // "WAPE" es jerga de modelo: solo el analista la quiere ver.
-    [`${k.wape_pct}%`, esAnalista ? 'Error validado (WAPE)' : 'Margen de error'],
-    [k.n_series, esAnalista ? 'Series modeladas' : 'Series proyectadas'],
-    [`${k.horizonte} periodos ${k.frecuencia_plural}`,'Horizonte proyectado'],
-  ].map(([v,l])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  // ── 1 · Decisiones (con "Ver por qué" trazable) ──
+  $('#dec-continuidad').textContent = a.continuidad || '';
+  $('#decisiones-grid').innerHTML = (a.decisiones||[]).map(d=>`
+    <div class="decision t-${d.tono}">
+      <span class="dec-ic">${_DEC_IC[d.tono]||'•'}</span>
+      <div class="dec-cuerpo">
+        <span class="dec-prio p-${d.prioridad}">${d.prioridad}</span>
+        <h3>${d.titulo}</h3>
+        <p class="dec-res">${d.resumen}</p>
+        ${d.accion?`<p class="dec-acc">${d.accion}</p>`:''}
+        ${(d.evidencia&&d.evidencia.length)?`<button class="verpor" aria-expanded="false"
+            onclick="togglePorque(this)">Ver por qué ▾</button>
+          <div class="porque">
+            ${d.porque?`<p class="porque-txt">${d.porque}</p>`:''}
+            <div class="porque-cab">Las cifras detrás de esto</div>
+            <div class="ev-mini">${d.evidencia.map(e=>
+              `<div class="evm"><span>${e.label}</span><b>${e.valor}</b>
+                 ${e.ayuda?`<em>${e.ayuda}</em>`:''}</div>`).join('')}</div>
+          </div>`:''}
+      </div>
+    </div>`).join('');
 
+  // ── 2 · Curva de proyección: periodo a periodo, no solo el total ──
+  renderChart($('#grafica-curva'), inf.chart_principal, true);
+  const proy = (inf.chart_principal.series||[]).filter(s=>s.banda_lo);
+  const nf = v => Number(v).toLocaleString('es-PE',{maximumFractionDigits:0});
+  if(proy.length){
+    const fechas = proy[0].x;
+    const multi = proy.length > 1;
+    const cab = ['Periodo', ...(multi?proy.map(s=>s.nombre.replace(' · proyección','')):[]),
+                 'Proyección', 'Mínimo', 'Máximo'];
+    const filas = fechas.map((f,i)=>{
+      const tot = proy.reduce((a,s)=>a+(s.y[i]||0),0);
+      const lo  = proy.reduce((a,s)=>a+(s.banda_lo[i]||0),0);
+      const hi  = proy.reduce((a,s)=>a+(s.banda_hi[i]||0),0);
+      const cols = multi ? proy.map(s=>`<td class="proy">${nf(s.y[i])}</td>`).join('') : '';
+      return `<tr><td>${f}</td>${cols}<td class="pers">${nf(tot)}</td>
+              <td class="proy">${nf(lo)}</td><td class="proy">${nf(hi)}</td></tr>`;
+    }).join('');
+    $('#tabla-curva').innerHTML = `<tr>${cab.map(c=>`<th>${c}</th>`).join('')}</tr>${filas}`;
+    $('#curva-nota').textContent =
+      `«Mínimo» y «Máximo» son el rango con 80% de probabilidad: de cada 10 periodos, `+
+      `8 caerán dentro. Planifica con el mínimo, ten capacidad para el máximo.`;
+  }
+
+  // ── Tu equipo vs el modelo (FVA) ──
+  const cmp = a.comparacion, secC = $('#sec-comparacion');
+  if(cmp){
+    secC.dataset.roles = 'gerente operaciones analista';
+    secC.innerHTML = `<h2 class="bloque-titulo">Tu equipo vs el modelo</h2>
+      <p class="bloque-sub">Qué habría pasado si usabas la proyección que mandó tu gente.</p>
+      <div class="comp-card gana-${cmp.gana}">
+        <h3>${cmp.gana==='manual'?'🏅':'🤖'} ${cmp.titulo}</h3>
+        <p class="comp-msg">${cmp.mensaje}</p>
+        <div class="comp-barras">
+          ${[['Tu equipo',cmp.wape_manual,cmp.gana==='manual'],
+             ['El modelo',cmp.wape_modelo,cmp.gana==='modelo'],
+             ['Sin pensar (repetir el año pasado)',cmp.wape_naive,false]]
+            .map(([l,v,win])=>`<div class="cb ${win?'win':''}">
+              <span class="cb-l">${l}</span>
+              <span class="cb-bar"><i style="width:${Math.min(100,v*2)}%"></i></span>
+              <b>${v}% de error</b></div>`).join('')}
+        </div>
+        <p class="comp-acc">➡ ${cmp.accion}</p>
+      </div>`;
+  } else {
+    secC.dataset.roles = '';   // sin columna manual: la sección no aplica
+  }
+
+  // ── 3 · Evidencia (las cifras) ──
+  $('#evidencia-grid').innerHTML = (a.evidencia||[]).map(e=>{
+    const largo = String(e.valor).length > 9 ? ' sm' : '';
+    return `<div class="ev-card">
+      <div class="ev-l">${e.label}</div>
+      <div class="ev-v${largo}">${e.valor}${e.sufijo?`<small>${e.sufijo}</small>`:''}</div>
+      ${e.ayuda?`<div class="ev-ayuda">${e.ayuda}</div>`:''}</div>`;}).join('');
+
+  // ── 3 · Confianza (con track record verificado si existe) ──
+  const c = a.confianza||{}, n = c.estrellas||0, tr = c.track_record;
+  const trHtml = tr ? `<div class="track">
+      <div class="track-cab">◆ Mi historial contigo</div>
+      <p class="track-frase">${tr.frase}</p>
+      ${tr.tendencia?`<span class="track-tend t-${tr.tendencia}">${
+        tr.tendencia==='mejorando'?'↗ Vengo mejorando':'↘ Vengo empeorando'}</span>`:''}
+      <div class="track-filas">${tr.corridas.slice(0,4).map(x=>
+        `<div class="tf"><span>${x.fecha||'—'}</span>
+           <b>${x.wape}% error</b><i>${x.n_puntos} periodos</i></div>`).join('')}</div>
+      ${tr.n_corridas>1?`<p class="track-glob">Acumulado: ${tr.wape_global}% de error sobre ${tr.n_puntos} periodos ya verificados.</p>`:''}
+    </div>` : `<div class="track track-vacio">
+      <div class="track-cab">◆ Mi historial contigo</div>
+      <p>Aún no puedo mostrarte mi acierto real: sube datos nuevos más adelante y compararé
+         lo que proyecté contra lo que efectivamente pasó.</p></div>`;
+  $('#confianza-box').innerHTML = `<div class="conf-card">
+      <div class="conf-stars">${'★'.repeat(n)}${'☆'.repeat(5-n)} <b>${c.nivel||''}</b></div>
+      <ul class="conf-motivos">${(c.motivos||[]).map(m=>`<li>✔ ${m}</li>`).join('')}</ul>
+    </div>${trHtml}`;
+
+  // ── 4 · Riesgos ──
+  $('#riesgos-grid').innerHTML = (a.riesgos&&a.riesgos.length)
+    ? a.riesgos.map(r=>`<div class="riesgo t-${r.tono}">
+        <h3>${_DEC_IC[r.tono]||'⚠️'} ${r.titulo}</h3>
+        <div class="riesgo-datos">
+          <div><span>Impacto</span><b>${r.impacto}</b></div>
+          <div><span>Probabilidad</span><b>${r.probabilidad}</b></div></div>
+        <p class="riesgo-acc">➡ ${r.accion}</p></div>`).join('')
+    : `<div class="vacio">Sin riesgos mayores detectados en este periodo.</div>`;
+
+  // ── Plan de acción cronológico ──
+  $('#plan-accion-lista').innerHTML = (a.plan_accion&&a.plan_accion.length)
+    ? a.plan_accion.map(p=>`<div class="pa-row">
+        <span class="pa-cuando">${p.cuando}</span><span class="pa-acc">${p.accion}</span></div>`).join('')
+    : `<div class="vacio">Aún sin acciones cronológicas para este periodo.</div>`;
+
+  // ── 7 · Gráfica (evidencia) ──
   renderChart($('#grafica-principal'), inf.chart_principal, true);
 
-  // Banner de memoria: lo que la app recuerda + comparación con tu historia
+  // ── 8 · Memoria (técnicos) ──
   const mem = inf.memoria, mb = $('#inf-memoria');
-  if(mem && mem.lineas && mem.lineas.length){
-    mb.innerHTML = `<div class="memoria">
+  mb.innerHTML = (mem && mem.lineas && mem.lineas.length) ? `<div class="memoria">
       <div class="cab">◆ ${mem.es_primera ? 'Tu primera corrida — empiezo a aprender'
                                             : 'Lo que recuerdo de tu negocio · corrida N°'+mem.n_corrida}</div>
-      <ul>${mem.lineas.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
-  } else { mb.innerHTML = ''; }
+      <ul>${mem.lineas.map(l=>`<li>${l}</li>`).join('')}</ul></div>` : '';
 
   document.querySelectorAll('#rol-tabs button').forEach(b=>{
     const on = b.dataset.rol===inf.rol;
     b.classList.toggle('on', on); b.setAttribute('aria-pressed', on?'true':'false'); });
+  gateSecciones(inf.rol);
 
   $('#insights').innerHTML = inf.insights.map((x,i)=>`
     <div class="insight" data-i="${i}" tabindex="0" role="button" aria-expanded="false"
@@ -884,37 +1333,29 @@ function pintarInforme(){
     });
   });
 
-  // El anexo de ranking de modelos es cocina del modelo: solo interesa al analista.
-  // Gerente y operaciones deciden con la cifra y los hallazgos, no con qué modelo ganó.
-  const anexo = document.querySelector('details.anexo');
-  if(esAnalista){
-    anexo.style.display = '';
-    const ganadores = new Set();
-    Object.entries(inf.anexo.ganadores).forEach(([s,ms])=>ms.forEach(m=>ganadores.add(s+'|'+m)));
-    $('#tabla-ranking').innerHTML =
-      '<tr><th>Serie</th><th>Modelo</th><th>Error WAPE %</th><th>Sesgo %</th></tr>' +
-      inf.anexo.ranking.map(r=>
-        `<tr class="${ganadores.has(r.serie+'|'+r.modelo)?'ganador':''}">
-          <td>${r.serie}</td><td>${r.modelo}</td>
-          <td>${r.error_WAPE_pct}</td><td>${r.sesgo_pct}</td></tr>`).join('');
-  } else {
-    anexo.style.display = 'none';
-    anexo.open = false;
-  }
+  // Ranking de modelos: se llena siempre; la sección "Datos técnicos" solo la ve el analista (gating).
+  const ganadores = new Set();
+  Object.entries(inf.anexo.ganadores).forEach(([s,ms])=>ms.forEach(m=>ganadores.add(s+'|'+m)));
+  $('#tabla-ranking').innerHTML =
+    '<tr><th>Serie</th><th>Modelo</th><th>Error WAPE %</th><th>Sesgo %</th></tr>' +
+    inf.anexo.ranking.map(r=>
+      `<tr class="${ganadores.has(r.serie+'|'+r.modelo)?'ganador':''}">
+        <td>${r.serie}</td><td>${r.modelo}</td>
+        <td>${r.error_WAPE_pct}</td><td>${r.sesgo_pct}</td></tr>`).join('');
 
   $('#btn-descargar').onclick = (e)=>{ e.preventDefault(); descargar(ESTADO.token); };
 
-  // Plan operativo: herramienta de decisión → para gerente y operaciones, no el analista.
-  const verPlan = inf.rol==='gerente' || inf.rol==='operaciones';
-  $('#plan-card').style.display = verPlan ? '' : 'none';
-  if(verPlan){
-    $('#plan-unidad').textContent = k.unidad || 'unidades';
-    $('#plan-meta').placeholder = 'Ej. ' + (k.total_fmt || '5000');
-    $('#plan-resultado').innerHTML = '';   // el plan depende del rol activo; se regenera
-  }
+  // Plan operativo (la sección la muestra el gating a operaciones/analista): prepara la tarjeta.
+  $('#plan-unidad').textContent = k.unidad || 'unidades';
+  $('#plan-meta').placeholder = 'Ej. ' + (k.total_fmt || '5000');
+  $('#plan-resultado').innerHTML = '';        // depende del rol activo; se regenera
+  const esBPO = /BPO|Servicios/i.test(inf.rubro || '');
+  $('#plan-metodo-wrap').style.display = esBPO ? '' : 'none';
+  if(!esBPO){ $('#plan-metodo').value = 'lineal'; toggleMetodoPlan(); }
 }
 
 async function descargarBlob(path, filename){
+  evento('descarga_excel', {archivo: filename});
   try{
     const r = await api(path);
     const blob = await r.blob();
@@ -927,44 +1368,108 @@ async function descargarBlob(path, filename){
 }
 async function descargar(token){ return descargarBlob('/api/descargar/'+token, 'informe_forecast.xlsx'); }
 
+/* ── Escenario what-if (Fase 3) ── */
+function resetEscenarioUI(){
+  $('#esc-factor').value = 0; $('#esc-val').textContent = 'demanda base';
+  $('#esc-chip').style.display = 'none'; $('#btn-esc-reset').style.display = 'none';
+}
+$('#esc-factor').addEventListener('input', ()=>{
+  const p = +$('#esc-factor').value;
+  $('#esc-val').textContent = p===0 ? 'demanda base' : (p>0?'+':'')+p+'% demanda';
+});
+$('#btn-esc').addEventListener('click', async ()=>{
+  const factor = (+$('#esc-factor').value)/100;
+  if(factor===0){ pintarInforme(ESTADO.informe); resetEscenarioUI(); return; }
+  cargando(true, 'Simulando escenario…');
+  try{
+    const r = await api('/api/escenario',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token: ESTADO.token, factor_demanda: factor })});
+    pintarInforme(await r.json());
+    const p = +$('#esc-factor').value;
+    $('#esc-chip').textContent = 'Escenario: '+(p>0?'+':'')+p+'% demanda';
+    $('#esc-chip').style.display = ''; $('#btn-esc-reset').style.display = '';
+    evento('escenario_simulado', {factor_pct: p});
+  }catch(e){ mostrarError('No pude simular el escenario: '+e.message); }
+  finally{ cargando(false); }
+});
+$('#btn-esc-reset').addEventListener('click', ()=>{ pintarInforme(ESTADO.informe); resetEscenarioUI(); });
+
 /* ── Plan operativo por fecha ── */
 $('#btn-plan').addEventListener('click', generarPlan);
+$('#plan-metodo').addEventListener('change', toggleMetodoPlan);
+function toggleMetodoPlan(){
+  const erlang = $('#plan-metodo').value === 'erlang';
+  $('#plan-erlang-inputs').style.display = erlang ? '' : 'none';
+  $('#plan-lineal-inputs').style.display = erlang ? 'none' : '';
+}
 async function generarPlan(){
-  const meta = parseFloat($('#plan-meta').value);
-  const prod = parseFloat($('#plan-prod').value);
-  const turnos = parseInt($('#plan-turnos').value || '1', 10);
-  if(!(meta>0))  return toast('Ingresa una meta mayor a 0.');
-  if(!(prod>0))  return toast('Ingresa la productividad por persona·turno.');
-  cargando(true, 'Armando tu plan por fecha…');
+  const erlang = $('#plan-metodo').value === 'erlang';
+  let body;
+  if(erlang){
+    const aht = parseFloat($('#erl-aht').value);
+    if(!(aht>0)) return toast('Ingresa el AHT (segundos).');
+    body = { token: ESTADO.token, metodo: 'erlang', aht_seg: aht,
+             intervalo_seg: (parseFloat($('#erl-int').value)||30)*60,
+             nivel_servicio: (parseFloat($('#erl-sl').value)||80)/100,
+             shrinkage: (parseFloat($('#erl-shr').value)||0)/100 };
+  } else {
+    const meta = parseFloat($('#plan-meta').value), prod = parseFloat($('#plan-prod').value);
+    if(!(meta>0)) return toast('Ingresa una meta mayor a 0.');
+    if(!(prod>0)) return toast('Ingresa la productividad por persona·turno.');
+    body = { token: ESTADO.token, metodo: 'lineal', meta, productividad: prod,
+             turnos: parseInt($('#plan-turnos').value||'1',10) };
+  }
+  cargando(true, 'Armando tu plan…');
   try{
     const r = await api('/api/plan',{method:'POST',headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ token: ESTADO.token, meta, productividad: prod, turnos })});
+      body: JSON.stringify(body)});
     renderPlan(await r.json());
+    evento('plan_generado', {metodo: body.metodo});
   }catch(e){ mostrarError('No pude generar el plan: '+e.message); }
   finally{ cargando(false); }
 }
 function renderPlan(p){
-  const pac = p.pacing || {};
   const nf = v => Number(v).toLocaleString('es-PE',{maximumFractionDigits:0});
-  const filas = p.filas.map(f=>`<tr>
-      <td>${f.fecha}</td>
-      <td>${nf(f.volumen_objetivo)}</td>
-      <td class="proy">${nf(f.proyeccion)}</td>
-      <td class="pers">${f.personas_turno}</td></tr>`).join('');
-  $('#plan-resultado').innerHTML = `
-    <div class="pacing ${pac.nivel||''}">${pac.mensaje||''}</div>
-    <div class="plan-pico">
-      <div class="p">Personal pico<b>${p.personas_pico} /turno</b></div>
-      <div class="p">Fecha pico<b>${p.fecha_pico||'—'}</b></div>
-      <div class="p">Meta vs proyección<b>${p.diff_pct>=0?'+':''}${p.diff_pct}%</b></div>
-    </div>
-    <div class="plan-wrap"><table class="plan-tabla">
-      <tr><th>Fecha</th><th>Objetivo (${p.unidad})</th><th>Proyección</th><th>Pers./turno</th></tr>
-      ${filas}</table></div>
-    <div class="plan-acciones">
+  const acciones = `<div class="plan-acciones">
       <a class="btn btn-oro" id="btn-plan-excel">Descargar plan (Excel) ↓</a>
       <button class="btn btn-ghost" onclick="abrirCorreo()">Enviar por correo ✉</button>
     </div>`;
+  if(p.metodo === 'erlang'){
+    const filas = p.filas.map(f=>`<tr>
+        <td>${f.fecha}</td><td>${nf(f.llegadas)}</td>
+        <td class="proy">${f.agentes_lineal}</td>
+        <td class="pers">${f.agentes_erlang}</td>
+        <td>${Math.round(f.sl*100)}%</td></tr>`).join('');
+    $('#plan-resultado').innerHTML = `
+      <div class="pacing erlang">${p.pacing.mensaje||''}</div>
+      <div class="plan-pico">
+        <div class="p">Agentes pico<b>${p.agentes_pico}</b></div>
+        <div class="p">Fecha pico<b>${p.fecha_pico||'—'}</b></div>
+        <div class="p">Nivel de servicio<b>${Math.round(p.nivel_servicio*100)}%</b></div>
+      </div>
+      <div class="plan-wrap"><table class="plan-tabla">
+        <tr><th>Fecha</th><th>Llegadas</th><th>Lineal</th><th>Erlang</th><th>SL</th></tr>
+        ${filas}</table></div>
+      <p class="sub" style="color:var(--muted);font-size:.8rem;margin-top:8px">
+        «Lineal» = cuerpos a 100% de ocupación (ignora la cola). «Erlang» = agentes reales para cumplir el nivel de servicio.</p>
+      ${acciones}`;
+  } else {
+    const filas = p.filas.map(f=>`<tr>
+        <td>${f.fecha}</td><td>${nf(f.volumen_objetivo)}</td>
+        <td class="proy">${nf(f.proyeccion)}</td>
+        <td class="pers">${f.personas_turno}</td></tr>`).join('');
+    $('#plan-resultado').innerHTML = `
+      <div class="pacing ${p.pacing.nivel||''}">${p.pacing.mensaje||''}</div>
+      <div class="plan-pico">
+        <div class="p">Personal pico<b>${p.personas_pico} /turno</b></div>
+        <div class="p">Fecha pico<b>${p.fecha_pico||'—'}</b></div>
+        <div class="p">Meta vs proyección<b>${p.diff_pct>=0?'+':''}${p.diff_pct}%</b></div>
+      </div>
+      <div class="plan-wrap"><table class="plan-tabla">
+        <tr><th>Fecha</th><th>Objetivo (${p.unidad})</th><th>Proyección</th><th>Pers./turno</th></tr>
+        ${filas}</table></div>
+      ${acciones}`;
+  }
   $('#btn-plan-excel').onclick = (e)=>{ e.preventDefault();
     descargarBlob('/api/plan/descargar/'+ESTADO.token, 'plan_operativo.xlsx'); };
 }
@@ -993,6 +1498,7 @@ async function pedirCorreo(soloPreview){
       const blob=new Blob([d.html],{type:'text/html'}); const u=URL.createObjectURL(blob);
       const a=document.createElement('a'); a.href=u; a.download='correo_forecast.html';
       a.click(); URL.revokeObjectURL(u); };
+    evento('correo_preview', {envio_real: !!d.enviado});
     if(soloPreview){ est.textContent='Vista previa lista — revísala abajo o descárgala.'; est.className='login-msg'; }
     else if(d.enviado){ est.textContent='✓ Enviado a '+destino; est.className='login-msg ok'; }
     else { est.textContent='Aún no se envía: '+(d.motivo||'')+' La vista previa quedó lista abajo.'; est.className='login-msg err'; }

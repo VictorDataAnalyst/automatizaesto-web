@@ -6,9 +6,15 @@
 # =====================================================================
 import io
 import uuid
+from datetime import datetime, timezone
+
 import httpx
 
 import config
+
+
+def _ahora() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 # El service key bypasea RLS: el backend filtra SIEMPRE por org_id a mano.
 # (Patrón service-role: el aislamiento lo garantiza el código + la org del JWT.)
@@ -76,6 +82,43 @@ class _SaasDB:
                               "limit": str(limite)})
         r.raise_for_status()
         return r.json()
+
+    def registrar_evento(self, org_id, tipo: str, meta: dict | None = None):
+        """Best-effort: medir uso nunca debe romper el flujo del usuario."""
+        try:
+            with httpx.Client(timeout=5) as c:
+                c.post(_rest("eventos"), headers=_HEADERS,
+                       json={"org_id": org_id, "tipo": tipo, "meta": meta or {}})
+        except Exception:  # noqa: BLE001
+            pass
+
+    def eventos(self, org_id, limite=500) -> list:
+        with httpx.Client(timeout=15) as c:
+            r = c.get(_rest("eventos"), headers=_HEADERS,
+                      params={"select": "tipo,meta,creado_en", "org_id": f"eq.{org_id}",
+                              "order": "creado_en.desc", "limit": str(limite)})
+        r.raise_for_status()
+        return r.json()
+
+    def corridas_desde(self, org_id, desde_iso: str) -> int:
+        """Cuántos análisis desde una fecha (tope de protección en etapa gratuita)."""
+        with httpx.Client(timeout=15) as c:
+            r = c.get(_rest("corridas"), headers={**_HEADERS, "Prefer": "count=exact"},
+                      params={"select": "id", "org_id": f"eq.{org_id}",
+                              "creado_en": f"gte.{desde_iso}", "limit": "1"})
+        r.raise_for_status()
+        rango = r.headers.get("content-range", "*/0")
+        return int(rango.split("/")[-1] or 0)
+
+    def informes_previos(self, org_id, limite=10) -> list:
+        """Informes ya emitidos (para contrastar sus proyecciones contra lo real)."""
+        with httpx.Client(timeout=15) as c:
+            r = c.get(_rest("corridas"), headers=_HEADERS,
+                      params={"select": "id,creado_en,informe", "org_id": f"eq.{org_id}",
+                              "estado": "eq.lista", "order": "creado_en.desc",
+                              "limit": str(limite)})
+        r.raise_for_status()
+        return [f for f in r.json() if f.get("informe")]
 
     # Perfil aprendido (1:1 con org) — upsert sobre perfil_org
     def get_perfil(self, org_id) -> dict:
@@ -152,6 +195,7 @@ class _DemoDB:
     def __init__(self):
         self._ds, self._co, self._files = {}, {}, {}
         self._perfil, self._guard = {}, {}   # por org_id
+        self._ev = []                        # eventos de uso
 
     def org_de_usuario(self, user_id):  # demo: una org fija
         return "demo-org"
@@ -167,7 +211,8 @@ class _DemoDB:
 
     def crear_corrida(self, org_id, dataset_id, config_dict):
         c = {"id": uuid.uuid4().hex[:12], "org_id": org_id,
-             "dataset_id": dataset_id, "estado": "procesando", "config": config_dict}
+             "dataset_id": dataset_id, "estado": "procesando", "config": config_dict,
+             "creado_en": _ahora()}
         self._co[c["id"]] = c
         return c
 
@@ -177,6 +222,21 @@ class _DemoDB:
 
     def historial(self, org_id, limite=20):
         return [c for c in self._co.values() if c["org_id"] == org_id][-limite:][::-1]
+
+    def informes_previos(self, org_id, limite=10):
+        return [c for c in self._co.values()
+                if c["org_id"] == org_id and c.get("informe")][-limite:][::-1]
+
+    def registrar_evento(self, org_id, tipo, meta=None):
+        self._ev.append({"org_id": org_id, "tipo": tipo, "meta": meta or {},
+                         "creado_en": _ahora()})
+
+    def eventos(self, org_id, limite=500):
+        return [e for e in self._ev if e["org_id"] == org_id][-limite:][::-1]
+
+    def corridas_desde(self, org_id, desde_iso):
+        return sum(1 for c in self._co.values()
+                   if c["org_id"] == org_id and (c.get("creado_en") or "") >= desde_iso)
 
     def get_perfil(self, org_id):
         return self._perfil.get(org_id, {})

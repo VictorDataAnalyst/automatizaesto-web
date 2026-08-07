@@ -1,6 +1,6 @@
-# Render Blueprint — backend de AgroQuality (FastAPI + frontend estático).
+# Render Blueprint — servicios del monorepo (AgroQuality y Forecast).
 # En Render: New → Blueprint → conecta este repo. Render lee este archivo,
-# crea el servicio y solo te pide los 4 secretos (sync:false) en el dashboard.
+# crea los servicios y solo te pide los secretos (sync:false) en el dashboard.
 # Doc: https://render.com/docs/blueprint-spec
 services:
   - type: web
@@ -25,3 +25,42 @@ services:
       # No secreto: nombre del bucket de fotos.
       - key: AGROQUALITY_BUCKET
         value: agroquality-fotos
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Forecast — asistente ejecutivo de planificación.
+  #
+  # OJO CON LA MEMORIA: el plan free son 512 MB. Medido en local:
+  #   2 series  -> 213 MB     30 series x 3 anios -> 598 MB
+  # Con datasets chicos alcanza; con uno grande el servicio se reinicia
+  # por falta de memoria y el cliente ve un error. Para uso real de un
+  # cliente, subir a un plan de >=1 GB (o mover a Railway/VPS).
+  # MAX_SUBIDA_MB baja de 25 a 8 para que un archivo grande sea rechazado
+  # con un mensaje claro en vez de tumbar el proceso.
+  #
+  # Un solo worker a proposito: el estado del flujo vive en RAM (ver
+  # Dockerfile). No subir el numero de instancias sin sesion pegajosa.
+  # ─────────────────────────────────────────────────────────────────────
+  - type: web
+    name: forecast
+    runtime: docker
+    rootDir: forecast_nueva_version
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /api/config
+    autoDeploy: true
+    envVars:
+      # Secretos: se cargan en el dashboard de Render (NO se versionan).
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      # SUPABASE_JWT_SECRET NO se define: el proyecto firma con claves
+      # asimetricas y se valida via JWKS. Definirla vacia esta bien; ponerle
+      # un valor incorrecto rompe el login.
+      - key: FORECAST_BUCKET
+        value: forecast-datasets
+      - key: MAX_SUBIDA_MB
+        value: "8"
