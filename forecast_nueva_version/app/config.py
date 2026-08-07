@@ -18,7 +18,12 @@ if _ENV.exists():
             _k, _, _v = _linea.partition("=")
             os.environ.setdefault(_k.strip(), _v.strip().strip("\"'"))
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+# El dashboard muestra la URL de la Data API con /rest/v1/ al final; si se pega
+# tal cual, las rutas quedarían duplicadas y el error no dice nada útil.
+for _sufijo in ("/rest/v1", "/storage/v1", "/auth/v1"):
+    if SUPABASE_URL.endswith(_sufijo):
+        SUPABASE_URL = SUPABASE_URL[: -len(_sufijo)]
 SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY", "")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 # Secreto JWT — SOLO para proyectos Supabase antiguos que firman con HS256.
