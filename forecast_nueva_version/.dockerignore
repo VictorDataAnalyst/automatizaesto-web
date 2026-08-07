@@ -1,5 +1,15 @@
-__pycache__/
-*.pyc
-.env
+# OJO: los patrones sin ** solo aplican a la RAIZ del contexto de build.
+# `.env` NO excluia `app/.env`, asi que la clave service_role terminaba
+# dentro de la imagen. Los secretos se inyectan como variables de entorno
+# en la plataforma, nunca se hornean en la imagen.
+**/.env
+**/.env.*
+!**/.env.example
+
+**/__pycache__/
+**/*.py[cod]
+
+# Migraciones: se aplican a mano en el SQL Editor, no hacen falta en runtime.
 app/supabase/
-*.md
+**/*.md
+**/tests/

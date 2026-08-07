@@ -17,11 +17,16 @@ COPY app/ ./app/
 COPY files/ ./files/
 
 WORKDIR /srv/app
+ENV PORT=8602
 EXPOSE 8602
 
+# Railway/Render/Fly asignan el puerto por la variable PORT. Con el puerto fijo
+# la plataforma no recibe trafico y el error que muestra no explica por que.
+# Se usa `sh -c` para que ${PORT} se expanda en tiempo de ejecucion.
+#
 # ponytail: UN SOLO worker a propósito. El estado del flujo (limpio/meta/
 # resultados) vive en el dict WORKING en RAM; con 2+ workers el usuario valida
 # en un proceso y genera en otro -> 409/404 intermitentes. Para escalar de
 # verdad hay que mover ese estado a caché compartida (Redis) o recomputarlo.
 # Mientras tanto: escala vertical, y varias réplicas SOLO con sesión pegajosa.
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8602", "--workers", "1"]
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT:-8602} --workers 1"]
