@@ -141,16 +141,27 @@ except Exception as e:                                            # noqa: BLE001
 # ---------------------------------------------------------------
 print("\n7. Vista contactos_marketing: NO debe ser legible por clientes")
 try:
-    for rol, clave in [("anon", config.SUPABASE_ANON_KEY)]:
-        if not clave:
-            continue
-        r = httpx.get(f"{REST}/contactos_marketing",
-                      headers={"apikey": clave, "Authorization": f"Bearer {clave}"},
+    clave = config.SUPABASE_ANON_KEY
+    # PRIMERO comprobar que la clave anon es VALIDA. Sin esto, un 401 por
+    # clave invalida se confundia con "acceso correctamente denegado" y la
+    # prueba de seguridad pasaba sin haber comprobado nada.
+    val = httpx.get(f"{config.SUPABASE_URL}/auth/v1/settings",
+                    headers={"apikey": clave}, timeout=30)
+    if val.status_code != 200:
+        mal("la clave anon no es valida: la prueba de fuga no significa nada",
+            f"HTTP {val.status_code} — revisa SUPABASE_ANON_KEY")
+    else:
+        ok("clave anon valida (la prueba siguiente si tiene sentido)")
+        cab = {"apikey": clave, "Authorization": f"Bearer {clave}"}
+        # Control: con esa misma clave, una tabla normal responde 200.
+        ctrl = httpx.get(f"{REST}/orgs", headers=cab, params={"limit": "1"}, timeout=30)
+        r = httpx.get(f"{REST}/contactos_marketing", headers=cab,
                       params={"limit": "1"}, timeout=30)
         if r.status_code in (401, 403, 404) or r.json() == []:
-            ok(f"'{rol}' no puede leer la lista de contactos", f"HTTP {r.status_code}")
+            ok("'anon' NO puede leer la lista de contactos",
+               f"HTTP {r.status_code} (control sobre orgs: {ctrl.status_code})")
         else:
-            mal(f"FUGA: '{rol}' lee contactos_marketing", r.text[:80])
+            mal("FUGA: 'anon' lee contactos_marketing", r.text[:80])
     r = httpx.get(f"{REST}/contactos_marketing", headers=H, params={"limit": "1"}, timeout=30)
     ok("service key sí puede leerla", f"HTTP {r.status_code}")
 except Exception as e:                                            # noqa: BLE001
