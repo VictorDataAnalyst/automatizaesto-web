@@ -181,6 +181,14 @@ table.ranking tr.ganador td{background:#FDFAF3}
 .login-card .btn{width:100%;justify-content:center;margin-top:6px}
 .login-alt{text-align:center;font-size:.84rem;color:var(--muted);margin-top:16px}
 .login-alt a{color:var(--blue);font-weight:600;cursor:pointer;text-decoration:none}
+/* Campo de contraseña con botón de ojo */
+.campo-clave{position:relative}
+.campo-clave input{padding-right:44px}
+.ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;
+  font-size:1.05rem;line-height:1;cursor:pointer;padding:6px 8px;border-radius:8px;opacity:.55}
+.ojo:hover{opacity:1;background:var(--bg2)}
+.ojo[aria-pressed="true"]{opacity:1}
+
 .login-msg{font-size:.85rem;text-align:center;margin-top:14px;min-height:1.2em}
 .login-msg.err{color:var(--rojo)} .login-msg.ok{color:var(--teal)}
 
@@ -463,13 +471,43 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
         <h2 id="login-titulo">Entra a tu cuenta</h2>
         <p class="sub" id="login-sub">Tus proyecciones, tu historial y lo que la app aprende de tu negocio — en un solo lugar.</p>
 
-        <!-- Modo SaaS: email + contraseña -->
+        <!-- Modo SaaS: entrar / crear cuenta (mismo formulario, dos modos) -->
         <div id="login-saas" style="display:none">
-          <div class="campo"><label>Correo</label><input type="email" id="li-email" placeholder="tu@empresa.com"></div>
-          <div class="campo"><label>Contraseña</label><input type="password" id="li-pass" placeholder="••••••••"></div>
+          <!-- Solo al crear cuenta: nos dice a quién le hablamos y cómo se
+               llama su empresa (así la organización no queda "Mi empresa"). -->
+          <div id="li-extra" style="display:none">
+            <div class="campo"><label>Tu nombre</label>
+              <input type="text" id="li-nombre" placeholder="Ej. Víctor Cárdenas"></div>
+            <div class="campo"><label>Nombre de tu empresa</label>
+              <input type="text" id="li-empresa" placeholder="Ej. Agroexportadora Marand"></div>
+            <div class="campo"><label>¿A qué se dedica?</label>
+              <select id="li-rubro">
+                <option value="">Prefiero no decirlo</option>
+                <option>Agroexportación</option>
+                <option>Retail / Comercio</option>
+                <option>Servicios / BPO</option>
+                <option>Manufactura</option>
+                <option>Finanzas</option>
+                <option>Otro</option>
+              </select></div>
+          </div>
+          <div class="campo"><label>Correo</label>
+            <input type="email" id="li-email" placeholder="tu@empresa.com" autocomplete="email"></div>
+          <div class="campo"><label>Contraseña</label>
+            <div class="campo-clave">
+              <input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="ojo" id="li-ojo" aria-label="Mostrar contraseña"
+                      aria-pressed="false" onclick="verClave()">👁</button>
+            </div>
+            <p class="campo-nota" id="li-pass-nota" style="display:none">Mínimo 6 caracteres.</p>
+          </div>
           <button class="btn btn-primario" id="li-entrar">Entrar →</button>
-          <div class="login-alt">
+          <button class="btn btn-primario" id="li-registrar" style="display:none;width:100%;justify-content:center">Crear mi cuenta →</button>
+          <div class="login-alt" id="li-alt">
             <a id="li-crear">Crear cuenta</a> · <a id="li-magic">Entrar con enlace mágico</a>
+          </div>
+          <div class="login-alt" id="li-alt-volver" style="display:none">
+            ¿Ya tienes cuenta? <a id="li-volver">Entrar</a>
           </div>
         </div>
 
@@ -822,6 +860,7 @@ async function boot(){
     const { data } = await AUTH.sb.auth.getSession();
     if(data && data.session){
       AUTH.token = data.session.access_token; AUTH.user = data.session.user.email;
+      await sincronizarIdentidad(data.session.user);
       return entrarApp();
     }
     $('#login-saas').style.display='block';
@@ -898,25 +937,118 @@ $('#ld-entrar').addEventListener('click', async ()=>{
     await entrarApp();
   }catch(e){ loginMsg(e.message, true); }
 });
+/* Validar ANTES de llamar a Supabase: con los campos vacíos el cliente
+   manda un registro anónimo y el usuario recibe "Anonymous sign-ins are
+   disabled", que no explica nada. Mejor decirle qué le falta. */
+function credencialesOk(pideClave){
+  const email = $('#li-email').value.trim(), pass = $('#li-pass').value;
+  if(!email){ loginMsg('Escribe tu correo.', true); $('#li-email').focus(); return null; }
+  if(!/.+@.+\..+/.test(email)){ loginMsg('Ese correo no parece válido.', true);
+    $('#li-email').focus(); return null; }
+  if(pideClave && !pass){ loginMsg('Escribe tu contraseña.', true);
+    $('#li-pass').focus(); return null; }
+  if(pideClave && pass.length < 6){
+    loginMsg('La contraseña necesita al menos 6 caracteres.', true);
+    $('#li-pass').focus(); return null; }
+  return {email, pass};
+}
+// Supabase devuelve los errores en inglés; los traducimos a algo accionable.
+function errorAuth(msg){
+  const m = (msg||'').toLowerCase();
+  if(m.includes('invalid login')) return 'Correo o contraseña incorrectos.';
+  if(m.includes('email not confirmed')) return 'Aún no confirmas tu correo. Revisa tu bandeja (y el spam).';
+  if(m.includes('already registered')) return 'Ese correo ya tiene cuenta. Usa «Entrar».';
+  if(m.includes('anonymous')) return 'Faltan tu correo y contraseña.';
+  if(m.includes('invalid api key')) return 'Configuración incompleta del servidor. Avisa al administrador.';
+  if(m.includes('rate limit') || m.includes('too many')) return 'Demasiados intentos. Espera un minuto.';
+  return msg;
+}
+
+/* Lleva al perfil lo que se capturó al registrarse. Con confirmación por
+   correo no hay sesión en ese momento, así que Supabase guarda los datos
+   como metadata del usuario y los recuperamos en el primer ingreso. */
+async function sincronizarIdentidad(user){
+  const m = (user && user.user_metadata) || {};
+  try{
+    await api('/api/identidad',{method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ nombre: m.nombre || (user && user.email) || null,
+                             negocio: m.negocio || null })});
+  }catch(_){}
+}
+
 $('#li-entrar') && $('#li-entrar').addEventListener('click', async ()=>{
-  const email=$('#li-email').value.trim(), pass=$('#li-pass').value;
-  const { data, error } = await AUTH.sb.auth.signInWithPassword({email, password:pass});
-  if(error) return loginMsg(error.message, true);
-  AUTH.token=data.session.access_token; AUTH.user=email;
-  try{ await api('/api/identidad',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({nombre:email})}); }catch(_){}
+  const c = credencialesOk(true); if(!c) return;
+  loginMsg('Entrando…');
+  const { data, error } = await AUTH.sb.auth.signInWithPassword({email:c.email, password:c.pass});
+  if(error) return loginMsg(errorAuth(error.message), true);
+  AUTH.token=data.session.access_token; AUTH.user=c.email;
+  await sincronizarIdentidad(data.user || data.session.user);
   entrarApp();
 });
-$('#li-crear') && $('#li-crear').addEventListener('click', async ()=>{
-  const email=$('#li-email').value.trim(), pass=$('#li-pass').value;
-  const { error } = await AUTH.sb.auth.signUp({email, password:pass});
-  loginMsg(error ? error.message : 'Cuenta creada. Si se pide confirmación revisa tu correo; luego entra.', !!error);
+function verClave(){
+  const inp = $('#li-pass'), b = $('#li-ojo');
+  const visible = inp.type === 'text';
+  inp.type = visible ? 'password' : 'text';
+  b.textContent = visible ? '👁' : '🙈';
+  b.setAttribute('aria-pressed', visible ? 'false' : 'true');
+  b.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
+  inp.focus();
+}
+
+/* Dos modos sobre el mismo formulario: entrar / crear cuenta. Al crear
+   pedimos nombre y empresa — con eso la organización lleva el nombre real
+   del negocio en vez de uno genérico, y el asistente saluda a la persona. */
+function modoRegistro(activar){
+  $('#li-extra').style.display      = activar ? '' : 'none';
+  $('#li-entrar').style.display     = activar ? 'none' : '';
+  $('#li-registrar').style.display  = activar ? '' : 'none';
+  $('#li-alt').style.display        = activar ? 'none' : '';
+  $('#li-alt-volver').style.display = activar ? '' : 'none';
+  $('#li-pass-nota').style.display  = activar ? '' : 'none';
+  $('#li-pass').setAttribute('autocomplete', activar ? 'new-password' : 'current-password');
+  $('#login-titulo').textContent = activar ? 'Crea tu cuenta' : 'Entra a tu cuenta';
+  $('#login-sub').textContent = activar
+    ? 'Un par de datos y empezamos a analizar tu negocio.'
+    : 'Tus proyecciones, tu historial y lo que la app aprende de tu negocio — en un solo lugar.';
+  loginMsg('');
+  ($(activar ? '#li-nombre' : '#li-email')).focus();
+}
+$('#li-crear')  && $('#li-crear').addEventListener('click',  ()=>modoRegistro(true));
+$('#li-volver') && $('#li-volver').addEventListener('click', ()=>modoRegistro(false));
+
+$('#li-registrar') && $('#li-registrar').addEventListener('click', async ()=>{
+  const c = credencialesOk(true); if(!c) return;
+  const nombre  = $('#li-nombre').value.trim();
+  const empresa = $('#li-empresa').value.trim();
+  if(!nombre){ loginMsg('Escribe tu nombre.', true); $('#li-nombre').focus(); return; }
+  if(!empresa){ loginMsg('Escribe el nombre de tu empresa.', true); $('#li-empresa').focus(); return; }
+  loginMsg('Creando tu cuenta…');
+  // Los datos viajan como metadata del usuario: con confirmación por correo
+  // activada no hay sesión todavía, así que no podríamos guardarlos aún.
+  // Se aplican al perfil en el primer login (ver entrarApp).
+  const { data, error } = await AUTH.sb.auth.signUp({
+    email:c.email, password:c.pass,
+    options:{ data:{ nombre, negocio: empresa, rubro: $('#li-rubro').value || null } }});
+  if(error) return loginMsg(errorAuth(error.message), true);
+  if(data && data.session){
+    AUTH.token = data.session.access_token; AUTH.user = c.email;
+    try{ await api('/api/identidad',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({nombre, negocio: empresa, email: c.email})}); }catch(_){}
+    return entrarApp();
+  }
+  modoRegistro(false);
+  loginMsg(`Cuenta creada para ${empresa}. Te enviamos un correo de confirmación: ábrelo y vuelve aquí a entrar.`);
 });
 $('#li-magic') && $('#li-magic').addEventListener('click', async ()=>{
-  const email=$('#li-email').value.trim();
-  const { error } = await AUTH.sb.auth.signInWithOtp({email});
-  loginMsg(error ? error.message : 'Te enviamos un enlace mágico a '+email+'.', !!error);
+  const c = credencialesOk(false); if(!c) return;
+  loginMsg('Enviando el enlace…');
+  const { error } = await AUTH.sb.auth.signInWithOtp({email:c.email});
+  loginMsg(error ? errorAuth(error.message) : 'Te enviamos un enlace a '+c.email+'.', !!error);
 });
+// Enter en cualquiera de los dos campos = entrar.
+['#li-email','#li-pass'].forEach(s=> $(s) && $(s).addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); $('#li-entrar').click(); }
+}));
 
 /* ── Mi cuenta ── */
 async function cargarPerfil(){
