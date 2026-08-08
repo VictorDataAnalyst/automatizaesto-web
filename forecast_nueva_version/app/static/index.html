@@ -185,9 +185,10 @@ table.ranking tr.ganador td{background:#FDFAF3}
 .campo-clave{position:relative}
 .campo-clave input{padding-right:44px}
 .ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;
-  font-size:1.05rem;line-height:1;cursor:pointer;padding:6px 8px;border-radius:8px;opacity:.55}
-.ojo:hover{opacity:1;background:var(--bg2)}
-.ojo[aria-pressed="true"]{opacity:1}
+  display:grid;place-items:center;cursor:pointer;padding:6px;border-radius:8px;
+  color:var(--muted);transition:color .15s,background .15s}
+.ojo:hover{color:var(--navy);background:var(--bg2)}
+.ojo[aria-pressed="true"]{color:var(--navy)}
 
 .login-msg{font-size:.85rem;text-align:center;margin-top:14px;min-height:1.2em}
 .login-msg.err{color:var(--rojo)} .login-msg.ok{color:var(--teal)}
@@ -497,7 +498,7 @@ footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;font-
             <div class="campo-clave">
               <input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password">
               <button type="button" class="ojo" id="li-ojo" aria-label="Mostrar contraseña"
-                      aria-pressed="false" onclick="verClave()">👁</button>
+                      aria-pressed="false" onclick="verClave()"></button>
             </div>
             <p class="campo-nota" id="li-pass-nota" style="display:none">Mínimo 6 caracteres.</p>
           </div>
@@ -985,15 +986,31 @@ $('#li-entrar') && $('#li-entrar').addEventListener('click', async ()=>{
   await sincronizarIdentidad(data.user || data.session.user);
   entrarApp();
 });
+/* Iconos de ojo en SVG (no emoji: el emoji cambia de forma según el
+   sistema y desentona con el resto de la interfaz). */
+const _SVG_OJO = `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"/>
+  <circle cx="12" cy="12" r="3"/></svg>`;
+const _SVG_OJO_OFF = `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M10.6 6.2A7.9 7.9 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-2.2 3M6.3 7.8A16.8 16.8 0 0 0 2.5 12s3.5 6 9.5 6a8.7 8.7 0 0 0 3.6-.77"/>
+  <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+  <line x1="3" y1="3" x2="21" y2="21"/></svg>`;
+
 function verClave(){
   const inp = $('#li-pass'), b = $('#li-ojo');
   const visible = inp.type === 'text';
   inp.type = visible ? 'password' : 'text';
-  b.textContent = visible ? '👁' : '🙈';
+  b.innerHTML = visible ? _SVG_OJO : _SVG_OJO_OFF;
   b.setAttribute('aria-pressed', visible ? 'false' : 'true');
   b.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
   inp.focus();
 }
+// Estado inicial del botón (ojo abierto = "mostrar").
+document.addEventListener('DOMContentLoaded', ()=>{
+  const b = $('#li-ojo'); if(b) b.innerHTML = _SVG_OJO;
+});
 
 /* Dos modos sobre el mismo formulario: entrar / crear cuenta. Al crear
    pedimos nombre y empresa — con eso la organización lleva el nombre real
