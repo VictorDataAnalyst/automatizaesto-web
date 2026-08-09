@@ -4,6 +4,7 @@
 # Ejecutar:  python server.py   (abre http://localhost:8602)
 # =====================================================================
 import io
+import logging
 import os
 import re
 import sys
@@ -110,6 +111,13 @@ def proponer_analisis(df: pd.DataFrame, sug: dict) -> list:
 # ---------------------------------------------------------------------
 # Helpers de sesión: la caché de cómputo se reconstruye desde Storage
 # ---------------------------------------------------------------------
+# Sin esto, si el análisis de un cliente falla en producción nadie se entera:
+# el usuario ve un error y el equipo no tiene rastro. Va a stdout, que es lo
+# que capturan Render/Railway en su pestaña de Logs.
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s %(levelname)s %(message)s")
+log = logging.getLogger("forecast")
+
 MAX_SUBIDA_MB = int(os.environ.get("MAX_SUBIDA_MB", "25"))
 # 0 = sin tope. Protege el costo de CPU mientras el producto es gratuito.
 MAX_CORRIDAS_DIA = int(os.environ.get("MAX_CORRIDAS_DIA", "50"))
@@ -382,6 +390,9 @@ def forecast(cfg: ConfigForecast, user=Depends(usuario_actual)):
         try:
             ses["resultados"] = entrenar_y_competir(limpio, meta, h)
         except Exception as e:   # noqa: BLE001 — el usuario nunca debe ver un 500
+            log.error("entrenamiento falló | org=%s h=%s freq=%s series=%s: %s",
+                      org_id, h, meta.get("freq_nombre"),
+                      limpio["unique_id"].nunique(), e)
             raise HTTPException(422, f"No pude entrenar con esta configuración: {e}. "
                                      f"Prueba un horizonte más corto o agrupa los "
                                      f"periodos en unidades más grandes.")
@@ -424,6 +435,8 @@ def forecast(cfg: ConfigForecast, user=Depends(usuario_actual)):
                          "n_series": int(inf["kpis"]["n_series"]),
                          "con_capacidad": bool(cap_ins),
                          "con_track_record": bool(inf["precision"])})
+    log.info("informe generado | org=%s rubro=%s rol=%s h=%s series=%s error=%s%%",
+             org_id, rubro_nom, cfg.rol, h, inf["kpis"]["n_series"], inf["kpis"]["wape_pct"])
     ses["informe"] = inf
 
     # Persistir la corrida (metadatos + informe jsonb) para el historial.
@@ -692,6 +705,17 @@ def plantilla(extendida: bool = False):
     return StreamingResponse(
         buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{nombre}"'})
+
+
+@app.exception_handler(Exception)
+async def _registrar_fallo(request, exc):
+    """Todo error no controlado queda registrado con su ruta, para poder
+    diagnosticarlo después. El usuario recibe un mensaje limpio, no la traza."""
+    log.exception("FALLO en %s %s: %s", request.method, request.url.path, exc)
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=500, content={
+        "detail": "Algo falló de nuestro lado. Ya quedó registrado; "
+                  "vuelve a intentarlo en un momento."})
 
 
 @app.middleware("http")
