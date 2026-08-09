@@ -20,6 +20,66 @@ def _fmt(x) -> str:
         return str(x)
 
 
+def _rankear(decisiones: list) -> list:
+    """Ordena por impacto real y deriva la prioridad del score, no al revés.
+    Antes la prioridad venía escrita a mano en cada decisión y el orden era
+    el del código: primero lo que programé, no lo que más urge.
+    Escala 0-100. Como máximo 2 decisiones dominantes: si todo es urgente,
+    nada lo es."""
+    for d in decisiones:
+        d.setdefault("score", 30)
+    decisiones.sort(key=lambda d: -d["score"])
+    altas = 0
+    for d in decisiones:
+        if d["score"] >= 55 and altas < 2:
+            d["prioridad"] = "alta"; altas += 1
+        elif d["score"] >= 30:
+            d["prioridad"] = "media"
+        else:
+            d["prioridad"] = "baja"
+    return decisiones
+
+
+def _veredicto(k, var, conf, wape, u, h, fplu, cd, decisiones) -> dict:
+    """Una o dos frases que responden '¿qué está pasando?'. Se compone de los
+    datos reales: tendencia + riesgo principal + confianza. Nunca es fijo."""
+    if var > 5:
+        tend, tono_t = f"crece {var:.0f}%", "ok"
+    elif var < -5:
+        tend, tono_t = f"cae {abs(var):.0f}%", "alerta"
+    else:
+        tend, tono_t = "se mantiene estable", "info"
+
+    frase = (f"Para los próximos {h} {fplu} tu operación {tend} "
+             f"frente al periodo anterior, con {k.get('total_fmt','')} {u} proyectados.")
+
+    # El riesgo principal es la decisión de mayor score que sea una alerta,
+    # EXCLUYENDO la de volumen: la tendencia ya se dijo en la primera frase y
+    # repetirla ("cae 15%... hay algo que atender: cae 15%") suena a error.
+    riesgo = next((d for d in decisiones
+                   if d["tono"] == "alerta" and d.get("id") != "volumen"), None)
+    if riesgo:
+        pero = riesgo.get("titular_corto") or riesgo["titulo"]
+        frase += f" Pero hay algo que atender: {pero[0].lower()}{pero[1:]}."
+        tono = "alerta"
+    elif var <= -12:
+        # La caída ya se dijo arriba; decir "no hay riesgos" la contradiría.
+        frase += " Ese es el punto a atender: ajusta el plan antes de comprometerte."
+        tono = "alerta"
+    elif var >= 12:
+        frase += " Asegúrate de tener capacidad para sostener ese crecimiento."
+        tono = "info"
+    else:
+        frase += " No detecto riesgos que requieran acción inmediata."
+        tono = tono_t
+
+    if conf == "limitada":
+        frase += (f" Ojo: la proyección tiene un margen de error amplio ({wape:.0f}%), "
+                  f"tómala como referencia.")
+    return {"frase": frase, "tono": tono, "tendencia": tend,
+            "confianza": conf, "variacion_pct": round(var, 1)}
+
+
 def _insight(inf, id_):
     for x in inf.get("insights", []):
         if x.get("id") == id_:
@@ -47,10 +107,30 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
 
     decisiones, riesgos, plan = [], [], []
 
-    # --- Decisión 1: compromiso de volumen (siempre) ---
+    # --- Decisión 1: volumen del periodo (siempre) ---
+    # Un vaivén fuerte de demanda ES el asunto principal, aunque no haya otro
+    # riesgo: a partir de ±20% escala a dominante y el titular lo dice.
+    _cae = var <= -12
+    _sube = var >= 12
     decisiones.append({
-        "tono": "ok", "prioridad": "alta",
-        "titulo": f"Puedes comprometer {piso} {u}",
+        "id": "volumen",
+        # El +8 hace que cualquier vaivén de ±12% o más cruce a dominante:
+        # tanto una caída como un crecimiento fuerte obligan a replanificar.
+        "score": 34 + min(26, abs(var) * 1.1) + (8 if (_cae or _sube) else 0),
+        "tono": "alerta" if _cae else "ok",
+        "titular_corto": (f"tu demanda cae {abs(var):.0f}% frente al periodo anterior" if _cae
+                          else f"tu demanda sube {var:.0f}%" if _sube
+                          else f"puedes comprometer {piso} {u}"),
+        "importa": ((f"Una caída de {abs(var):.0f}% cambia el plan completo: si mantienes "
+                     f"la estructura de costos del periodo anterior, el margen se come "
+                     f"la diferencia.") if _cae else
+                    (f"Crecer {var:.0f}% solo es buena noticia si la operación aguanta. "
+                     f"Revisa que tengas capacidad para ese volumen.") if _sube else
+                    (f"Este es el número con el que negocias: comprometer de más cuesta "
+                     f"incumplimientos, y de menos deja capacidad ociosa que ya pagaste.")),
+        "titulo": (f"Tu demanda cae {abs(var):.0f}%: compromete {piso} {u}" if _cae
+                   else f"Tu demanda sube {var:.0f}%: compromete {piso} {u}" if _sube
+                   else f"Puedes comprometer {piso} {u}"),
         "resumen": f"Con 80% de confianza el total del periodo cae entre {piso} y {techo}. "
                    f"Comprometer el piso y preparar el techo evita sobrecostos.",
         "accion": f"Fija metas y compromisos en {piso} {u}; ten capacidad para {techo}.",
@@ -73,8 +153,16 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
     # --- Decisión 2: capacidad (si el cliente subió stock) ---
     if cap and cd.get("n_excede", 0) > 0:
         fp = cd.get("fecha_pico")
+        # El déficit de capacidad es el fallo más caro: si no se cubre, el
+        # pedido no sale. Score alto, y escala con el tamaño del hueco.
+        _pct_def = 100 * cd["deficit_total"] / max(cd.get("demanda_total", 1), 1)
         decisiones.append({
-            "tono": "alerta", "prioridad": "alta",
+            "score": 62 + min(35, _pct_def * 3),
+            "tono": "alerta",
+            "titular_corto": f"te falta capacidad en {cd['n_excede']} de {cd['n_total']} periodos",
+            "importa": (f"Si no amplías capacidad, esos {_fmt(cd['deficit_total'])} {u} "
+                        f"no se producen a tiempo: se traducen en entregas tarde o "
+                        f"pedidos que hay que rechazar."),
             "titulo": f"Tendrás déficit de capacidad en {cd['n_excede']} de {cd['n_total']} periodos",
             "resumen": cap.get("resumen", ""),
             "accion": f"Adelanta producción, suma turno o reprograma entregas antes del {fp}.",
@@ -103,7 +191,11 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
                          "accion": f"Cubrir el déficit de capacidad ({_fmt(cd['deficit_total'])} {u}): abrir turno o adelantar producción."})
     elif cap:
         decisiones.append({
-            "tono": "ok", "prioridad": "media",
+            "score": 22,   # buena noticia: informativa, no compite por atención
+            "tono": "ok",
+            "titular_corto": "tu capacidad cubre la demanda",
+            "importa": "Tienes margen: puedes tomar más pedidos o liberar recursos "
+                       "que hoy están reservados por si acaso.",
             "titulo": "Tu capacidad cubre la demanda proyectada",
             "resumen": cap.get("resumen", ""),
             "accion": "Puedes subir la meta o liberar recursos.",
@@ -115,8 +207,18 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
     # --- Decisión 3: estacionalidad (periodo más exigente) ---
     ie = _insight(inf, "estacionalidad")
     if ie:
+        # Cuanto más marcada la estacionalidad, más planificación exige.
+        _amp = 0.0
+        import re as _re
+        _m = _re.search(r"(\d+)%\s*de amplitud", ie.get("resumen", ""))
+        if _m:
+            _amp = float(_m.group(1))
         decisiones.append({
-            "tono": "accion", "prioridad": "media",
+            "score": 26 + min(22, _amp * 0.25),
+            "tono": "accion",
+            "titular_corto": "hay un periodo mucho más exigente que el resto",
+            "importa": ("Los picos no se improvisan: contratar y capacitar toma "
+                        "semanas. Si reaccionas cuando llega, ya es tarde."),
             "titulo": "Hay un periodo más exigente que el resto",
             "resumen": ie["resumen"],
             "accion": "Refuerza capacidad antes del pico; usa el valle para mantenimiento.",
@@ -128,8 +230,17 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
     # --- Decisión 4: concentración (dependencia) ---
     icn = _insight(inf, "concentracion")
     if icn:
+        # Riesgo estructural: escala con cuánto pesa la serie líder.
+        import re as _re2
+        _m2 = _re2.search(r"pesa (\d+)%", icn.get("resumen", ""))
+        _lider = float(_m2.group(1)) if _m2 else 50.0
         decisiones.append({
-            "tono": "info", "prioridad": "media",
+            "score": 20 + min(30, _lider * 0.45),
+            "tono": "info",
+            "titular_corto": "tu volumen depende de muy pocas series",
+            "importa": (f"Si esa línea falla —un cliente que se va, una plaga, un "
+                        f"contrato que no se renueva— te llevas el golpe completo, "
+                        f"no una parte."),
             "titulo": "Tu volumen depende de pocas series",
             "resumen": f"{icn['resumen']} Es lo que no puede fallar.",
             "accion": "Asigna ahí tus mejores recursos y ten un plan B.",
@@ -144,7 +255,19 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
     if comp:
         gana = comp["gana"]
         decisiones.append({
-            "tono": "info" if gana == "manual" else "ok", "prioridad": "alta",
+            # Que el equipo gane al modelo es una señal fuerte: significa que
+            # hay información fuera de los datos. Que gane el modelo, informativa.
+            "score": (58 if gana == "manual" else 24),
+            "tono": "alerta" if gana == "manual" else "ok",
+            "titular_corto": ("tu equipo está pronosticando mejor que el modelo"
+                              if gana == "manual" else "el modelo mejora la proyección del equipo"),
+            "importa": (("Tu gente maneja información que los datos no capturan. "
+                         "Si no la incorporamos, el modelo seguirá por debajo de "
+                         "ellos y no te aportará nada.")
+                        if gana == "manual" else
+                        (f"Cada punto de error de más se paga en inventario o en "
+                         f"incumplimientos: son {comp['fva_vs_manual']} puntos que "
+                         f"puedes ahorrarte.")),
             "titulo": comp["titulo"],
             "resumen": comp["mensaje"],
             "accion": comp["accion"],
@@ -176,7 +299,15 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
 
     # --- Decisión 5: confianza (siempre, entendible) ---
     decisiones.append({
-        "tono": "ok" if conf == "alta" else "info", "prioridad": "baja",
+        # Solo escala a primer plano cuando el margen de error es preocupante.
+        "score": (12 if conf == "alta" else 28 if conf == "media" else 58),
+        "tono": "alerta" if conf == "limitada" else "ok" if conf == "alta" else "info",
+        "titular_corto": (f"la proyección tiene un margen de error amplio ({wape:.0f}%)"
+                          if conf == "limitada" else f"la proyección es de confianza {conf}"),
+        "importa": (("Con este margen, planificar al detalle es arriesgado: usa el "
+                     "rango y deja holgura hasta tener más historia.")
+                    if conf != "alta" else
+                    "Puedes usar estos números para comprometerte con clientes."),
         "titulo": f"La proyección es de confianza {conf}",
         "resumen": k.get("veredicto", ""),
         "accion": ("Puedes comprometerte con ella." if conf == "alta"
@@ -267,7 +398,12 @@ def construir(inf: dict, rubro: str = "", perfil: dict | None = None,
         continuidad = (f"Van {perfil['n_corridas']} análisis tuyos; tu error típico ronda "
                        f"{perfil['wape_tipico']:.0f}%. Uso esa historia para calibrar la confianza.")
 
-    return {"decisiones": decisiones, "evidencia": evidencia, "confianza": confianza,
+    # --- Prioridad por impacto real, no por orden de programación ---
+    decisiones = _rankear(decisiones)
+    veredicto = _veredicto(k, var, conf, wape, u, h, fplu, cd, decisiones)
+
+    return {"veredicto": veredicto,
+            "decisiones": decisiones, "evidencia": evidencia, "confianza": confianza,
             "riesgos": riesgos, "plan_accion": plan_accion, "continuidad": continuidad,
             "comparacion": comp}
 
@@ -287,6 +423,38 @@ if __name__ == "__main__":  # ponytail: check de la lógica no trivial
     a = construir(inf, "Agroexportación", {"n_corridas": 7, "wape_tipico": 11.0})
     assert len(a["decisiones"]) >= 4
     assert any(d["tono"] == "alerta" and "déficit" in d["titulo"].lower() for d in a["decisiones"])
+
+    # --- Jerarquía: el déficit de capacidad manda sobre todo lo demás ---
+    assert "déficit" in a["decisiones"][0]["titulo"].lower(), \
+        f"lo más urgente debe ir primero, no {a['decisiones'][0]['titulo']}"
+    assert a["decisiones"][0]["prioridad"] == "alta"
+    altas = [d for d in a["decisiones"] if d["prioridad"] == "alta"]
+    assert len(altas) <= 2, f"si todo es urgente nada lo es: {len(altas)} altas"
+    # El orden debe ser descendente por score
+    scores = [d["score"] for d in a["decisiones"]]
+    assert scores == sorted(scores, reverse=True), scores
+    # Cada decisión explica su consecuencia de negocio
+    assert all(d.get("importa") for d in a["decisiones"])
+
+    # --- Veredicto: se compone de datos reales, no es texto fijo ---
+    v = a["veredicto"]
+    assert "cae 15%" in v["frase"], v["frase"]          # var = -14.6 -> "cae 15%"
+    assert "atender" in v["frase"] and v["tono"] == "alerta"
+    assert "contenedores" in v["frase"]
+    # Sin riesgo de capacidad, la caída del 15% pasa a ser ELLA el asunto.
+    # No debe decir "no detecto riesgos" justo después de anunciar la caída.
+    sin_riesgo = {**inf, "insights": [x for x in inf["insights"] if x["id"] != "capacidad"]}
+    v2 = construir(sin_riesgo)["veredicto"]
+    assert "No detecto riesgos" not in v2["frase"], "se contradice con la caída"
+    assert "punto a atender" in v2["frase"] and v2["tono"] == "alerta", v2["frase"]
+    # Creciendo fuerte: no es alarma, pero sí aviso de capacidad.
+    creciendo = {**sin_riesgo, "kpis": {**inf["kpis"], "variacion_pct": 18.0}}
+    v3 = construir(creciendo)["veredicto"]
+    assert "crece 18%" in v3["frase"] and "capacidad" in v3["frase"], v3["frase"]
+    # Estable y sin riesgos: ahí sí corresponde decir que no hay nada urgente.
+    calmo = {**sin_riesgo, "kpis": {**inf["kpis"], "variacion_pct": 2.0}}
+    v4 = construir(calmo)["veredicto"]
+    assert "No detecto riesgos" in v4["frase"] and "estable" in v4["frase"], v4["frase"]
     assert all(d.get("evidencia") for d in a["decisiones"])        # todas trazables
     assert a["confianza"]["estrellas"] == 5 and a["confianza"]["nivel"] == "Alta"
     assert any(r["titulo"] == "Capacidad insuficiente" for r in a["riesgos"])
