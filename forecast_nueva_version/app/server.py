@@ -34,6 +34,7 @@ import asistente                                                      # noqa: E4
 import capacidad                                                      # noqa: E402
 import precision                                                      # noqa: E402
 import fva                                                            # noqa: E402
+import excel                                                          # noqa: E402
 
 
 def _ahora_iso() -> str:
@@ -512,18 +513,9 @@ def descargar(token: str, user=Depends(usuario_actual)):
         raise HTTPException(404, "No hay resultados para descargar.")
     tabla, mejores, fc, _ = ses["resultados"]
     inf = ses.get("informe", {})
+    # El libro abre en un resumen ejecutivo; el detalle queda en hojas aparte.
     buf = io.BytesIO()
-    with pd.ExcelWriter(buf, engine="openpyxl") as xw:
-        fc.rename(columns={"unique_id": "serie", "ds": "periodo", "Forecast": "proyeccion",
-                           "Lo_80": "piso_80", "Hi_80": "techo_80"}).to_excel(
-            xw, sheet_name="proyeccion", index=False)
-        tabla.rename(columns={"WAPE_%": "error_WAPE_pct", "BIAS_%": "sesgo_pct"}).to_excel(
-            xw, sheet_name="metricas", index=False)
-        if inf.get("insights"):
-            pd.DataFrame([{"hallazgo": f"{i+1}. {x['titulo']}",
-                           "resumen": x["resumen"], "detalle": x["detalle"]}
-                          for i, x in enumerate(inf["insights"])]).to_excel(
-                xw, sheet_name="hallazgos", index=False)
+    excel.construir_libro(fc, tabla, inf).save(buf)
     buf.seek(0)
     return StreamingResponse(
         buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

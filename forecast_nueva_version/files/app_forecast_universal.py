@@ -288,8 +288,24 @@ def _motor_nixtla(limpio, meta, horizonte, n_windows):
         g = g.copy()
         g["Forecast"] = g[mejores[uid]].mean(axis=1).clip(lower=0)
         stat = next((m for m in mejores[uid] if m != "LightGBM"), "MSTL")
-        g["Lo_80"] = g.get(f"{stat}-lo-80", g["Forecast"] * 0.85).clip(lower=0)
-        g["Hi_80"] = g.get(f"{stat}-hi-80", g["Forecast"] * 1.15)
+        # La banda hay que RECENTRARLA sobre el Forecast que realmente
+        # reportamos. Se tomaba tal cual del modelo `stat`, pero el Forecast es
+        # el promedio del ensamble: si ese modelo predice distinto, la banda
+        # quedaba desplazada y llegaba a dejar el piso POR ENCIMA de la
+        # proyeccion (imposible, y la app recomienda "compromete el piso").
+        # Conservamos el ancho de incertidumbre del modelo, movemos el centro.
+        lo_raw, hi_raw = g.get(f"{stat}-lo-80"), g.get(f"{stat}-hi-80")
+        if lo_raw is not None and hi_raw is not None and stat in g:
+            semi_inf = (g[stat] - lo_raw).abs()
+            semi_sup = (hi_raw - g[stat]).abs()
+            g["Lo_80"] = (g["Forecast"] - semi_inf).clip(lower=0)
+            g["Hi_80"] = g["Forecast"] + semi_sup
+        else:
+            g["Lo_80"] = (g["Forecast"] * 0.85).clip(lower=0)
+            g["Hi_80"] = g["Forecast"] * 1.15
+        # Invariante: el piso nunca por encima ni el techo por debajo.
+        g["Lo_80"] = g[["Lo_80", "Forecast"]].min(axis=1)
+        g["Hi_80"] = g[["Hi_80", "Forecast"]].max(axis=1)
         out.append(g[["unique_id", "ds", "Forecast", "Lo_80", "Hi_80"]])
     return tabla, mejores, pd.concat(out), cv
 
