@@ -265,6 +265,20 @@ button{font-family:inherit;cursor:pointer}
         <div class="lx-err" id="fg_err" role="alert" aria-live="polite"></div>
         <div class="lx-switch"><button class="lx-link" id="go_login2">← Volver a iniciar sesión</button></div>
       </div>
+
+      <!-- Nueva contraseña (al volver desde el enlace de recuperación) -->
+      <div id="form_newpass" style="display:none">
+        <div class="lx-eyebrow">Recuperar acceso</div>
+        <h1>Crea tu nueva contraseña</h1>
+        <div class="sub">Elige una contraseña nueva para tu cuenta. Al guardarla entrarás a la plataforma.</div>
+        <div class="lx-field"><label for="nw_pass">Nueva contraseña</label>
+          <div class="lx-input"><input id="nw_pass" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+            <button class="eye" id="nw_eye" type="button" aria-label="Mostrar u ocultar contraseña">Ver</button></div></div>
+        <div class="lx-field"><label for="nw_pass2">Repite la contraseña</label>
+          <div class="lx-input"><input id="nw_pass2" type="password" placeholder="••••••••" autocomplete="new-password"></div></div>
+        <button class="lx-btn primary" id="nw_btn">Guardar y entrar</button>
+        <div class="lx-err" id="nw_err" role="alert" aria-live="polite"></div>
+      </div>
     </div>
 
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;font-size:11.5px;color:var(--muted)">
@@ -984,10 +998,27 @@ async function init(){
   if(MODO==="saas"){
     const {createClient}=await import("https://esm.sh/@supabase/supabase-js@2");
     CREATE_CLIENT=createClient; SUPA_URL=cfg.supabase_url; SUPA_ANON=cfg.supabase_anon_key;
+    // El enlace del correo vuelve con #...type=recovery (o un error si venció).
+    // Se lee ANTES de crear el cliente, porque supabase-js limpia el hash al procesarlo.
+    const hash=new URLSearchParams(location.hash.slice(1));
+    let recuperando=hash.get("type")==="recovery";
+    const errEnlace=hash.get("error_description");
     SUPA=createClient(SUPA_URL,SUPA_ANON);
+    SUPA.auth.onAuthStateChange(ev=>{ if(ev==="PASSWORD_RECOVERY") recuperando=true; });
     const {data}=await SUPA.auth.getSession();
-    if(data.session){ TOKEN=data.session.access_token; await cargar(); arrancarApp(); }
-    else { mostrarLogin(); }
+    if(data.session && recuperando){ mostrarLogin(); _vista("form_newpass"); }
+    else if(data.session){ TOKEN=data.session.access_token; await cargar(); arrancarApp(); }
+    else {
+      mostrarLogin();
+      if(errEnlace){
+        history.replaceState(null,"",location.pathname+location.search);
+        _vista("form_forgot");
+        const e=document.getElementById("fg_err"); e.className="lx-err bad";
+        e.textContent=/expired|invalid/i.test(errEnlace)
+          ? "El enlace venció o ya fue usado. Pide uno nuevo aquí."
+          : "No se pudo validar el enlace: "+errEnlace;
+      }
+    }
   } else {
     await cargar(); arrancarApp();
   }
@@ -1001,13 +1032,13 @@ async function entrar(email,pass,remember){
   if(error) throw error;
   TOKEN=data.session.access_token; await cargar(); await arrancarApp();
 }
-function _vista(id){ ["form_login","form_reg","form_forgot"].forEach(f=>document.getElementById(f).style.display=f===id?"":"none"); }
+function _vista(id){ ["form_login","form_reg","form_forgot","form_newpass"].forEach(f=>document.getElementById(f).style.display=f===id?"":"none"); }
 function _cargando(btn,on,txt){ btn.disabled=on; btn.innerHTML= on ? '<span class="spin"></span> '+txt : btn.dataset.label; }
 function mostrarLogin(){
   document.getElementById("loader").style.display="none";
   document.getElementById("login").classList.add("show");
   const $=id=>document.getElementById(id);
-  [["lg_btn","Iniciar sesión"],["rg_btn","Crear cuenta"],["fg_btn","Enviar enlace"]].forEach(([id,l])=>$(id).dataset.label=l);
+  [["lg_btn","Iniciar sesión"],["rg_btn","Crear cuenta"],["fg_btn","Enviar enlace"],["nw_btn","Guardar y entrar"]].forEach(([id,l])=>$(id).dataset.label=l);
 
   // cambio de vistas (login / crear cuenta / recuperar)
   $("go_reg").onclick=()=>_vista("form_reg");
@@ -1017,7 +1048,7 @@ function mostrarLogin(){
 
   // mostrar / ocultar contraseña
   const eye=(b,i)=>$(b).onclick=()=>{ const inp=$(i),sh=inp.type==="password"; inp.type=sh?"text":"password"; $(b).textContent=sh?"Ocultar":"Ver"; };
-  eye("lg_eye","lg_pass"); eye("rg_eye","rg_pass");
+  eye("lg_eye","lg_pass"); eye("rg_eye","rg_pass"); eye("nw_eye","nw_pass");
 
   // OAuth corporativo (Microsoft / Google)
   async function oauth(provider){
@@ -1050,6 +1081,27 @@ function mostrarLogin(){
     catch(e){ err.textContent=e.message||"No se pudo enviar el enlace."; }
     finally{ _cargando($("fg_btn"),false); }
   };
+
+  // guardar la nueva contraseña (vista form_newpass)
+  $("nw_btn").onclick=async()=>{
+    const err=$("nw_err"); err.className="lx-err bad"; err.textContent="";
+    const p1=$("nw_pass").value, p2=$("nw_pass2").value;
+    if(p1.length<8){ err.textContent="La contraseña debe tener al menos 8 caracteres."; return; }
+    if(p1!==p2){ err.textContent="Las contraseñas no coinciden."; return; }
+    _cargando($("nw_btn"),true,"Guardando…");
+    try{
+      const {error}=await SUPA.auth.updateUser({password:p1}); if(error) throw error;
+      history.replaceState(null,"",location.pathname+location.search);
+      err.className="lx-err ok"; err.textContent="Contraseña actualizada ✓ Entrando…";
+      const {data}=await SUPA.auth.getSession();
+      TOKEN=data.session.access_token; await cargar(); await arrancarApp();
+    }catch(e){
+      const m=e.message||"";
+      err.textContent=/different from the old/i.test(m)?"La nueva contraseña debe ser distinta de la anterior.":(m||"No se pudo actualizar la contraseña.");
+      _cargando($("nw_btn"),false);
+    }
+  };
+  $("nw_pass2").addEventListener("keydown",e=>{ if(e.key==="Enter") $("nw_btn").click(); });
 
   // crear cuenta
   $("rg_btn").onclick=async()=>{
